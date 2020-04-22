@@ -1,0 +1,1 @@
+console.log('AKGShelter js Ready!')

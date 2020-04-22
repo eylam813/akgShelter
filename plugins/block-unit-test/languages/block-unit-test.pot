@@ -1,0 +1,193 @@
+# Copyright (C) 2018 block-unit-test
+# This file is distributed under the same license as the block-unit-test package.
+msgid ""
+msgstr ""
+"Project-Id-Version: block-unit-test\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Rich Tabor\n"
+"Language-Team: ThatPluginCompany\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: class-block-unit-test.php:215
+msgid "Donec id elit non mi porta gravida at eget metus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla."
+msgstr ""
+
+#: class-block-unit-test.php:226
+msgid "Heading One"
+msgstr ""
+
+#: class-block-unit-test.php:230
+msgid "Heading Two"
+msgstr ""
+
+#: class-block-unit-test.php:234
+msgid "Heading Three"
+msgstr ""
+
+#: class-block-unit-test.php:238
+msgid "Heading Four"
+msgstr ""
+
+#: class-block-unit-test.php:242
+msgid "Heading Five"
+msgstr ""
+
+#: class-block-unit-test.php:246
+msgid "Heading Six"
+msgstr ""
+
+#: class-block-unit-test.php:254
+msgid "This is a subhead block, where you can add a little extra blurb about your post or page. Cool yeah?"
+msgstr ""
+
+#: class-block-unit-test.php:296
+msgid "Unordered List"
+msgstr ""
+
+#: class-block-unit-test.php:318
+msgid "Verse"
+msgstr ""
+
+#: class-block-unit-test.php:322
+msgid "This is an example of the core Gutenberg verse block."
+msgstr ""
+
+#: class-block-unit-test.php:330
+msgid "Separator"
+msgstr ""
+
+#: class-block-unit-test.php:334
+msgid "Here are examples of the three separator styles of the core Gutenberg separator block."
+msgstr ""
+
+#: class-block-unit-test.php:350
+msgid "Table"
+msgstr ""
+
+#: class-block-unit-test.php:366
+msgid "Latest Posts, List View"
+msgstr ""
+
+#: class-block-unit-test.php:376
+msgid "Latest Posts, Grid View"
+msgstr ""
+
+#: class-block-unit-test.php:390
+msgid "Blockquote"
+msgstr ""
+
+#: class-block-unit-test.php:411
+msgid "Alternate Blockquote"
+msgstr ""
+
+#: class-block-unit-test.php:432
+msgid "Audio"
+msgstr ""
+
+#: class-block-unit-test.php:454
+msgid "Buttons"
+msgstr ""
+
+#: class-block-unit-test.php:490
+msgid "Categories"
+msgstr ""
+
+#: class-block-unit-test.php:500
+msgid "Archives"
+msgstr ""
+
+#: class-block-unit-test.php:510
+msgid "Columns"
+msgstr ""
+
+#: class-block-unit-test.php:586
+msgid "Pull Quotes"
+msgstr ""
+
+#: class-block-unit-test.php:599, class-block-unit-test.php:678, class-block-unit-test.php:736, class-block-unit-test.php:772
+msgid "Wide aligned"
+msgstr ""
+
+#: class-block-unit-test.php:615
+msgid "Full width"
+msgstr ""
+
+#: class-block-unit-test.php:686
+msgid "Full Width"
+msgstr ""
+
+#: class-block-unit-test.php:725
+msgid "Video Block"
+msgstr ""
+
+#: class-block-unit-test.php:760
+msgid "Cover Image Block"
+msgstr ""
+
+#: class-block-unit-test.php:777
+msgid "Wide Cover Image Block"
+msgstr ""
+
+#: class-block-unit-test.php:787
+msgid "Full Width Cover Image"
+msgstr ""
+
+#: class-block-unit-test.php:800
+msgid "Left Aligned Cover Image"
+msgstr ""
+
+#: class-block-unit-test.php:810
+msgid "Right Aligned Cover Image"
+msgstr ""
+
+#: class-block-unit-test.php:824
+msgid "Center Aligned Cover Image"
+msgstr ""
+
+#: class-block-unit-test.php:835
+msgid "Gallery Blocks"
+msgstr ""
+
+#: class-block-unit-test.php:1308
+msgid "More information"
+msgstr ""
+
+#: includes/class-block-unit-test-coblocks.php:117
+msgid "Accordions"
+msgstr ""
+
+#: includes/class-block-unit-test-coblocks.php:139
+msgid "Alerts"
+msgstr ""
+
+#: includes/class-block-unit-test-coblocks.php:159
+msgid "Click to Tweet"
+msgstr ""
+
+#: includes/class-block-unit-test-coblocks.php:175
+msgid "Author Profile"
+msgstr ""
+
+#: includes/class-block-unit-test-coblocks.php:185
+msgid "Social Sharing"
+msgstr ""
+
+#: includes/class-block-unit-test-suggest-coblocks.php:106
+msgid "activate CoBlocks &rarr;"
+msgstr ""
+
+#: includes/class-block-unit-test-suggest-coblocks.php:109
+msgid "install CoBlocks &rarr;"
+msgstr ""
+
+#: includes/class-block-unit-test-suggest-coblocks.php:114
+msgid " suggests performing a unit test for %1$s. To run the additional unit test, %2$s"
+msgstr ""
