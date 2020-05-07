@@ -2,3 +2,36 @@
     color: orange;
     font-size: 50px;
 }
+
+/* ************* HEADER ************* */
+#preheader {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: auto auto auto auto;
+    grid-template-areas: "donate helpText clear exit";
+    width: 100vw;
+    height: fit-content;
+    height: -webkit-ft-content; /* for safari and Chrome */
+    height: -moz-fit-content; /* for Firefox */
+}
+.donateBtn-header {
+    grid-area: donate;
+}
+.helpText-header {
+    grid-area: helpText;
+    justify-content: center;
+}
+.clearTracks-header{
+    grid-area: clear;
+    justify-self: flex-end;
+
+}
+.exitSite-header {
+    grid-area: exit;
+    justify-self: flex-end;
+}
+#preheader button {
+    padding: 5px 10px;
+    width: fit-content;
+    max-width: fit-content;
+}
