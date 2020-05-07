@@ -26,8 +26,11 @@
     text-align: center;
     margin-bottom: 1em;
 }
-.clearTracks-header{
+#preheader button.clearTracks-header{
     align-self: stretch;
+    box-sizing: border-box;
+    border: 3px solid #FFADAD;
+    background-color: #00000000;
 }
 .exitSite-header {
     align-self: stretch;
@@ -39,11 +42,23 @@
 #preheader button {
     padding: 5px 10px;
     width: fit-content;
+    min-width: 100px;
     height: 100%;
     max-width: fit-content;
     background-color: #FFADAD;
     outline: none;
     border: none;
+}
+
+/* small screen only */
+@media screen and (max-width: 39.9375em) {
+    #preheader {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: auto auto auto;
+        grid-template-areas: "helpText helpText helpText"
+                             "donate clearExit clearExit";
+    }
 }
 
 
