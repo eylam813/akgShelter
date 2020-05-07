@@ -7,31 +7,40 @@
 #preheader {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: auto auto auto auto;
-    grid-template-areas: "donate helpText clear exit";
+    grid-template-columns: auto auto auto;
+    grid-template-areas: "donate helpText clearExit";
     width: 100vw;
     height: fit-content;
     height: -webkit-ft-content; /* for safari and Chrome */
     height: -moz-fit-content; /* for Firefox */
+    background-color: #FFFAE9;
 }
 .donateBtn-header {
     grid-area: donate;
+    height: fit-content;
 }
 .helpText-header {
     grid-area: helpText;
     justify-content: center;
+    text-align: center;
 }
-.clearTracks-header{
+/* .clearTracks-header{
     grid-area: clear;
     justify-self: flex-end;
-
 }
 .exitSite-header {
     grid-area: exit;
+    justify-self: flex-end;
+} */
+.escapeBtns {
+    grid-area: clearExit;
     justify-self: flex-end;
 }
 #preheader button {
     padding: 5px 10px;
     width: fit-content;
     max-width: fit-content;
+    background-color: #FFADAD;
+    outline: none;
+    border: none;
 }

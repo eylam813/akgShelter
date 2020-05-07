@@ -27,10 +27,14 @@
 
 	<header id="masthead" class="site-header">
 	<div id="preheader">
-		<button class="donateBtn-header">Donate</button>
-		<p class="helpText-header">Get help 224/7: 905-3522-3708 or Toll Free at 1-800-388-5171</p>
-		<button class="clearTracks-header">Steps to Clear Tracks</button>
-		<button class="exitSite-header">Exit Site</button>
+		<div class="donateBtn-header">
+			<button >Donate</button>
+		</div>
+		<p class="helpText-header">Get help 24/7: 905-3522-3708 or Toll Free at 1-800-388-5171</p>
+		<div class="escapeBtns">
+			<button class="clearTracks-header">Steps to Clear Tracks</button>
+			<button class="exitSite-header">Exit Site</button>
+		</div>
 	</div>
 		<div class="site-branding">
 			<?php
