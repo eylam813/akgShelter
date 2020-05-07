@@ -1,9 +1,20 @@
-#testerLine {
-    color: orange;
-    font-size: 50px;
+/* ************* MAIN SET UP ************* */
+:root {
+    --coral: #FFADAD;
+    --pale-yellow: #FFFAE9;
+}
+
+@font-face {
+    font-family: everythingFont;
+    src: url('../fonts/Cantarell-Regular.ttf');
+}
+
+body {
+    font-family: everythingFont;
 }
 
 /* ************* HEADER ************* */
+/* ? Preheader */
 #preheader {
     display: grid;
     grid-template-rows: 1fr;
@@ -13,31 +24,28 @@
     height: fit-content;
     height: -webkit-ft-content; /* for safari and Chrome */
     height: -moz-fit-content; /* for Firefox */
-    background-color: #FFFAE9;
+    background-color: var(--pale-yellow);
 }
 .donateBtn-header {
     grid-area: donate;
-    height: fit-content;
-    align-self: stretch;
 }
 .helpText-header {
     grid-area: helpText;
     justify-content: center;
     text-align: center;
     margin-bottom: 1em;
+    font-size: 0.75rem;
 }
 #preheader button.clearTracks-header{
-    align-self: stretch;
     box-sizing: border-box;
-    border: 3px solid #FFADAD;
+    border: 3px solid var(--coral);
     background-color: #00000000;
-}
-.exitSite-header {
-    align-self: stretch;
 }
 .escapeBtns {
     grid-area: clearExit;
     justify-self: flex-end;
+    display: flex;
+    height: 100%;
 }
 #preheader button {
     padding: 5px 10px;
@@ -45,19 +53,19 @@
     min-width: 100px;
     height: 100%;
     max-width: fit-content;
-    background-color: #FFADAD;
+    background-color: var(--coral);
     outline: none;
     border: none;
 }
 
-/* small screen only */
+/* ! ********** SMALL screen only ************* */
 @media screen and (max-width: 39.9375em) {
     #preheader {
         display: grid;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: 0.75fr 0.5fr;
         grid-template-columns: auto auto auto;
-        grid-template-areas: "helpText helpText helpText"
-                             "donate clearExit clearExit";
+        grid-template-areas: "donate clearExit clearExit"
+        "helpText helpText helpText";
     }
 }
 
