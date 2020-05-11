@@ -179,6 +179,8 @@ function AKGShelter_scripts() {
 	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGShelter-script.js', array());
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styles',get_template_directory_uri() . '/assets/css/AKGShelter-styles.css',  array());
+	// AKGShelter custom stylesheet
+	wp_enqueue_style('AKGShelter-styleZ',get_template_directory_uri() . '/assets/css/styleZ.css',  array());
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );

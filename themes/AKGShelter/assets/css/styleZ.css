@@ -1,0 +1,47 @@
+
+:root{
+    --pink: #FF6B89;
+    --cream: #FFFAE9;
+    --light-blue: #F3F9FF;
+}
+.entry-content{
+    width: 100vw;
+    overflow: auto;
+}
+#nav{
+    display: flex;
+    justify-content: space-between;
+}
+#primary-menu{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.decoBtn{
+    background-color: var(--pink);
+    border: white ridge 1px;
+    padding: 5px;
+    text-decoration: none;
+    color: white;
+    
+}
+.decoBtn:hover{
+    color: pink;
+}
+#upperInfo{
+    display: flex;
+    flex-direction: row;
+    height: 2rem;
+    width: 100vw;
+    background-color: var(--cream);
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+}
+#upperInfo h6{
+    font-size: 14px;
+}
+.plainBtn{
+    color: black;
+    margin-right: 5px;
+}
