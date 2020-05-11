@@ -43,7 +43,7 @@ nav{
     background-color: var(--cream);
     align-items: center;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 16px;
     margin-bottom: 5px;
 }
 #upperInfo h6{
@@ -52,4 +52,21 @@ nav{
 .plainBtn{
     color: black;
     margin-right: 5px;
+}
+.homeCards{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90%;
+}
+.homeCards .wp-block-column{
+    background-color: var(--light-blue);
+    box-shadow:  2px 2px 20px #E5E5E4;
+    border-radius: 10px;
+    height: 30rem;
+}
+.wp-block-button{
+    background-color: var(--pink);
+    border: 1px solid white;
+    border-radius: 10px;
 }
