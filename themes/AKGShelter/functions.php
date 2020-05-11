@@ -61,6 +61,11 @@ if ( ! function_exists( 'AKGShelter_setup' ) ) :
 				'color' => '#FF6B89',
 			),
 			array(
+				'name' => esc_html__( 'Light Pink', 'AKGShelter' ),
+				'slug' => 'lightpink',
+				'color' => '#FF6B89',
+			),
+			array(
 				'name' => esc_html__( 'Cream', 'AKGShelter' ),
 				'slug' => 'cream',
 				'color' => '#FFFAE9',

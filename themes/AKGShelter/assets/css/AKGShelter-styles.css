@@ -1,6 +1,7 @@
 
 :root{
     --pink: #FF6B89;
+    --light-pink: #FCE7EB;
     --cream: #FFFAE9;
     --light-blue: #F3F9FF;
     --blue: #B0C4DE;
@@ -12,6 +13,13 @@
 
 .has-pink-background-color {
     background-color: var(--pink);
+}
+.has-lightpink-color {
+    color: var(--light-pink);
+}
+
+.has-lightpink-background-color {
+    background-color: var(--light-pink);
 }
 
 .has-cream-color {
