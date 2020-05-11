@@ -53,7 +53,34 @@ if ( ! function_exists( 'AKGShelter_setup' ) ) :
 				'menu-1' => esc_html__( 'Primary', 'AKGShelter' ),
 			)
 		);
-
+		// Add theme support for custom colours
+		add_theme_support( 'editor-color-palette', array(
+			array(
+				'name' => esc_html__( 'Pink', 'AKGShelter' ),
+				'slug' => 'pink',
+				'color' => '#FF6B89',
+			),
+			array(
+				'name' => esc_html__( 'Cream', 'AKGShelter' ),
+				'slug' => 'cream',
+				'color' => '#FFFAE9',
+			),
+			array(
+				'name' => esc_html__( 'Light Blue', 'AKGShelter' ),
+				'slug' => 'lightblue',
+				'color' => '#F3F9FF',
+			),
+			array(
+				'name' => esc_html__( 'White', 'AKGShelter' ),
+				'slug' => 'white',
+				'color' => '#FFFFFF',
+			),
+			array(
+				'name' => esc_html__( 'Black', 'AKGShelter' ),
+				'slug' => 'black',
+				'color' => '#000000',
+			),
+		) );
 		/*
 		 * Switch default core markup for search form, comment form, and comments
 		 * to output valid HTML5.
