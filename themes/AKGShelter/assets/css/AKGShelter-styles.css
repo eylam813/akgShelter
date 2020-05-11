@@ -3,6 +3,7 @@
     --pink: #FF6B89;
     --cream: #FFFAE9;
     --light-blue: #F3F9FF;
+    --blue: #B0C4DE;
 }
 /* ******************** Colour Settings ******************** */
 .has-pink-color {
@@ -27,6 +28,13 @@
 
 .has-lightblue-background-color {
     background-color: var(--light-blue);
+}
+.has-blue-color {
+    color: var(--blue);
+}
+
+.has-blue-background-color {
+    background-color: var(--blue);
 }
 
 .has-white-color {
