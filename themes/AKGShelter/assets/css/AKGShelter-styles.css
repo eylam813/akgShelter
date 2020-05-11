@@ -1,4 +1,6 @@
-#testerLine {
-    color: orange;
-    font-size: 50px;
+
+:root{
+    --pink: #FF6B89;
+    --cream: #FFFAE9;
+    --light-blue: #F3F9FF;
 }
