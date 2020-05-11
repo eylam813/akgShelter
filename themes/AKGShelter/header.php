@@ -27,11 +27,11 @@
 
 	<header id="masthead" class="site-header">
 		<section id="upperInfo">
-			<a href="" class="decoBtn">Donate</a>
+			<a href="https://www.paypal.com/donate/?token=FQlpb637-ROyNNM1ekCbGx40JvVLWS-9Hj5nsx-u8JZj9nejlXQiLrHv6EsGNeciDO5hE0&country.x=CA&locale.x=CA" class="decoBtn">Donate</a>
 			<h6>Get help 24/7: 905-352-3708 or Toll Free at 1-800-388-5171</h6>
 			<div id="rightSideTop">
-			<a href="" class="plainBtn">Steps to Clear Tracks</a>
-			<a href="" class="decoBtn">Exit Site</a>
+			<a href="https://www.pcmag.com/how-to/how-to-clear-your-cache-on-any-browser" class="plainBtn">Steps to Clear Tracks</a>
+			<a href="http://testing.zferguson.ca/holycupcake/recipes/%3C?php%20echo%20$_SERVER[%22REQUEST_URI%22];%20?%3E" class="decoBtn">Exit Site</a>
 			</div>
 		</section>
 		<section id="nav">

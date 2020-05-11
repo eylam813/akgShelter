@@ -1,6 +1,7 @@
 
 :root{
     --pink: #FF6B89;
+    --light-pink: #FCE7EB;
     --cream: #FFFAE9;
     --light-blue: #F3F9FF;
     --blue: #B0C4DE;
@@ -61,7 +62,6 @@ nav{
     margin-right: 5px;
 }
 .homeCards{
-    margin-top: 2rem;
     max-width: 90%;
 }
 .homeCards .wp-block-column{
@@ -69,13 +69,14 @@ nav{
     flex-direction: column;
     align-items: center;
     background-color: var(--light-blue);
-    box-shadow:  2px 2px 20px #E5E5E4;
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
     border-radius: 10px;
     height: 30rem;
     max-width: 25vw;
     padding: 5px;
 }
-.wp-block-button{
+.homeCards .wp-block-button{
     border: 1px solid var(--blue);
     border-radius: 10px;
 }
@@ -91,4 +92,21 @@ nav{
 .homeQuote{
     align-self: center;
     max-width: 50%;
+}
+.headerMargin{
+    margin-top: 2rem;
+}
+.entry-title{
+    display: none;
+}
+.serviceCard .wp-block-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid var(--pink);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    width: 35vw;
+    padding:1rem;
 }
