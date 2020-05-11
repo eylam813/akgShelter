@@ -9,12 +9,20 @@
 a{
     color: black;
 }
+h2{
+    font-size: 2.5rem;
+}
+h3{
+    font-size: 2rem;
+    font-weight: 400;
+}
 .entry-content{
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100vw;
     overflow: auto;
+    padding: 0 2rem;
 }
 #nav{
     display: flex;
@@ -24,6 +32,9 @@ a{
 }
 nav{
     align-self: center;
+}
+nav a:hover{
+    color: var(--pink);
 }
 #primary-menu{
     display: flex;
@@ -86,7 +97,7 @@ nav{
 .homeCards p{
     height: 25%;
 }
-.homeCards a:hover{
+.homeCards a:hover, .serviceCard a:hover{
     color: var(--pink);
 }
 .homeQuote{
@@ -115,6 +126,13 @@ nav{
     height: 50%;
 }
 .serviceCard .wp-block-button{
-    border: 1px double var(--light-pink);
-    border-radius: 10px;
+    border-bottom: 1px double var(--pink);
+}
+li>ul{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+li>ul a{
+    margin: 2px;
 }
