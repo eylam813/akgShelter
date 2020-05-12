@@ -65,3 +65,4 @@
 		</nav><!-- #site-navigation -->
 		</section>
 	</header><!-- #masthead -->
+	<div id="content" class="site-content">
