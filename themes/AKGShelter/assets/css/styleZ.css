@@ -9,6 +9,9 @@
 a{
     color: black;
 }
+button:hover{
+    cursor: pointer;
+}
 h2{
     font-size: 2.5rem;
 }
@@ -16,11 +19,14 @@ h3{
     font-size: 2rem;
     font-weight: 400;
 }
+#preheader{
+    z-index: 99;
+}
 .entry-content{
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100vw;
+    max-width: 100vw;
     overflow: auto;
     padding: 0 2rem;
 }
@@ -53,9 +59,9 @@ nav a:hover{
     border-radius: 10px;
     height: 30rem;
     max-width: 25vw;
-    padding: 5px;
+    padding: 1rem;
 }
-.homeCards .wp-block-button{
+.homeCards .wp-block-button__link{
     border: 1px solid var(--blue);
     border-radius: 10px;
 }
@@ -82,19 +88,22 @@ nav a:hover{
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     box-shadow:  10px 10px 20px #e6e6e6,
                 -20px -20px 60px #ffffff;
     border-radius: 5px;
-    width: 35vw;
     padding:1rem;
     min-height: 30rem;
+    background-color: #FCE7EB;
+    background-image: linear-gradient(19deg, #FCE7EB 0%, #ffffff 100%);
 
 }
-.serviceCard p{
-    height: 50%;
-}
-.serviceCard .wp-block-button{
+
+.serviceCard .wp-block-button__link{
     border-bottom: 1px double var(--pink);
+}
+.wp-block-button{
+    color: black;
 }
 li>ul{
     display: flex;
@@ -103,4 +112,7 @@ li>ul{
 }
 li>ul a{
     margin: 2px;
+}
+.pageTitle{
+    margin-bottom: 2rem;
 }
