@@ -18,6 +18,8 @@ get_header();
 	<main id="primary" class="site-main">
 	<!-- grid container for page contents -->
 	<div class="grid-container">
+		<div class="grid-x">
+			<div class="large-12 small-12">
 		<?php
 		while ( have_posts() ) :
 			the_post();
@@ -31,6 +33,8 @@ get_header();
 
 		endwhile; // End of the loop.
 		?>
+		</div><!--large-12 small-12-->
+		</div><!--grid-x-->
 	</div> <!--grid-container-->
 	</main><!-- #main -->
 
