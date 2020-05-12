@@ -1,0 +1,138 @@
+
+:root{
+    --pink: #FF6B89;
+    --light-pink: #FCE7EB;
+    --cream: #FFFAE9;
+    --light-blue: #F3F9FF;
+    --blue: #B0C4DE;
+}
+a{
+    color: black;
+}
+h2{
+    font-size: 2.5rem;
+}
+h3{
+    font-size: 2rem;
+    font-weight: 400;
+}
+.entry-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    overflow: auto;
+    padding: 0 2rem;
+}
+#nav{
+    display: flex;
+    justify-content: space-between;
+    color: black;
+    padding-top: 3rem;
+}
+nav{
+    align-self: center;
+}
+nav a:hover{
+    color: var(--pink);
+}
+#primary-menu{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.decoBtn{
+    background-color: var(--pink);
+    border: white ridge 1px;
+    padding: 5px;
+    text-decoration: none;
+    color: white;
+    
+}
+.decoBtn:hover{
+    color: pink;
+}
+#upperInfo{
+    display: flex;
+    flex-direction: row;
+    height: 2rem;
+    width: 100vw;
+    background-color: var(--cream);
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    margin-bottom: 5px;
+    position: fixed;
+    z-index: 99;
+}
+#upperInfo h6{
+    font-size: 14px;
+}
+.plainBtn{
+    color: black;
+    margin-right: 5px;
+}
+.homeCards{
+    max-width: 90%;
+}
+.homeCards .wp-block-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-blue);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    height: 30rem;
+    max-width: 25vw;
+    padding: 5px;
+}
+.homeCards .wp-block-button{
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+}
+.homeCards .wp-block-button__link{
+    background-color: none;
+}
+.homeCards p{
+    height: 25%;
+}
+.homeCards a:hover, .serviceCard a:hover{
+    color: var(--pink);
+}
+.homeQuote{
+    align-self: center;
+    max-width: 50%;
+}
+.headerMargin{
+    margin-top: 2rem;
+}
+.entry-title{
+    display: none;
+}
+.serviceCard .wp-block-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 5px;
+    width: 35vw;
+    padding:1rem;
+    min-height: 30rem;
+
+}
+.serviceCard p{
+    height: 50%;
+}
+.serviceCard .wp-block-button{
+    border-bottom: 1px double var(--pink);
+}
+li>ul{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+li>ul a{
+    margin: 2px;
+}
