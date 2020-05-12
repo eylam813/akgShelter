@@ -16,7 +16,6 @@ get_header();
 ?>
 
 	<main id="primary" class="site-main">
-	<p id="testerLine">AKGShelter Loaded</p>
 
 		<?php
 		if ( have_posts() ) :
