@@ -73,6 +73,14 @@ body {
 .decoBtn:hover{
     color: pink;
 }
+.title-bar-title{
+    padding: 1rem;
+}
+img.custom-logo{
+    max-width: 350px;
+    min-width: 250px;
+    width: 30vw;
+}
 
 /* ! ********** SMALL screen only ************* */
 @media screen and (max-width: 39.9375em) {
