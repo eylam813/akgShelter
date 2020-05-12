@@ -36,23 +36,30 @@
 			<button class="exitSite-header">Exit Site</button>
 		</div>
 	</div>
+		<section id="upperInfo">
+			<a href="https://www.paypal.com/donate/?token=FQlpb637-ROyNNM1ekCbGx40JvVLWS-9Hj5nsx-u8JZj9nejlXQiLrHv6EsGNeciDO5hE0&country.x=CA&locale.x=CA" class="decoBtn">Donate</a>
+			<h6>Get help 24/7: 905-352-3708 or Toll Free at 1-800-388-5171</h6>
+			<div id="rightSideTop">
+			<a href="https://www.pcmag.com/how-to/how-to-clear-your-cache-on-any-browser" class="plainBtn">Steps to Clear Tracks</a>
+			<a href="http://testing.zferguson.ca/holycupcake/recipes/%3C?php%20echo%20$_SERVER[%22REQUEST_URI%22];%20?%3E" class="decoBtn">Exit Site</a>
+			</div>
+		</section>
+		<section id="nav">
 		<div class="site-branding">
-			<?php
-			the_custom_logo();
-			if ( is_front_page() && is_home() ) :
-				?>
-				<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h1>
+			<!-- container for the logo - mobile/tablet only -->
+			<div class="title-bar-title">
 				<?php
-			else :
+				// if there's no custom logo load the title text
+				if (!has_custom_logo()) :
 				?>
-				<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></p>
+					<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home"><?php bloginfo('name'); ?></a></h1>
 				<?php
-			endif;
-			$AKGShelter_description = get_bloginfo( 'description', 'display' );
-			if ( $AKGShelter_description || is_customize_preview() ) :
+				else :
+					// else if there is a custom logo load the logo
+					the_custom_logo();
+				endif;
 				?>
-				<p class="site-description"><?php echo $AKGShelter_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-			<?php endif; ?>
+			</div>
 		</div><!-- .site-branding -->
 
 		<nav id="site-navigation" class="main-navigation">
@@ -66,4 +73,5 @@
 			);
 			?>
 		</nav><!-- #site-navigation -->
+		</section>
 	</header><!-- #masthead -->
