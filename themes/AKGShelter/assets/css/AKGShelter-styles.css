@@ -1,8 +1,5 @@
 /* ************* MAIN SET UP ************* */
 :root {
-    --coral: #FFADAD;
-    --pale-yellow: #FFFAE9;
-
     --pink: #FF6B89;
     --light-pink: #FCE7EB;
     --cream: #FFFAE9;
@@ -27,10 +24,13 @@ body {
     grid-template-columns: auto auto auto;
     grid-template-areas: "donate helpText clearExit";
     width: 100vw;
-    height: fit-content;
-    height: -webkit-ft-content; /* for safari and Chrome */
-    height: -moz-fit-content; /* for Firefox */
-    background-color: var(--pale-yellow);
+    background-color: var(--cream);
+    position: fixed;
+    max-height: fit-content;
+}
+#preheader h6{
+    font-size: 14px;
+    margin: 0.5rem 0;
 }
 .donateBtn-header {
     grid-area: donate;
@@ -44,8 +44,11 @@ body {
 }
 #preheader button.clearTracks-header{
     box-sizing: border-box;
-    border: 3px solid var(--coral);
+    border: 3px solid var(--pink);
     background-color: #00000000;
+}
+.clearTracks-header:hover{
+    text-decoration: underline;
 }
 .escapeBtns {
     grid-area: clearExit;
@@ -58,10 +61,17 @@ body {
     width: fit-content;
     min-width: 100px;
     height: 100%;
-    max-width: fit-content;
-    background-color: var(--coral);
+    background-color: var(--pink);
     outline: none;
     border: none;
+    border-radius: 0;
+}
+.decoBtn{
+    text-decoration: none;
+    color: white;
+}
+.decoBtn:hover{
+    color: pink;
 }
 
 /* ! ********** SMALL screen only ************* */
