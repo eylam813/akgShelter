@@ -602,9 +602,9 @@ a {
 	color: #4169e1;
 }
 
-a:visited {
+/* a:visited {
 	color: #800080;
-}
+} */
 
 a:hover,
 a:focus,
