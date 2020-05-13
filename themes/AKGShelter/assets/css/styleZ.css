@@ -110,3 +110,14 @@ li>ul a{
 .pageTitle{
     margin-bottom: 2rem;
 }
+#secondary{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#mec_mec_widget-3{
+    max-width: 60vw;
+}
+#simple_facebook_page_feed_widget-3{
+    max-width: 40vw;
+}
