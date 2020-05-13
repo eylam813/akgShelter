@@ -61,13 +61,6 @@ nav a:hover{
     max-width: 25vw;
     padding: 2rem 1.5rem;
 }
-.homeCards .wp-block-button__link{
-    border: 1px solid var(--blue);
-    border-radius: 10px;
-}
-.homeCards .wp-block-button__link{
-    background-color: none;
-}
 .homeCards p{
     height: 25%;
 }
