@@ -53,7 +53,44 @@ if ( ! function_exists( 'AKGShelter_setup' ) ) :
 				'menu-1' => esc_html__( 'Primary', 'AKGShelter' ),
 			)
 		);
-
+		// Add theme support for custom colours
+		add_theme_support( 'editor-color-palette', array(
+			array(
+				'name' => esc_html__( 'Pink', 'AKGShelter' ),
+				'slug' => 'pink',
+				'color' => '#FF6B89',
+			),
+			array(
+				'name' => esc_html__( 'Light Pink', 'AKGShelter' ),
+				'slug' => 'lightpink',
+				'color' => '#FCE7EB',
+			),
+			array(
+				'name' => esc_html__( 'Cream', 'AKGShelter' ),
+				'slug' => 'cream',
+				'color' => '#FFFAE9',
+			),
+			array(
+				'name' => esc_html__( 'Light Blue', 'AKGShelter' ),
+				'slug' => 'lightblue',
+				'color' => '#F3F9FF',
+			),
+			array(
+				'name' => esc_html__( 'Blue', 'AKGShelter' ),
+				'slug' => 'blue',
+				'color' => '#B0C4DE',
+			),
+			array(
+				'name' => esc_html__( 'White', 'AKGShelter' ),
+				'slug' => 'white',
+				'color' => '#FFFFFF',
+			),
+			array(
+				'name' => esc_html__( 'Black', 'AKGShelter' ),
+				'slug' => 'black',
+				'color' => '#000000',
+			),
+		) );
 		/*
 		 * Switch default core markup for search form, comment form, and comments
 		 * to output valid HTML5.
@@ -104,6 +141,7 @@ if ( ! function_exists( 'AKGShelter_setup' ) ) :
 endif;
 add_action( 'after_setup_theme', 'AKGShelter_setup' );
 
+
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
  *
@@ -146,16 +184,23 @@ function AKGShelter_scripts() {
 	// AKGShelter styles.css
 	wp_enqueue_style( 'AKGShelter-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'AKGShelter-style', 'rtl', 'replace' );
+	// enqueue foundation styles
+	wp_enqueue_style('AKGShelter-foundation',get_template_directory_uri() . '/assets/css/vendors/foundation.min.css', null, '6.5.1');
+	wp_enqueue_style('AKGShelter-foundationStyles',get_template_directory_uri() . '/assets/css/app.css',  array());
 	// underscores navigation script
 	wp_enqueue_script( 'AKGShelter-navigation', get_template_directory_uri() . '/assets/js/vendor/navigation.js', array(), _S_VERSION, true );
 	// AKGShelter custom script
 	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGShelter-script.js', array());
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styles',get_template_directory_uri() . '/assets/css/AKGShelter-styles.css',  array());
-
+	// AKGShelter custom stylesheet
+	wp_enqueue_style('AKGShelter-styleZ',get_template_directory_uri() . '/assets/css/styleZ.css',  array());
+// adding AKGShelter foundation js
+wp_enqueue_script( 'AKGShelter-foundation', get_template_directory_uri() . '/assets/js/vendors/foundation.min.js', array('jquery', 'AKGShelter-what-input'), '6.5.1', true );
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+
 }
 add_action( 'wp_enqueue_scripts', 'AKGShelter_scripts' );
 
