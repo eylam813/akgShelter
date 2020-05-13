@@ -371,7 +371,7 @@
 			// No capabilities required, this is a public method
 
 			// Check for submit ID in $submit
-			if(isset($submit['id'])) { $this->id = absint($submit['id']); } else { return false; }
+			if(isset($submit['id'])) { $this->id = intval($submit['id']); } else { return false; }
 
 			// Encryption
 			$submit_encrypted = isset($submit['encrypted']) ? $submit['encrypted'] : false;
@@ -841,7 +841,7 @@
 			// Get total number for form submissions
 			$sql = sprintf("SELECT COUNT(id) AS count_submit FROM %s WHERE form_id = %u;", $this->table_name, $this->form_id);
 			$count_submit = $wpdb->get_var($sql);
-			if(!is_null($count_submit)) { return absint($count_submit); } else { return 0; }
+			if(!is_null($count_submit)) { return intval($count_submit); } else { return 0; }
 		}
 
 		// Get number for form submissions unread
@@ -858,7 +858,7 @@
 			// Get total number for form submissions that are unread
 			$sql = sprintf("SELECT COUNT(id) AS count_submit_unread FROM %s WHERE form_id = %u AND viewed = 0 AND status IN ('publish', 'draft');", $this->table_name, $this->form_id);
 			$count_submit_unread = $wpdb->get_var($sql);
-			if(!is_null($count_submit_unread)) { return absint($count_submit_unread); } else { return 0; }
+			if(!is_null($count_submit_unread)) { return intval($count_submit_unread); } else { return 0; }
 		}
 
 		// Restore
@@ -1220,7 +1220,7 @@
 			// No capabilities required, this is a public method
 
 			// Get form_id
-			$this->form_id = absint(WS_Form_Common::get_query_var_nonce('wsf_form_id', 0));
+			$this->form_id = intval(WS_Form_Common::get_query_var_nonce('wsf_form_id', 0));
 			self::db_check_form_id();
 
 			// Get hash
@@ -1372,7 +1372,7 @@
 
 				// Save meta data
 				if(!isset($field->id)) { continue; }
-				$field_id = abs($field->id);
+				$field_id = intval($field->id);
 
 				// Build field name
 				$field_name = WS_FORM_FIELD_PREFIX . $field_id;

@@ -7,6 +7,24 @@
 	padding: 0px 5px;
 }
 
+.block-editor-inserter__preview .wsf-block-form-add-preview svg {
+	width: 80%;
+	margin-left: 10%;
+}
+
+[data-type="wsf-block/form-add"] {
+	min-height: 40px;
+}
+
+[data-type="wsf-block/form-add"] svg.wsf-block-loader {
+	-webkit-animation: wsf-rotate 1s linear infinite;
+	animation: wsf-rotate 1s linear infinite;
+	height: 40px;
+	width: 40px;
+	margin: 0 auto;
+	display: block;
+}
+
 .wp-core-ui .button-secondary.wsf-button-add-form {
 	margin-right: 5px;
 	margin-bottom: 4px;

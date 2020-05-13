@@ -161,23 +161,35 @@
 				$form_id = $ws_form_form->db_get_preview_form_id();
 			}
 
+			if($form_id === 0) { return; }
+
+			// Get form preview URL
+			$form_preview_url = WS_Form_Common::get_preview_url($form_id);
+
+			// Start script
+			$return_script = "	wp.customize.bind('ready', function() {\n";
+
 			// Determine if we should automatically open the WS Form panel
 			$wsf_panel_open = WS_Form_Common::get_query_var('wsf_panel_open');
+			if($wsf_panel_open) {
 
-			$return_script = "wp.customize.bind('ready', function() {\n";
+				// Open immediately
+				$return_script .= sprintf("		wp.customize.previewer.previewUrl('%s');\n", esc_js($form_preview_url));
+				$return_script .= "		wp.customize.panel('wsform_panel').expand();\n";
 
-			if($form_id > 0) {
+			} else {
 
-				$form_preview_url = WS_Form_Common::get_preview_url($form_id);
-				$return_script .= sprintf("	wp.customize.previewer.previewUrl('%s');\n", esc_js($form_preview_url));
+				// Open if WS Form panel is opened
+				$return_script .= "		wp.customize.panel('wsform_panel', function(panel) {\n";
+				$return_script .= "			panel.expanded.bind(function(is_expanded) {\n";
+				$return_script .= "				if(is_expanded) {\n";
+				$return_script .= sprintf("					wp.customize.previewer.previewUrl('%s');\n", esc_js($form_preview_url));
+				$return_script .= "				}\n";
+				$return_script .= "			});\n";
+				$return_script .= "		});\n";
 			}
 
-			if($wsf_panel_open === 'true') {
-
-				$return_script .= "	wp.customize.panel('wsform_panel').expand();\n";
-			}
-
-			$return_script .= '});';
+			$return_script .= '	});';
 
 			return $return_script;
 		}

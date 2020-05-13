@@ -444,7 +444,7 @@
 				$form_id = WS_Form_Common::get_query_var_nonce('id', false, $parameters);
 			}
 
-			return absint($form_id);
+			return intval($form_id);
 		}
 
 		// Get hash
@@ -462,6 +462,6 @@
 		// Get submit ID
 		public function api_get_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('submit_id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('submit_id', 0, $parameters));
 		}
 	}

@@ -16,11 +16,12 @@
 		public static $frameworks = array();
 		public static $parse_variables = array();
 		public static $parse_variable_help = array();
+		public static $calc = false;
 		public static $tracking = array();
 		public static $ecommerce = false;
 
 		// Get full public or admin config
-		public static function get_config($parameters = false, $field_types = false) {
+		public static function get_config($parameters = false, $field_types = array()) {
 
 			// Determine if this is an admin or public API request
 			$is_admin = (WS_Form_Common::get_query_var('form_is_admin', 'false') == 'true');
@@ -37,7 +38,6 @@
 				$config['settings_plugin'] = self::get_settings_plugin(false);
 				$config['settings_form'] = self::get_settings_form_admin();
 				$config['frameworks'] = self::get_frameworks(false);
-				$config['parse_variables'] = self::get_parse_variables(false);
 				$config['parse_variable_help'] = self::get_parse_variable_help($form_id, false);
 				$config['actions'] = WS_Form_Action::get_settings();
 
@@ -135,7 +135,7 @@
 
 				'basic' => array(
 
-					'label'	=> 'Basic',
+					'label'	=> __('Basic', 'ws-form'),
 					'types' => array(
 
 						'text' => array (
@@ -149,8 +149,8 @@
 							'submit_edit'		=>	true,
 							'events'			=>	array(
 
-								'event'				=>	'keyup',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -248,8 +248,8 @@
 							'submit_edit'		=>	true,
 							'events'			=>	array(
 
-								'event'				=>	'keyup',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Fields
@@ -333,8 +333,8 @@
 							'compatibility_id'	=>	'input-number',
 							'events'			=>	array(
 
-								'event'				=>	'input',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -434,8 +434,8 @@
 							'compatibility_id'	=>	'input-email-tel-url',
 							'events'			=>	array(
 
-								'event'				=>	'keyup',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -535,8 +535,8 @@
 							'compatibility_id'	=>	'input-email-tel-url',
 							'events'				=>	array(
 
-								'event'				=>	'keyup',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -550,7 +550,7 @@
 
 							// Fields
 							'mask_field'						=>	'<input type="email" id="#id" name="#name" value="#value"#attributes />#data#invalid_feedback#help',
-							'mask_field_attributes'				=>	array('class', 'multiple_email', 'min_length', 'max_length', 'list', 'disabled', 'readonly', 'required', 'placeholder', 'aria_describedby', 'aria_labelledby', 'aria_label', 'custom_attributes'),
+							'mask_field_attributes'				=>	array('class', 'multiple_email', 'min_length', 'max_length', 'pattern', 'list', 'disabled', 'readonly', 'required', 'placeholder', 'aria_describedby', 'aria_labelledby', 'aria_label', 'custom_attributes'),
 							'mask_field_label'					=>	'<label id="#label_id" for="#id"#attributes>#label</label>',
 							'mask_field_label_attributes'		=>	array('class'),
 
@@ -636,8 +636,8 @@
 							'compatibility_id'	=>	'input-email-tel-url',
 							'events'						=>	array(
 
-								'event'						=>	'keyup',
-								'event_category'	=>	'Field'
+								'event'				=>	'change input',
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -651,7 +651,7 @@
 
 							// Fields
 							'mask_field'									=>	'<input type="url" id="#id" name="#name" value="#value"#attributes />#data#invalid_feedback#help',
-							'mask_field_attributes'				=>	array('class', 'min_length', 'max_length', 'list', 'disabled', 'readonly', 'required', 'placeholder', 'aria_describedby', 'aria_labelledby', 'aria_label', 'custom_attributes'),
+							'mask_field_attributes'				=>	array('class', 'min_length', 'max_length', 'list', 'disabled', 'readonly', 'required', 'placeholder', 'pattern', 'aria_describedby', 'aria_labelledby', 'aria_label', 'custom_attributes'),
 							'mask_field_label'						=>	'<label id="#label_id" for="#id"#attributes>#label</label>',
 							'mask_field_label_attributes'	=>	array('class'),
 
@@ -729,7 +729,7 @@
 
 				'choice' => array(
 
-					'label'	=> 'Choice',
+					'label'	=> __('Choice', 'ws-form'),
 					'types' => array(
 
 						'select' => array (
@@ -745,7 +745,7 @@
 							'events'	=>	array(
 
 								'event'						=>	'change',
-								'event_category'			=>	'Field'
+								'event_category'			=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -844,7 +844,7 @@
 							'events'	=>	array(
 
 								'event'				=>	'change',
-								'event_category'	=>	'Field'
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -942,7 +942,7 @@
 							'events'	=>	array(
 
 								'event'				=>	'change',
-								'event_category'	=>	'Field'
+								'event_category'	=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -1062,7 +1062,7 @@
 
 				'advanced' => array(
 
-					'label'	=> 'Advanced',
+					'label'	=> __('Advanced', 'ws-form'),
 					'types' => array(
 
 						'file' => array (
@@ -1125,7 +1125,7 @@
 
 				'content' => array(
 
-					'label'	=> 'Content',
+					'label'	=> __('Content', 'ws-form'),
 					'types' => array(
 
 						'texteditor' => array (
@@ -1276,7 +1276,7 @@
 
 				'buttons' => array(
 
-					'label'	=> 'Buttons',
+					'label'	=> __('Buttons', 'ws-form'),
 					'types' => array(
 
 						'submit' => array (
@@ -1294,7 +1294,7 @@
 							'events'	=>	array(
 
 								'event'				=>	'click',
-								'event_category'	=>	'Button'
+								'event_category'	=>	__('Button', 'ws-form')
 							),
 
 							'fieldsets'	=> array(
@@ -1393,7 +1393,7 @@
 
 				'section' => array(
 
-					'label'	=> 'Repeatable Sections',
+					'label'	=> __('Repeatable Sections', 'ws-form'),
 					'types' => array(
 
 						'section_add' => array (
@@ -1441,7 +1441,7 @@
 
 				'ecommerce' => array(
 
-					'label'	=> 'E-Commerce',
+					'label'	=> __('E-Commerce', 'ws-form'),
 					'types' => array(
 
 						'price' => array (
@@ -1469,7 +1469,7 @@
 							'events'		=>	array(
 
 								'event'					=>	'change',
-								'event_category'		=>	'Field'
+								'event_category'		=>	__('Field', 'ws-form')
 							),
 
 							// Groups
@@ -1549,7 +1549,7 @@
 								// Tab: Checkboxes
 								'checkboxes' 	=> array(
 
-									'label'			=>	__('Products', 'ws-form'),
+									'label'			=>	__('Checkboxes', 'ws-form'),
 									'meta_keys'		=> array('data_grid_checkbox_price', 'checkbox_price_field_label', 'checkbox_price_field_value', 'data_grid_rows_randomize')
 								)
 							)
@@ -1647,7 +1647,7 @@
 			$field_types = self::get_field_types_flat(true);
 
 			// Filter by fields found in forms
-			if($field_types_filter !== false) {
+			if(count($field_types_filter) > 0) {
 
 				$field_types_old = $field_types;
 				$field_types = array();
@@ -1656,6 +1656,10 @@
 
 					if(isset($field_types_old[$field_type])) { $field_types[$field_type] = $field_types_old[$field_type]; }
 				}
+	
+			} else {
+
+				return $field_types;	
 			}
 
 			// Strip attributes
@@ -1946,7 +1950,7 @@
 							'label'			=>	__('Speed', 'ws-form'),
 							'type'			=>	'number',
 							'default'		=>	200,
-							'help'			=>	'Value in milliseconds.',
+							'help'			=>	__('Value in milliseconds.', 'ws-form'),
 							'description'	=>	__('Transition speed in milliseconds.', 'ws-form')
 						),
 
@@ -2026,6 +2030,14 @@
 
 							'heading'		=>	__('Preview', 'ws-form'),
 							'fields'	=>	array(
+
+								'helper_live_preview'	=>	array(
+
+									'label'		=>	__('Live Preview', 'ws-form'),
+									'type'		=>	'checkbox',
+									'help'		=>	__('Update the form preview window automatically.', 'ws-form'),
+									'default'	=>	true
+								),
 
 								'preview_template'	=> array(
 
@@ -2248,7 +2260,7 @@
 									'label'		=>	__('Cookie Timeout (Seconds)', 'ws-form'),
 									'type'		=>	'number',
 									'help'		=>	__('Duration in seconds cookies are valid for.', 'ws-form'),
-									'default'	=>	60 * 60 * 24,	// 1 day
+									'default'	=>	60 * 60 * 24 * 28,	// 28 day
 									'public'	=>	true
 								),
 
@@ -2265,7 +2277,7 @@
 
 						'lookup'	=>	array(
 
-							'heading'	=>	__('Lookups', 'ws-form'),
+							'heading'	=>	__('Tracking Lookups', 'ws-form'),
 							'fields'	=>	array(
 
 								'ip_lookup_url_mask' => array(
@@ -2773,7 +2785,6 @@
 						'put_resize'		=> __('Resized', 'ws-form'),
 						'put_offset'		=> __('Offset', 'ws-form'),
 						'put_sort_index'	=> __('Moved', 'ws-form'),
-						'put_optimize'		=> __('Optimized', 'ws-form'),
 						'put_reset'			=> __('Reset', 'ws-form'),
 						'post'				=> __('Added', 'ws-form'),
 						'post_upload_json'	=> __('Uploaded', 'ws-form'),
@@ -2854,6 +2865,7 @@
 					'add_group'			=>	__('Add Tab', 'ws-form'),
 					'add_section'		=>	__('Add Section', 'ws-form'),
 					'save'				=>	__('Save', 'ws-form'),
+					'save_and_close'	=>	__('Save & Close', 'ws-form'),
 					'delete'			=>	__('Delete', 'ws-form'),
 					'trash'				=>	__('Trash', 'ws-form'),
 					'clone'				=>	__('Clone', 'ws-form'),
@@ -2866,6 +2878,7 @@
 					'default'			=>	__('Default', 'ws-form'),
 					'variables'			=>	__('Variables', 'ws-form'),
 					'select_list'		=>	__('Select From List', 'ws-form'),
+					'calc'				=>	__('Calculate', 'ws-form'),
 					'reset'				=>	__('Reset', 'ws-form'),
 					'close'				=>	__('Close', 'ws-form'),
 
@@ -2969,10 +2982,10 @@
 					'data_grid_rows_per_page_apply'			=>	__('Apply', 'ws-form'),
 
 					// Data grids - Upload
-					'data_grid_group_upload_csv'			=>	__('Upload CSV', 'ws-form'),
+					'data_grid_group_upload_csv'			=>	__('Import CSV', 'ws-form'),
 
 					// Data grids - Download
-					'data_grid_group_download_csv'			=>	__('Download CSV', 'ws-form'),
+					'data_grid_group_download_csv'			=>	__('Export CSV', 'ws-form'),
 
 					// Data grids - Actions
 					'data_grid_action_edit'					=>	__('Edit', 'ws-form'),
@@ -3052,6 +3065,7 @@
 					'knowledgebase_search_button'		=>	__('Search', 'ws-form'),
 					'knowledgebase_search_placeholder'	=>	__('Keyword(s)', 'ws-form'),
 					'knowledgebase_popular'				=>	__('Popular Articles', 'ws-form'),
+					'knowledgebase_view_all'			=>	__('View Full Knowledge Base', 'ws-form'),
 
 					// Contact
 					'support_contact_thank_you'			=>	__('Thank you for your inquiry.', 'ws-form'),
@@ -3127,16 +3141,16 @@
 				'language'	=> array(
 
 					// Errors
-					'error_attributes'					=>	__('No attributes specified', 'ws-form'),
-					'error_attributes_obj'				=>	__('No attributes object specified', 'ws-form'),
-					'error_attributes_form_id'			=>	__('No attributes form ID specified', 'ws-form'),
-					'error_form_id'						=>	__('Form ID not specified', 'ws-form'),
-					'error_bad_request'					=>	__('400 Bad request response from server', 'ws-form'),
+					'error_attributes'					=>	__('No attributes specified.', 'ws-form'),
+					'error_attributes_obj'				=>	__('No attributes object specified.', 'ws-form'),
+					'error_attributes_form_id'			=>	__('No attributes form ID specified.', 'ws-form'),
+					'error_form_id'						=>	__('Form ID not specified.', 'ws-form'),
+					'error_bad_request'					=>	__('400 Bad request response from server.', 'ws-form'),
 					'error_bad_request_message'			=>	__('400 Bad request response from server: %s', 'ws-form'),
 					'error_forbidden'					=>	__('403 Forbidden response from server. <a href="https://wsform.com/knowledgebase/403-forbidden/" target="_blank">Learn more</a>.', 'ws-form'),
-					'error_not_found'					=>	__('404 Not found response from server', 'ws-form'),
-					'error_server'						=>	__('500 Server error response from server', 'ws-form'),
-					'error_pro_required'				=>	__('WS Form PRO required', 'ws-form'),
+					'error_not_found'					=>	__('404 Not found response from server.', 'ws-form'),
+					'error_server'						=>	__('500 Server error response from server.', 'ws-form'),
+					'error_pro_required'				=>	__('WS Form PRO required.', 'ws-form'),
 
 					// Error message
 					'dismiss'							=>  __('Dismiss', 'ws-form'),
@@ -3610,7 +3624,8 @@
 					'type'						=>	'text',
 					'default'					=>	'',
 					'help'						=>	__('Default value entered in field.', 'ws-form'),
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				// Sets default value attribute (unless saved value exists)
@@ -3622,7 +3637,8 @@
 					'default'					=>	'',
 					'help'						=>	__('Default number entered in field.', 'ws-form'),
 					'key'						=>	'default_value',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 
@@ -3634,7 +3650,8 @@
 					'default'					=>	'',
 					'help'						=>	__('Default email entered in field.', 'ws-form'),
 					'key'						=>	'default_value',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				// Sets default value attribute (unless saved value exists)
@@ -3645,7 +3662,8 @@
 					'default'					=>	'',
 					'help'						=>	__('Default phone number entered in field.', 'ws-form'),
 					'key'						=>	'default_value',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				// Sets default value attribute (unless saved value exists)
@@ -3656,7 +3674,8 @@
 					'default'					=>	'',
 					'help'						=>	__('Default URL entered in field.', 'ws-form'),
 					'key'						=>	'default_value',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				// Sets default value attribute (unless saved value exists)
@@ -3667,7 +3686,8 @@
 					'default'					=>	'',
 					'help'						=>	__('Default value entered in field', 'ws-form'),
 					'key'						=>	'default_value',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				// Orientation
@@ -3777,7 +3797,6 @@
 
 					'label'						=>	__('First Name', 'ws-form'),
 					'type'						=>	'text',
-					'default_static'			=>	'#user_first_name',
 					'required'					=>	true
 				),
 
@@ -3785,7 +3804,6 @@
 
 					'label'						=>	__('Last Name', 'ws-form'),
 					'type'						=>	'text',
-					'default_static'			=>	'#user_last_name',
 					'required'					=>	true
 				),
 
@@ -3793,7 +3811,6 @@
 
 					'label'						=>	__('Email', 'ws-form'),
 					'type'						=>	'email',
-					'default_static'			=>	'#user_email',
 					'required'					=>	true
 				),
 
@@ -3904,7 +3921,8 @@
 					'type'						=>	'text_editor',
 					'default'					=>	'',
 					'help'						=>	__('Enter paragraphs of text.', 'ws-form'),
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc'						=>	true
 				),
 
 				'required_message'		=> array(
@@ -4239,7 +4257,8 @@
 					'type'						=>	'text',
 					'help'						=>	__('Short hint that describes the expected value of the input field.', 'ws-form'),
 					'compatibility_id'			=>	'input-placeholder',
-					'select_list'				=>	true
+					'select_list'				=>	true,
+					'calc_type'					=>	'field_placeholder'
 				),
 
 				'placeholder_row'			=> array(
@@ -4944,7 +4963,7 @@
 					'type'						=>	'data_grid_field',
 					'data_grid'					=>	'data_grid_checkbox',
 					'default'					=>	0,
-					'help'						=>	__('Choose which column to use for server side variables (e.g. #field or #email_submission in email templates).')
+					'help'						=>	__('Choose which column to use for server side variables (e.g. #field or #email_submission in email templates).', 'ws-form')
 				),
 
 				'data_grid_radio'	=>	array(
@@ -5049,7 +5068,7 @@
 					'type'						=>	'data_grid_field',
 					'data_grid'					=>	'data_grid_radio',
 					'default'					=>	0,
-					'help'						=>	__('Choose which column to use for server side variables (e.g. #field or #email_submission in email templates).')
+					'help'						=>	__('Choose which column to use for server side variables (e.g. #field or #email_submission in email templates).', 'ws-form')
 				),
 
 				'radio_cascade'				=> array(
@@ -5107,7 +5126,7 @@
 
 				'data_grid_select_price'	=>	array(
 
-					'label'					=>	__('Products', 'ws-form'),
+					'label'					=>	__('Options', 'ws-form'),
 					'type'					=>	'data_grid',
 					'row_default'			=>	true,	// Is the default attribute supported on rows?
 					'row_disabled'			=>	true,	// Is the disabled attribute supported on rows?
@@ -5133,7 +5152,7 @@
 						// Columns
 						'columns' => array(
 
-							array('id' => 0, 'label' => __('Product', 'ws-form')),
+							array('id' => 0, 'label' => __('Label', 'ws-form')),
 							array('id' => 1, 'label' => __('Price', 'ws-form')),
 						),
 
@@ -5142,7 +5161,7 @@
 
 							array(
 
-								'label' 		=> __('Products', 'ws-form'),
+								'label' 		=> __('Options', 'ws-form'),
 								'page'			=> 0,
 								'disabled'		=> '',
 								'mask_group'	=> '',
@@ -5156,7 +5175,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 1', 'ws-form'), '1.23')
+										'data'		=> array(__('Product 1', 'ws-form'), '1')
 									),
 									array(
 
@@ -5165,7 +5184,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 2', 'ws-form'), '2.34')
+										'data'		=> array(__('Product 2', 'ws-form'), '2')
 									),
 									array(
 
@@ -5174,7 +5193,7 @@
 										'disabled'	=> '',
 										'required'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 3', 'ws-form'), '3.45')
+										'data'		=> array(__('Product 3', 'ws-form'), '3')
 									)
 								)
 							)
@@ -5184,7 +5203,7 @@
 
 				'select_price_field_label'	=> array(
 
-					'label'						=>	__('Product Name', 'ws-form'),
+					'label'						=>	__('Label', 'ws-form'),
 					'type'						=>	'data_grid_field',
 					'data_grid'					=>	'data_grid_select_price',
 					'default'					=>	0
@@ -5248,7 +5267,7 @@
 
 				'data_grid_checkbox_price'	=>	array(
 
-					'label'					=>	__('Products', 'ws-form'),
+					'label'					=>	__('Checkboxes', 'ws-form'),
 					'type'					=>	'data_grid',
 					'row_default'			=>	true,	// Is the default attribute supported on rows?
 					'row_disabled'			=>	true,	// Is the disabled attribute supported on rows?
@@ -5276,7 +5295,7 @@
 						// Columns
 						'columns' => array(
 
-							array('id' => 0, 'label' => __('Product', 'ws-form')),
+							array('id' => 0, 'label' => __('Label', 'ws-form')),
 							array('id' => 1, 'label' => __('Price', 'ws-form')),
 						),
 
@@ -5285,7 +5304,7 @@
 
 							array(
 
-								'label' 		=> __('Products', 'ws-form'),
+								'label' 		=> __('Checkboxes', 'ws-form'),
 								'page'			=> 0,
 								'disabled'		=> '',
 								'mask_group'	=> '',
@@ -5299,7 +5318,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 1', 'ws-form'), '1.23')
+										'data'		=> array(__('Product 1', 'ws-form'), '1')
 									),
 									array(
 
@@ -5308,7 +5327,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 2', 'ws-form'), '2.34')
+										'data'		=> array(__('Product 2', 'ws-form'), '2')
 									),
 									array(
 
@@ -5317,7 +5336,7 @@
 										'disabled'	=> '',
 										'required'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 3', 'ws-form'), '3.45')
+										'data'		=> array(__('Product 3', 'ws-form'), '3')
 									)
 								)
 							)
@@ -5327,7 +5346,7 @@
 
 				'checkbox_price_field_label'		=> array(
 
-					'label'						=>	__('Product Name', 'ws-form'),
+					'label'						=>	__('Label', 'ws-form'),
 					'type'						=>	'data_grid_field',
 					'data_grid'					=>	'data_grid_checkbox_price',
 					'default'					=>	0
@@ -5345,7 +5364,7 @@
 
 				'data_grid_radio_price'	=>	array(
 
-					'label'					=>	__('Products', 'ws-form'),
+					'label'					=>	__('Radios', 'ws-form'),
 					'type'					=>	'data_grid',
 					'row_default'			=>	true,	// Is the default attribute supported on rows?
 					'row_disabled'			=>	true,	// Is the disabled attribute supported on rows?
@@ -5373,7 +5392,7 @@
 						// Columns
 						'columns' => array(
 
-							array('id' => 0, 'label' => __('Product', 'ws-form')),
+							array('id' => 0, 'label' => __('Label', 'ws-form')),
 							array('id' => 1, 'label' => __('Price', 'ws-form')),
 						),
 
@@ -5382,7 +5401,7 @@
 
 							array(
 
-								'label' 		=> __('Products', 'ws-form'),
+								'label' 		=> __('Radios', 'ws-form'),
 								'page'			=> 0,
 								'disabled'		=> '',
 								'mask_group'	=> '',
@@ -5396,7 +5415,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 1', 'ws-form'), '1.23')
+										'data'		=> array(__('Product 1', 'ws-form'), '1')
 									),
 									array(
 
@@ -5405,7 +5424,7 @@
 										'required'	=> '',
 										'disabled'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 2', 'ws-form'), '2.34')
+										'data'		=> array(__('Product 2', 'ws-form'), '2')
 									),
 									array(
 
@@ -5414,7 +5433,7 @@
 										'disabled'	=> '',
 										'required'	=> '',
 										'hidden'	=> '',
-										'data'		=> array(__('Product 3', 'ws-form'), '3.45')
+										'data'		=> array(__('Product 3', 'ws-form'), '3')
 									)
 								)
 							)
@@ -5424,7 +5443,7 @@
 
 				'radio_price_field_label'		=> array(
 
-					'label'						=>	__('Product Name', 'ws-form'),
+					'label'						=>	__('Label', 'ws-form'),
 					'type'						=>	'data_grid_field',
 					'data_grid'					=>	'data_grid_radio_price',
 					'default'					=>	0
@@ -5616,7 +5635,7 @@
 			// Public parsing (To cut down on only output needed to render form
 			if($public) {
 
-				$public_attributes_public = array('key' => 'k', 'mask' => 'm', 'mask_disregard_on_empty' => 'e', 'mask_disregard_on_zero' => 'z', 'mask_placeholder' => 'p', 'html_encode' => 'h', 'price' => 'pr', 'default' => 'd');
+				$public_attributes_public = array('key' => 'k', 'mask' => 'm', 'mask_disregard_on_empty' => 'e', 'mask_disregard_on_zero' => 'z', 'mask_placeholder' => 'p', 'html_encode' => 'h', 'price' => 'pr', 'default' => 'd', 'calc_type' => 'c');
 
 				foreach($meta_keys as $key => $meta_key) {
 
@@ -5742,6 +5761,11 @@
 					$return_value = '<path d="M15 12h-14c-0.6 0-1-0.4-1-1v-6c0-0.6 0.4-1 1-1h14c0.6 0 1 0.4 1 1v6c0 0.6-0.4 1-1 1z"></path>';
 					break;
 
+				case 'calc' :
+
+					$return_value = '<path d="M9 3h6v2h-6v-2z"></path><path d="M9 11h6v2h-6v-2z"></path><path d="M5 1h-2v2h-2v2h2v2h2v-2h2v-2h-2z"></path><path d="M7 10.4l-1.4-1.4-1.6 1.6-1.6-1.6-1.4 1.4 1.6 1.6-1.6 1.6 1.4 1.4 1.6-1.6 1.6 1.6 1.4-1.4-1.6-1.6z"></path><path d="M13 14.5c0 0.552-0.448 1-1 1s-1-0.448-1-1c0-0.552 0.448-1 1-1s1 0.448 1 1z"></path><path d="M13 9.5c0 0.552-0.448 1-1 1s-1-0.448-1-1c0-0.552 0.448-1 1-1s1 0.448 1 1z"></path>';
+					break;
+
 				case 'calculator' :
 
 					$return_value = '<path d="M14.1 1.7v12.7c-.1.4-.2.8-.5 1-.4.4-.8.6-1.3.6h-9c-.4-.1-.8-.3-1.1-.6-.2-.4-.4-.7-.4-1.2V1.9c0-.3.1-.7.3-1 .3-.5.7-.8 1.2-.9h9.1c.2 0 .4.1.6.2.5.3.9.7 1 1.3.1.1.1.2.1.2zM7.9 5.6H12.3c.3-.1.5-.3.5-.6V1.9c0-.1 0-.2-.1-.3-.1-.2-.3-.3-.6-.3H3.6c-.3 0-.6.2-.6.6V5c0 .2.1.3.2.4.1.1.3.2.5.2h4.2zm3.7 3h.6c.3 0 .5-.3.6-.5v-.7-.1c-.1-.3-.3-.5-.6-.5H11h-.1c-.2 0-.5.3-.5.5V8.1c.1.3.3.5.6.5h.6zm0 3.1h.7c.3 0 .5-.3.6-.5v-.7c0-.3-.3-.6-.6-.6h-1.2-.1c-.3 0-.5.3-.5.5V11.2c.1.3.3.4.6.4.1.1.3.1.5.1zm0 3.1h.8c.3-.1.5-.3.5-.5v-.7c0-.3-.3-.6-.6-.6h-1.2-.1c-.2 0-.5.3-.5.5v.8c0 .3.3.5.6.5h.5zM4.3 8.6h.6c.3 0 .6-.3.6-.6v-.7c0-.3-.3-.6-.6-.6H3.7c-.4.1-.7.4-.7.7v.7c.1.3.3.5.6.5h.7zm0 3.1h.6c.3 0 .6-.3.6-.6v-.7c0-.3-.3-.6-.6-.6H3.6c-.3.1-.6.4-.6.7v.7c.1.3.3.5.6.5h.7zm3.6 3.1h.6c.3 0 .6-.3.6-.6v-.6c0-.3-.3-.6-.6-.6H7.2c-.3 0-.6.3-.6.6V14.4c.1.3.3.5.6.5.3-.1.5-.1.7-.1zm0-3.1h.6c.3 0 .6-.3.6-.6v-.6-.1c0-.3-.3-.5-.6-.5H7.2c-.3 0-.6.3-.6.6v.7c0 .3.3.6.6.6.3-.1.5-.1.7-.1zm-3.6 3.1H5c.3 0 .6-.3.6-.6v-.7c0-.3-.3-.6-.6-.6H3.7h-.1c-.4.1-.6.4-.6.7v.7c.1.3.3.5.6.5h.7zm3.6-6.2h.7c.3 0 .5-.2.6-.5v-.4-.4c0-.3-.3-.6-.6-.6H7.4h-.1c-.3 0-.5.3-.5.6V8.1c.1.3.3.5.6.5h.5z"/><path d="M3.5 0h-.2c-.6.2-1 .5-1.2 1-.2.3-.3.6-.3 1v12.3c0 .4.2.8.4 1.2.3.3.6.5 1.1.6h9c.5 0 1-.2 1.3-.6.3-.3.4-.6.5-1v-.1 1.7H1.8V.1C2.4 0 2.9 0 3.5 0zM14.1 1.7v-.2c-.1-.6-.5-1-1-1.3-.2-.1-.4-.2-.6-.2h1.7c-.1.6-.1 1.2-.1 1.7z"/><path d="M9.8 3.4v-.9c0-.3.2-.6.5-.6h1.3c.3 0 .5.2.6.5v2c0 .3-.2.5-.5.6h-1.3c-.3 0-.6-.2-.6-.5v-.1-1zm1.8.9V2.5h-1.2v1.8h1.2z"/><path d="M11.6 4.3h-1.2V2.5h1.2v1.8z"/>';
@@ -5814,7 +5838,7 @@
 
 				case 'download' :
 
-					$return_value = '<path d="M0 14h16v2h-16v-2z"></path><path d="M8 13l5-5h-3v-8h-4v8h-3z"></path>';
+					$return_value = '<path d="M4,7H1v9h14V7h-3v1h2v7H2V8h2V7z"/><path d="M8,0L4,5h2v5h4V5h2L8,0z"/>';
 					break;
 
 				case 'edit' :
@@ -6134,7 +6158,7 @@
 
 				case 'upload' :
 
-					$return_value = '<path d="M0 14h16v2h-16v-2z"></path><path d="M8 0l-5 5h3v8h4v-8h3z"></path>';
+					$return_value = '<path d="M15,7h-2l-1,1h2v7H2V8h2L3,7H1v9h14V7z"/><path d="M8,10l4-5h-2V0L6,0v5H4L8,10z"/>';
 					break;
 
 				case 'url' :
@@ -6659,8 +6683,8 @@
 						'columns'					=>	array(
 
 							'column_count' 			=> 	12,
-							'column_class'				=>	'col-#id-#size',
-							'column_css_selector'		=>	'.col-#id-#size',
+							'column_class'			=>	'col-#id-#size',
+							'column_css_selector'	=>	'.col-#id-#size',
 							'offset_class'			=>	'offset-#id-#offset',
 							'offset_css_selector'	=>	'.offset-#id-#offset'
 						),
@@ -6669,8 +6693,8 @@
 
 							// Up to 575px
 							25	=>	array(
-								'id'				=>	'xs',
-								'name'				=>	__('Extra Small', 'ws-form'),
+								'id'					=>	'xs',
+								'name'					=>	__('Extra Small', 'ws-form'),
 								'column_class'			=>	'col-#size',
 								'column_css_selector'	=>	'.col-#size',
 								'offset_class'			=>	'offset-#offset',
@@ -6776,15 +6800,15 @@
 									'mask_field_wrapper'			=>	'<div class="col-#column_width_field">#field</div>',
 								),
 
-								'mask_wrapper' 		=> '#label<div class="row" id="#id" data-id="#data_id">#fields</div>',
+								'mask_wrapper' 			=> '#label<div class="row" id="#id" data-id="#data_id">#fields</div>',
 								'mask_wrapper_label'	=> '<legend>#label</legend>',
-								'mask_single' 		=> '<div class="#class" id="#id" data-id="#data_id" data-type="#type"#attributes>#field</div>',
+								'mask_single' 			=> '<div class="#class" id="#id" data-id="#data_id" data-type="#type"#attributes>#field</div>',
 
 								// Required
 								'mask_required_label'	=> ' <strong class="text-danger">*</strong>',
 
 								// Help
-								'mask_help'			=>	'<small id="#help_id" class="#help_class">#help#help_append</small>',
+								'mask_help'				=>	'<small id="#help_id" class="#help_class">#help#help_append</small>',
 
 								// Invalid feedback
 								'mask_invalid_feedback'	=>	'<div id="#invalid_feedback_id" class="#invalid_feedback_class">#invalid_feedback</div>',
@@ -7251,8 +7275,8 @@
 								'class_invalid_feedback'	=> array('error'),
 								'class_inline' 				=> array('form-inline'),
 								'class_form_validated'		=> array('was-validated'),
-								'class_orientation_wrapper'		=> array('row'),
-								'class_orientation_row'			=> array('columns'),
+								'class_orientation_wrapper'	=> array('row'),
+								'class_orientation_row'		=> array('columns'),
 								'class_field_button_type'	=> array(
 
 									'secondary'		=>	'secondary',
@@ -7848,7 +7872,7 @@
 
 			// Get email logo
 			$email_logo = '';
-			$action_email_logo = absint(WS_Form_Common::option_get('action_email_logo'));
+			$action_email_logo = intval(WS_Form_Common::option_get('action_email_logo'));
 			$action_email_logo_size = WS_Form_Common::option_get('action_email_logo_size');
 			if($action_email_logo_size == '') { $action_email_logo_size = 'full'; }
 			if($action_email_logo > 0) {
@@ -7948,7 +7972,7 @@
 							'description' => __('Returns the server date and time in a specified format (PHP date format).', 'ws-form')
 						),
 
-						'server_date' => array('label' => __('Current Date', 'ws-form'), 'value' => date(get_option('date_format')), 'description' => __('Returns the server date in the format configured in WordPress.', 'ws-form')),
+						'server_date' => array('label' => __('Current Date', 'ws-form'), 'value' => date(get_option('date_format')), 'description' => __('Returns the server date in the format configured in WordPress.', 'ws-form'))
 					)
  				),
 
@@ -8038,6 +8062,193 @@
 					)
 				),
 
+				// Time
+				'seconds' 	=> array(
+
+					'label'		=> __('Seconds', 'ws-form'),
+
+					'variables'	=> array(
+
+						'seconds_epoch' => array('label' => __('Seconds since Epoch', 'ws-form'), 'value' => date('U'), 'description' => __('Returns the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT).', 'ws-form')),
+
+						'seconds_minute' => array('label' => __('Seconds in a minute', 'ws-form'), 'value' => '60', 'description' => __('Returns the number of seconds in a minute.', 'ws-form')),
+
+						'seconds_hour' => array('label' => __('Seconds in an hour', 'ws-form'), 'value' => '3600', 'description' => __('Returns the number of seconds in an hour.', 'ws-form')),
+
+						'seconds_day' => array('label' => __('Seconds in a day', 'ws-form'), 'value' => '86400', 'description' => __('Returns the number of seconds in a day.', 'ws-form')),
+
+						'seconds_week' => array('label' => __('Seconds in a week', 'ws-form'), 'value' => '604800', 'description' => __('Returns the number of seconds in a week.', 'ws-form')),
+
+						'seconds_year' => array('label' => __('Seconds in a year', 'ws-form'), 'value' => '31536000', 'description' => __('Returns the number of seconds in a year.', 'ws-form'))
+					)
+				),
+				// Math
+				'math' 	=> array(
+
+					'label'		=> __('Math', 'ws-form'),
+
+					'variables'	=> array(
+
+						'abs'			=>	array(
+
+							'label' => __('Absolute', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+							),
+
+							'description' => __('Returns the absolute value of a number.', 'ws-form')
+						),
+
+						'ceil'			=>	array(
+
+							'label' => __('Ceiling', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+							),
+
+							'description' => __('Rounds a number up to the next largest whole number.', 'ws-form')
+						),
+
+						'cos'			=>	array(
+
+							'label' => __('Cosine', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'radians', 'required' => false),
+							),
+
+							'description' => __('Returns the cosine of a radian number.', 'ws-form')
+						),
+
+						'exp'			=>	array(
+
+							'label' => __("Euler's", 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+							),
+
+							'description' => __('Returns E to the power of a number.', 'ws-form')
+						),
+
+						'floor'			=>	array(
+
+							'label' => __("Floor", 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+							),
+
+							'description' => __('Returns the largest integer value that is less than or equal to a number.', 'ws-form')
+						),
+
+						'log'			=>	array(
+
+							'label' => __('Logarithm', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+							),
+
+							'description' => __('Returns the natural logarithm of a number.', 'ws-form')
+						),
+
+						'round'			=>	array(
+
+							'label' => __('Round', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false),
+								array('id' => 'decimals', 'required' => false)
+							),
+
+							'description' => __('Returns the rounded value of a number.', 'ws-form')
+						),
+
+						'sin'			=>	array(
+
+							'label' => __('Sine', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'radians', 'required' => false)
+							),
+
+							'description' => __('Returns the sine of a radian number.', 'ws-form')
+						),
+
+						'sqrt'			=>	array(
+
+							'label' => __('Square Root', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => false)
+							),
+
+							'description' => __('Returns the square root of the number.', 'ws-form')
+						),
+
+						'tan'			=>	array(
+
+							'label' => __('Tangent', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'radians', 'required' => false)
+							),
+
+							'description' => __('Returns the tangent of a radian number.', 'ws-form')
+						),
+
+						'avg'			=>	array(
+
+							'label' => __('Average', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => true, 'recurring' => true)
+							),
+
+							'description' => __('Returns the average of all the input numbers.', 'ws-form')
+						),
+
+						'pi'			=>	array(
+
+							'label' => __('PI', 'ws-form'),
+
+							'value' => M_PI,
+
+							'description' => __('Returns an approximate value of PI.', 'ws-form')
+						),
+
+						'avg'			=>	array(
+
+							'label' => __('Average', 'ws-form'),
+
+							'attributes' => array(
+
+								array('id' => 'number', 'required' => true)
+							),
+
+							'description' => __('Returns the average of all the input numbers.', 'ws-form')
+						)
+					),
+
+					'ignore_prefix' => true,
+
+					'priority' => 50
+				),
+
 				// Field
 				'field' 	=> array(
 
@@ -8062,7 +8273,7 @@
 				// Select option text
 				'select' 	=> array(
 
-					'label'		=> __('Selects', 'ws-form'),
+					'label'		=> __('Select', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8086,7 +8297,7 @@
 				// Checkbox label
 				'checkbox' 	=> array(
 
-					'label'		=> __('Checkboxes', 'ws-form'),
+					'label'		=> __('Checkbox', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8110,7 +8321,7 @@
 				// Radio label
 				'radio' 	=> array(
 
-					'label'		=> __('Radios', 'ws-form'),
+					'label'		=> __('Radio', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8179,7 +8390,7 @@
 				// Query
 				'query' 	=> array(
 
-					'label'		=> __('Query Variables', 'ws-form'),
+					'label'		=> __('Query Variable', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8198,7 +8409,7 @@
 				// Post
 				'post' 	=> array(
 
-					'label'		=> __('Post Variables', 'ws-form'),
+					'label'		=> __('Post Variable', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8214,10 +8425,10 @@
 					)
 				),
 
-				// Random
-				'random' 	=> array(
+				// Random Numbers
+				'random_number' 	=> array(
 
-					'label'		=> __('Random Values', 'ws-form'),
+					'label'		=> __('Random Numbers', 'ws-form'),
 
 					'variables'	=> array(
 
@@ -8234,7 +8445,16 @@
 							'description' => __('Outputs an integer between the specified minimum and maximum attributes. This function does not generate cryptographically secure values, and should not be used for cryptographic purposes.', 'ws-form'),
 
 							'single_parse' => true
-						),
+						)
+					)
+				),
+
+				// Random Strings
+				'random_string' 	=> array(
+
+					'label'		=> __('Random Strings', 'ws-form'),
+
+					'variables'	=> array(
 
 						'random_string'	=>	array(
 
@@ -8442,7 +8662,7 @@
 							array('id' => 'key', 'required' => true)
 						),
 
-						'description' => __('Returns the post meta value for the key specified. Server side only.')
+						'description' => __('Returns the post meta value for the key specified. Server side only.', 'ws-form')
 					)
 				)
 			);
@@ -8505,7 +8725,8 @@
 
 			// User
 			$user = WS_Form_Common::get_user();
-			$user_id = (($user === false) ? 0 : $user->id);
+
+			$user_id = (($user === false) ? 0 : $user->ID);
 
 			$parse_variables['user'] = array(
 
@@ -8544,7 +8765,7 @@
 							array('id' => 'key', 'required' => true)
 						),
 
-						'description' => __('Returns the user meta value for the key specified. Server side only.')
+						'description' => __('Returns the user meta value for the key specified. Server side only.', 'ws-form')
 					)
 				)
 			);
@@ -8592,18 +8813,23 @@
 		}
 
 		// Parse variable
-		public static function get_parse_variable_help($form_id = 0, $public = true, $group = false) {
+		public static function get_parse_variable_help($form_id = 0, $public = true, $group = false, $group_first = false) {
 
 			// Check cache
-			if(isset(self::$parse_variable_help[$public])) { return self::$parse_variable_help[$public]; }
+			if(
+				isset(self::$parse_variable_help[$public]) &&
+				isset(self::$parse_variable_help[$public][$group])
+
+			) { return self::$parse_variable_help[$public][$group]; }
 
 			$parse_variable_help = array();
 
 			// Get admin variables
 			$parse_variables_config = self::get_parse_variables($public);
 
-			// Get all parse variablers
+			// Get all parse variables
 			$parse_variables = [];
+
 			foreach($parse_variables_config as $parse_variable_group_id => $parse_variable_group) {
 
 				if(!isset($parse_variable_group['label'])) { continue; }
@@ -8614,6 +8840,7 @@
 
 				foreach($parse_variable_group['variables'] as $parse_variable_key => $parse_variables_single) {
 
+					$parse_variables_single['group_id'] = $parse_variable_group_id;
 					$parse_variables_single['group_label'] = $group_label;
 					$parse_variables_single['key'] = $parse_variable_key;
 					$parse_variables[] = $parse_variables_single;
@@ -8621,12 +8848,18 @@
 			}
 
 			// Sort parse variables
-			uasort($parse_variables, function ($parse_variable_1, $parse_variable_2) {
+			uasort($parse_variables, function ($parse_variable_1, $parse_variable_2) use ($group_first) {
 
 				if($parse_variable_1['group_label'] == $parse_variable_2['group_label']) {
 
 					if($parse_variable_1['label'] == $parse_variable_2['label']) return 0;
 					return $parse_variable_1['label'] < $parse_variable_2['label'] ? -1 : 1;
+				}
+
+				if($group_first !== false) {
+
+					if($parse_variable_1['group_label'] == $group_first) { return -1; }
+					if($parse_variable_2['group_label'] == $group_first) { return 1; }
 				}
 
 				return $parse_variable_1['group_label'] < $parse_variable_2['group_label'] ? -1 : 1;
@@ -8638,65 +8871,38 @@
 				if(!isset($parse_variable['label'])) { continue; }
 
 				$parse_variable_key = $parse_variable['key'];
-				$parse_variable_label = $parse_variable['group_label'] . ': ' . $parse_variable['label'];
 
-				// Attributes
+				// Has attributes?
 				if(isset($parse_variable['attributes'])) {
 
-					if(
-						($parse_variable_key == 'field') &&
-						($form_id > 0)
-					) {
+					// Functions
+					$attributes_text = [];
+					$attributes_value = [];
+					foreach($parse_variable['attributes'] as $parse_variable_attribute) {
 
-						// Read form fields
-						$ws_form_form = new WS_Form_Form();
-						$ws_form_form->id = $form_id;
-						$fields = $ws_form_form->db_get_fields(false);
+						$parse_variable_attribute_id = $parse_variable_attribute['id'];
+						$parse_variable_attribute_required = isset($parse_variable_attribute['required']) ? $parse_variable_attribute['required'] : false;
+						$parse_variable_attribute_default = isset($parse_variable_attribute['default']) ? $parse_variable_attribute['default'] : false;
 
-						// Sort fields by group label then label
-						uasort($fields, function ($field_1, $field_2) {
+						$attributes_text[] = $parse_variable_attribute_id . ($parse_variable_attribute_required ? '*' : '');
 
-							if($field_1['label'] == $field_2['label']) return 0;
-							return $field_1['label'] < $field_2['label'] ? -1 : 1;
-						});
-
-						foreach($fields as $field) {
-
-							$parse_variable_help_single = array('text' => $parse_variable['group_label'] . ': ' . $field['label'] . ' (' . $field['id'] . ')', 'value' => '#' . $parse_variable_key . '(' . $field['id'] . ')', 'description' => isset($parse_variable['description']) ? $parse_variable['description'] : '');
-
-							self::parse_variable_help_add($parse_variable_help, $parse_variable_help_single);
-						}
-
-					} else {
-
-						// Regular functions
-						$attributes_text = [];
-						$attributes_value = [];
-						foreach($parse_variable['attributes'] as $parse_variable_attribute) {
-
-							$parse_variable_attribute_id = $parse_variable_attribute['id'];
-							$parse_variable_attribute_required = isset($parse_variable_attribute['required']) ? $parse_variable_attribute['required'] : false;
-							$parse_variable_attribute_default = isset($parse_variable_attribute['default']) ? $parse_variable_attribute['default'] : false;
-
-							$attributes_text[] = $parse_variable_attribute_id . ($parse_variable_attribute_required ? '*' : '');
-
-							$attributes_value[] = $parse_variable_attribute_id;
-						}
-
-						$value = $parse_variable_key . '(' . implode(', ', $attributes_value) . ')';
-						$parse_variable_help_single = array('text' => $parse_variable_label, 'value' => '#' . $value, 'description' => isset($parse_variable['description']) ? $parse_variable['description'] : '');
-
-						if(isset($parse_variable['kb_slug'])) { $parse_variable_help_single['kb_slug'] = $parse_variable['kb_slug']; }
-
-						if(isset($parse_variable['limit'])) { $parse_variable_help_single['limit'] = $parse_variable['limit']; }
-
-						self::parse_variable_help_add($parse_variable_help, $parse_variable_help_single);
+						$attributes_value[] = $parse_variable_attribute_id;
 					}
+
+					$value = $parse_variable_key . '(' . implode(', ', $attributes_value) . ')';
+					$parse_variable_help_single = array('text' => $parse_variable['label'], 'value' => '#' . $value, 'group_id' => $parse_variable['group_id'], 'group_label' => $parse_variable['group_label'], 'description' => isset($parse_variable['description']) ? $parse_variable['description'] : '');
+
+					if(isset($parse_variable['kb_slug'])) { $parse_variable_help_single['kb_slug'] = $parse_variable['kb_slug']; }
+
+					if(isset($parse_variable['limit'])) { $parse_variable_help_single['limit'] = $parse_variable['limit']; }
+
+					self::parse_variable_help_add($parse_variable_help, $parse_variable_help_single);
 
 				} else {
 
+					// No attributes
 					$value = $parse_variable_key;
-					$parse_variable_help_single = array('text' => $parse_variable_label, 'value' => '#' . $value, 'description' => isset($parse_variable['description']) ? $parse_variable['description'] : '');
+					$parse_variable_help_single = array('text' => $parse_variable['label'], 'value' => '#' . $value, 'group_id' => $parse_variable['group_id'], 'group_label' => $parse_variable['group_label'], 'description' => isset($parse_variable['description']) ? $parse_variable['description'] : '');
 
 					if(isset($parse_variable['kb_slug'])) { $parse_variable_help_single['kb_slug'] = $parse_variable['kb_slug']; }
 
@@ -8710,7 +8916,7 @@
 			$parse_variable_help = apply_filters('wsf_config_parse_variable_help', $parse_variable_help);
 
 			// Cache
-			self::$parse_variable_help[$public] = $parse_variable_help;
+			self::$parse_variable_help[$public][$group] = $parse_variable_help;
 
 			return $parse_variable_help;
 		}
@@ -8730,6 +8936,76 @@
 			$parse_variable_help[] = $parse_variable_help_single;
 		}
 
+		// Calc
+		public static function get_calc() {
+
+			// Check cache
+			if(self::$calc !== false) { return self::$calc; }
+
+			$calc = array(
+
+				// Row 1
+				array(
+
+					array('type' => 'select', 'source' => 'field', 'colspan' => 2, 'label' => __('Insert Field', 'ws-form'), 'action' => 'insert-select'),
+					array('type' => 'button', 'label' => __('del', 'ws-form'), 'class' => 'wsf-button-danger', 'title' => __('Delete', 'ws-form'), 'action' => 'delete'),
+					array('type' => 'button', 'label' => __('AC', 'ws-form'), 'class' => 'wsf-button-danger', 'title' => __('All Clear', 'ws-form'), 'action' => 'clear'),
+				),
+
+				// Row 2
+				array(
+
+					array('type' => 'button', 'label' => '(', 'title' => __('Opening Parentheses', 'ws-form'), 'action' => 'insert', 'insert' => '('),
+					array('type' => 'button', 'label' => ')', 'title' => __('Closing Parentheses', 'ws-form'), 'action' => 'insert', 'insert' => ')'),
+					array('type' => 'button', 'label' => ',', 'title' => __('Percentage', 'ws-form'), 'action' => 'insert', 'insert' => ','),
+					array('type' => 'select', 'source' => 'variables', 'label' => 'f', 'class' => 'wsf-button-primary', 'title' => __('Variables', 'ws-form'), 'action' => 'insert-select-highlight-parameters', 'variables_group_id' => 'math'),
+				),
+
+				// Row 3
+				array(
+
+					array('type' => 'button', 'label' => '7', 'action' => 'insert', 'insert' => '7'),
+					array('type' => 'button', 'label' => '8', 'action' => 'insert', 'insert' => '8'),
+					array('type' => 'button', 'label' => '9', 'action' => 'insert', 'insert' => '9'),
+					array('type' => 'button', 'label' => '/', 'class' => 'wsf-button-primary', 'title' => __('Divide', 'ws-form'), 'action' => 'insert', 'insert' => '/'),
+				),
+
+				// Row 4
+				array(
+
+					array('type' => 'button', 'label' => '4', 'action' => 'insert', 'insert' => '4'),
+					array('type' => 'button', 'label' => '5', 'action' => 'insert', 'insert' => '5'),
+					array('type' => 'button', 'label' => '6', 'action' => 'insert', 'insert' => '6'),
+					array('type' => 'button', 'label' => '*', 'class' => 'wsf-button-primary', 'title' => __('Multiply', 'ws-form'), 'action' => 'insert', 'insert' => '*'),
+				),
+
+				// Row 5
+				array(
+
+					array('type' => 'button', 'label' => '1', 'action' => 'insert', 'insert' => '1'),
+					array('type' => 'button', 'label' => '2', 'action' => 'insert', 'insert' => '2'),
+					array('type' => 'button', 'label' => '3', 'action' => 'insert', 'insert' => '3'),
+					array('type' => 'button', 'label' => '-', 'class' => 'wsf-button-primary', 'title' => __('Subtract', 'ws-form'), 'action' => 'insert', 'insert' => '-'),
+				),
+
+				// Row 6
+				array(
+
+					array('type' => 'button', 'label' => '0', 'colspan' => 2, 'action' => 'insert', 'insert' => '0'),
+					array('type' => 'button', 'label' => '.', 'title' => __('Decimal', 'ws-form'), 'action' => 'insert', 'insert' => '.'),
+					array('type' => 'button', 'label' => '+', 'class' => 'wsf-button-primary', 'title' => __('Add', 'ws-form'), 'action' => 'insert', 'insert' => '+'),
+				)
+			);
+
+			// Apply filter
+			$calc = apply_filters('wsf_config_calc', $calc);
+
+			// Cache
+			self::$calc = $calc;
+
+			return $calc;
+		}
+
 		// System report
 		public static function get_system() {
 
@@ -8740,7 +9016,7 @@
 				// WS Form
 				'ws_form' => array(
 
-					'label'		=>	WS_FORM_NAME_PRESENTABLE,
+					'label'		=> WS_FORM_NAME_PRESENTABLE,
 					'variables'	=> array(
 
 						'version'		=> array('label' => __('Version', 'ws-form'), 'value' => WS_FORM_VERSION),
@@ -8752,7 +9028,7 @@
 				// WordPress
 				'wordpress' => array(
 
-					'label'		=>	'WordPress',
+					'label'		=> __('WordPress', 'ws-form'),
 					'variables'	=> array(
 
 						'version' 			=> array('label' => __('Version', 'ws-form'), 'value' => get_bloginfo('version'), 'valid' => (version_compare(get_bloginfo('version'), WS_FORM_MIN_VERSION_WORDPRESS) >= 0), 'min' => WS_FORM_MIN_VERSION_WORDPRESS),
