@@ -14,3 +14,11 @@ register_block_style(
         'label'        => __( 'Blue Card' ),
     )
 );
+
+register_block_style(
+    'core/media-text',
+    array(
+        'name'         => 'tablet-stack',
+        'label'        => __( 'Tablet Stack' ),
+    )
+);
