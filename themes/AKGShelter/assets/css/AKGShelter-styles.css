@@ -22,9 +22,8 @@ body {
 *
 */
 
-/** blue-outline-button block style */
+/* blue-outline-button block style */
 .is-style-blue-outline-button.wp-block-button{
-/* .is-style-blue-outline-button .wp-block-button__link{ */
     border: 1px solid var(--blue);
     border-radius: 10px;
     background-color: #00000000;
@@ -32,12 +31,16 @@ body {
 .is-style-blue-outline-button.wp-block-button .wp-block-button__link {
     background-color: #00000000;
     border: none;
+    border-radius: 10px;
 }
+.is-style-blue-outline-button.wp-block-button .wp-block-button__link:hover {
+    background-color: rgba(133, 164, 206, 0.671);
+}
+
 
 /* columns */
 .is-style-blue-card.wp-block-columns{
     background-color: #00000000;
-
 }
 .is-style-blue-card.wp-block-columns .wp-block-column{
     display: flex;
