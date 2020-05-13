@@ -34,7 +34,23 @@ body {
     border: none;
 }
 
+/* columns */
+.is-style-blue-card.wp-block-columns{
+    background-color: #00000000;
 
+}
+.is-style-blue-card.wp-block-columns .wp-block-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-blue);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    /* max-width: 25vw; */
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem
+}
 
 
 /* ************* HEADER ************* */
