@@ -1,4 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:300,400");
+:root {
+  --wsf-sidebar-width: 330px;
+  --wsf-sidebar-margin: calc(var(--wsf-sidebar-width) + 1px);
+  --wp-sidebar-width: 160px;
+  --wp-sidebar-width-folded: 36px;
+  --wp-sidebar-width-mobile: 190px; }
+
 .wsf-templates {
   display: flex;
   flex-direction: row;

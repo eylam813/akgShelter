@@ -189,8 +189,6 @@ function AKGShelter_scripts() {
 	wp_enqueue_style('AKGShelter-foundationStyles',get_template_directory_uri() . '/assets/css/app.css',  array());
 	// underscores navigation script
 	wp_enqueue_script( 'AKGShelter-navigation', get_template_directory_uri() . '/assets/js/vendor/navigation.js', array(), _S_VERSION, true );
-	// AKGShelter custom script
-	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGShelter-script.js', array());
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styles',get_template_directory_uri() . '/assets/css/AKGShelter-styles.css',  array());
 	// AKGShelter custom stylesheet
@@ -223,6 +221,11 @@ require get_template_directory() . '/inc/template-hooks.php';
  * Customizer additions.
  */
 require get_template_directory() . '/inc/customizer.php';
+
+/**
+ * Block Editor additions.
+ */
+require get_template_directory() . '/inc/block-editor.php';
 
 /**
  * Load Jetpack compatibility file.

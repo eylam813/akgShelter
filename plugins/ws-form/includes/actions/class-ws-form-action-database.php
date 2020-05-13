@@ -44,7 +44,7 @@
 			parent::register($this);
 		}
 
-		public function post($form, &$submit, $config) {
+		public function post($form, &$submit, $config, $count) {
 
 			// Load config
 			self::load_config($config);
@@ -73,7 +73,7 @@
 			if($submit->id == 0) { $submit->db_create(); }
 
 			// Stamp
-			$submit->db_stamp();
+			if($count === 1) { $submit->db_stamp(); }
 
 			// Filter data
 			if($this->field_filter != '') {

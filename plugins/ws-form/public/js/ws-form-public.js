@@ -558,7 +558,7 @@
 	}
 
 	// Get field id object resides in
-	$.WS_Form.prototype.get_field_id = function(obj) {
+	$.WS_Form.prototype.get_field_id_from_obj = function(obj) {
 
 		var field_id = obj.closest('[data-type]').attr('data-id');
 		if(!field_id) { return false; }
@@ -915,9 +915,11 @@
 					field_obj.attr('data-init-validate-real-time', '');
 
 					// Create event (Also run on blur, this prevents the mask component from causing false validation results)
-					field_obj.on(form_validate_event + ' blur', function() {
+					field_obj.on(form_validate_event + ' blur', function(e) {
 
+						// Run validate real time processing
 						ws_this.form_validate_real_time_process(false);
+
 					});
 				}
 			});
@@ -929,6 +931,7 @@
 
 	$.WS_Form.prototype.form_validate_real_time_process = function(conditional_initiated) {
 
+		// Validate
 		this.form_valid = this.form_validate_silent(this.form_obj);
 
 		// Run conditional logic
@@ -1148,7 +1151,7 @@
 			var object_id = action_single['object_id'];
 			var object_row_id = (typeof action_single['object_row_id'] === 'undefined') ? false : action_single['object_row_id'];
 			var action = action_single['action'];
-			var value = (typeof action_single['value'] === 'undefined') ? false : this.parse_variables_process(action_single['value'], object_repeatable_index);
+			var value = (typeof action_single['value'] === 'undefined') ? false : this.parse_variables_process(action_single['value'], object_repeatable_index).output;
 			var debug_action_value = value;
 			var field_name = ws_form_settings.field_prefix + object_id;
 
@@ -1192,8 +1195,8 @@
 						var object_selector = '[id^="' + this.form_id_prefix + object + '-' + object_id + (object_row_id ? '-row-' + object_row_id : '') + '"]';
 					}
 
-					var obj_wrapper = $(object_selector_wrapper);
-					var obj = $(object_selector, obj_wrapper);
+					var obj_wrapper = $(object_selector_wrapper, this.form_canvas_obj);
+					var obj = $(object_selector, this.form_canvas_obj);
 
 					break;
 
@@ -1272,9 +1275,11 @@
 				// Set text editor
 				case 'text_editor' :
 
-					// wautop
-					value = this.wautop(value);
+					// wpautop
+					value = this.wpautop(value);
+
 					$('[data-text-editor]', obj_wrapper).html(value);
+
 					break;
 
 				// Set button label
@@ -1484,7 +1489,7 @@
 						}
 
 						// Initialize
-						this.section_clone_init();
+						this.section_clone_init(object_id);
 
 						// Trigger event
 						this.form_canvas_obj.trigger('wsf-section-repeatable').trigger('wsf-section-repeatable-' + object_id);

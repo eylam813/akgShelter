@@ -66,12 +66,6 @@
 				// Sidebar - Toolbox - Open
 				$.WS_Form.this.sidebar_open('toolbox');
 			}
-
-			// Sidebar expanded resizing
-			if($.WS_Form.this.sidebar_expanded_obj !== false) {
-
-				$.WS_Form.this.sidebar_resize();
-			}
 		});
 	}
 
@@ -201,10 +195,10 @@
 			this.breakpoints();
 
 			// Form - Label - Change
-			$('[data-action="wsf-form-label"]').change(function(event) {
+			$('[data-action="wsf-form-label"]').change(function(e) {
 
 				// If change occurred as a result of someone changing the field (and not a JQuery val update)
-				if(event.originalEvent) {
+				if(e.originalEvent) {
 
 					// Get label
 					var label = $(this).val();
@@ -219,7 +213,7 @@
 			});
 
 			// Form - Label - Keyup
-			$('[data-action="wsf-form-label"]').keyup(function(event) {
+			$('[data-action="wsf-form-label"]').keyup(function() {
 
 				$('#wsf-sidebar-form [name="label"]').val($(this).val());
 			});
@@ -227,6 +221,11 @@
 			// Publish
 			$('[data-action="wsf-publish"]').click(function() { $.WS_Form.this.form_publish(); });
 
+			// Preview
+			if($.WS_Form.settings_plugin.helper_live_preview) {
+
+				$('[data-action="wsf-preview"]').click(function(e) { $.WS_Form.this.form_preview(e, $(this)); });
+			}
 			// Upload
 			$('[data-action="wsf-form-upload"]').click(function() {
 
@@ -245,7 +244,8 @@
 
 						// Redraw form
 						$.WS_Form.this.form_build();
-					}, true);
+
+					}, function() {}, true);
 				}
 			});
 
@@ -329,6 +329,11 @@
 
 				// Redraw form
 				$.WS_Form.this.form_build();
+
+			}, function() {
+
+				$('.wsf-form-upload-json-window', $.WS_Form.this.form_obj).fadeOut(200);
+
 			}, true);
 		});
 
@@ -340,14 +345,17 @@
 
 		// Check multiple field
 		this.field_check_multiple();
+
+		// Show hidden elements
+		$('.wsf-loading-hidden').show();
 	}
 
 	// API - Form - PUT
 	$.WS_Form.prototype.form_put = function(full, form_build, history_suppress, complete) {
 
-		if(typeof full === 'undefined') { var full = false; }
-		if(typeof form_build === 'undefined') { var form_build = true; }
-		if(typeof history_suppress === 'undefined') { var history_suppress = false; }
+		if(typeof(full) === 'undefined') { var full = false; }
+		if(typeof(form_build) === 'undefined') { var form_build = true; }
+		if(typeof(history_suppress) === 'undefined') { var history_suppress = false; }
 
 		var form = $.extend(true, {}, this.form); // Deep clone
 
@@ -363,7 +371,13 @@
 		// Call AJAX request
 		this.api_call('form/' + this.form_id + (full ? '/full' : ''), 'PUT', {'form': form}, function(response) {
 
-			if(typeof complete !== 'undefined') { complete(); }
+			if(typeof(complete) !== 'undefined') { complete(); }
+
+			// Update preview window
+			if(!history_suppress) {
+
+				$.WS_Form.this.preview_update();
+			}
 
 			// Loader off
 			$.WS_Form.this.loader_off();
@@ -384,21 +398,54 @@
 		});
 	}
 
+	// Form - Preview
+	$.WS_Form.prototype.form_preview = function(e, button_obj) {
+
+		// Prevent default
+		e.preventDefault();
+
+		// Open preview window
+		if(
+			!this.preview_window ||
+			this.preview_window.closed
+		) {
+
+			this.preview_window = window.open(button_obj.attr('href'), 'wsf-preview-' + this.form_id);
+
+			$(window).on('beforeunload', function() {
+
+				$.WS_Form.this.preview_window.close();
+				this.preview_window = undefined;
+			});
+		}
+
+		// Focus
+		this.preview_window.focus();
+	}
+
 	// Form - Uploader
-	$.WS_Form.prototype.form_upload_json = function(files, obj, success_callback, show_confirm) {
+	$.WS_Form.prototype.form_upload_json = function(files, obj, success_callback, error_callback, show_confirm) {
 
 		if(typeof(show_confirm) === 'undefined') { var show_confirm = false; }
 
 		if(show_confirm && !confirm($.WS_Form.this.language('form_import_confirm'))) {
 
 			$('.wsf-form-upload-json-window', $.WS_Form.this.form_obj).hide();
-			return false;
+
+			error_callback();
+
+			return;
 		}
 
 		// Hide H1
 		$('h1', obj).hide();
 
-		if(files.length == 0) { return false; }
+		if(files.length == 0) {
+
+			error_callback();
+
+			return false;
+		}
 
 		// Create form data
 		var form_data = new FormData();
@@ -416,11 +463,11 @@
 		status_bar.populate(files[0].name, files[0].size);
 
 		// Send file to the server using AJAX
-		this.form_upload_ajax(form_data, status_bar, obj, success_callback);
+		this.form_upload_ajax(form_data, status_bar, obj, success_callback, error_callback);
 	}
 
 	// Form - Uploaded CSV - AJAX request
-	$.WS_Form.prototype.form_upload_ajax = function(form_data, status_bar, obj, success_callback) {
+	$.WS_Form.prototype.form_upload_ajax = function(form_data, status_bar, obj, success_callback, error_callback) {
 
 		var jqXHR=$.ajax({
 
@@ -435,12 +482,12 @@
 				var xhrobj = $.ajaxSettings.xhr();
 				if (xhrobj.upload) {
 
-					xhrobj.upload.addEventListener('progress', function(event) {
+					xhrobj.upload.addEventListener('progress', function(e) {
 
 						var percent = 0;
-						var position = event.loaded || event.position;
-						var total = event.total;
-						if (event.lengthComputable) {
+						var position = e.loaded || e.position;
+						var total = e.total;
+						if (e.lengthComputable) {
 							percent = Math.ceil(position / total * 100);
 						}
 
@@ -507,11 +554,21 @@
 
 					if(data.error) {
 
-						// Show error
-						$.WS_Form.this.error('error_bad_request', data.error_message);
+						// Trap an error
+						if(data.error) {
 
-						// Hide drag and drop zone
-						obj.fadeOut(200);
+							if(data.error_message) {
+
+								$.WS_Form.this.error('error_bad_request_message', data.error_message);
+
+							} else {
+
+								$.WS_Form.this.error('error_bad_request');
+							}
+						}
+
+						// Call error callback
+						error_callback();
 					}
 				},
 
@@ -521,8 +578,8 @@
 					// Show error
 					$.WS_Form.this.error('error_forbidden', url);
 
-					// Hide drag and drop zone
-					obj.fadeOut(200);
+					// Call error callback
+					error_callback();
 				},
 
 				// Not found (Error from API)
@@ -531,8 +588,8 @@
 					// Show error
 					$.WS_Form.this.error('error_not_found', url);
 
-					// Hide drag and drop zone
-					obj.fadeOut(200);
+					// Call error callback
+					error_callback();
 				},
 
 				// Server error
@@ -541,8 +598,8 @@
 					// Show error
 					$.WS_Form.this.error('error_server', url);
 
-					// Hide drag and drop zone
-					obj.fadeOut(200);
+					// Call error callback
+					error_callback();
 				}
 			}
 		});
@@ -669,7 +726,7 @@
 		$('#' + this.form_obj_id).tabs({
 
 			active: index,
-			activate: function(event, ui) {
+			activate: function(e, ui) {
 
 				// Loader on
 				$.WS_Form.this.loader_on();
@@ -1822,6 +1879,7 @@
 			this.sidebar_cache_clear();
 
 			var buttons = [
+				{'class': 'wsf-button-primary', 'action': 'wsf-sidebar-save-close', 'label': this.language('save_and_close')},
 				{'class': 'wsf-button-primary', 'action': 'wsf-sidebar-save', 'label': this.language('save')},
 				{'class': '', 'action': 'wsf-sidebar-cancel', 'label': this.language('cancel')},
 			];
@@ -1874,13 +1932,18 @@
 	}
 
 	// Edit - Button - Save
-	$.WS_Form.prototype.object_button_save = function(obj) {
+	$.WS_Form.prototype.object_button_save = function(obj, close) {
+
+		if(typeof(close) === 'undefined') { var close = false; }
 
 		// Save object
 		this.object_save(obj);
 
 		// Reset sidebar
-//		this.sidebar_reset();
+		if(close) {
+
+			this.sidebar_reset();
+		}
 	}
 
 	// Edit - Button - Cancel
@@ -2074,12 +2137,14 @@
 
 					this.section_data_cache[object_id].label = this.object_data_scratch.label;
 					this.section_data_cache[object_id].meta = this.object_data_scratch.meta;
+
 					break;
 
 				case 'field' :
 
 					this.field_data_cache[object_id].label = this.object_data_scratch.label;
 					this.field_data_cache[object_id].meta = this.object_data_scratch.meta;
+
 					break;
 			}
 
@@ -2543,24 +2608,16 @@
 					// Get type to determine how to render it
 					var meta_key_type = meta_key_config['type'];
 
-					// meta_value override
-					if(typeof(meta_key_config['default_static']) !== 'undefined') {
+					// Get meta value
+					var meta_value = this.get_object_meta_value(object_data, meta_key, '', true);
 
-						var meta_value = this.parse_variables_process(meta_key_config['default_static']);
+					// If meta value not found
+					if(meta_value === '') {
 
-					} else {
+						// Check for default value
+						if(typeof(meta_key_config['fallback']) !== 'undefined') {
 
-						// Get meta value
-						var meta_value = this.get_object_meta_value(object_data, meta_key, '', true);
-
-						// If meta value not found
-						if(meta_value === '') {
-
-							// Check for default value
-							if(typeof(meta_key_config['fallback']) !== 'undefined') {
-
-								meta_value = meta_key_config['fallback'];
-							}
+							meta_value = meta_key_config['fallback'];
 						}
 					}
 
@@ -2601,7 +2658,6 @@
 
 						meta_key_options.push('<li><a class="wsf-compatibility" href="' + meta_key_config['compatibility_url'] + '" target="_blank" title="' + this.language('attribute_compatibility') + '" tabindex="-1">' + this.svg('markup-circle') + '</a></li>');
 					}
-
 					// Field options - Select list (Falls back to variables)
 					if(typeof(meta_key_config['select_list']) !== 'undefined') {
 
@@ -3243,8 +3299,9 @@
 	// Sidebar - Set up input that need to match datetime type selected
 	$.WS_Form.prototype.sidebar_buttons_html = function(buttons) {
 
-		if((typeof buttons === 'undefined') || (buttons === true)) { var buttons = [
+		if((typeof(buttons) === 'undefined') || (buttons === true)) { var buttons = [
 
+				{'class': 'wsf-button-primary', 'action': 'wsf-sidebar-save-close', 'label': this.language('save_and_close')},
 				{'class': 'wsf-button-primary', 'action': 'wsf-sidebar-save', 'label': this.language('save')},
 				{'class': '', 'action': 'wsf-sidebar-cancel', 'label': this.language('cancel')},
 			];
@@ -3268,7 +3325,7 @@
 			if(typeof(button.disabled) === 'undefined') { button.disabled = false; }
 			if(typeof(button.right) === 'undefined') { button.right = false; }
 
-			return_html += '<li' + (button.right ? ' class="wsf-button-right"' : '') + '><button class="wsf-button wsf-button-small' + ((button.class != '') ? ' ' + button.class : '') + '" data-action="' + button.action + '"' + ((button.id !== undefined) ? ' data-id="' + button.id + '"' : '') + (button.disabled ? ' disabled' : '') + '>' + this.html_encode(button.label) + '</button></li>';
+			return_html += '<li' + (button.right ? ' class="wsf-button-right"' : '') + '><button class="wsf-button wsf-button-small' + ((button.class != '') ? ' ' + button.class : '') + '" data-action="' + button.action + '"' + ((button.id !== undefined) ? ' data-id="' + button.id + '"' : '') + (button.disabled ? ' disabled' : '') + '>' + button.label + '</button></li>';
 		}
 
 		return_html += '</ul>';
@@ -3357,7 +3414,6 @@
 
 			this.sidebar_placeholders_init(obj_sidebar_outer);
 		}
-
 		// Initialize sidebar select lists
 		if(inits.indexOf('select_list') != -1) {
 
@@ -3738,6 +3794,11 @@
 
 		sidebar_knowledgebase_html += '</div>';
 
+		// View all
+		sidebar_knowledgebase_html += '<div class="wsf-field-wrapper">';
+		sidebar_knowledgebase_html += '<p><a href="https://wsform.com/knowledgebase/" target="_blank">' + this.language('knowledgebase_view_all') + '</a></p>';
+		sidebar_knowledgebase_html += '</div>';
+
 		// Content
 		sidebar_knowledgebase_html += '<div class="wsf-field-wrapper">';
 		sidebar_knowledgebase_html += '<div id="wsf-kb-content"></div>';
@@ -3800,7 +3861,7 @@
 
 				if(data.error) {
 
-					$.WS_Form.this.error(this.language(support_contact_error, response.error_message));
+					$.WS_Form.this.error(support_contact_error, data.error_message);
 
 				} else {
 
@@ -4002,7 +4063,6 @@
 			}, function() {}, true);	// Bypass loader
 		});
 	}
-
 	// Sidebar - Variables - Init
 	$.WS_Form.prototype.sidebar_select_list = function(obj) {
 
@@ -4013,11 +4073,11 @@
 			var already_open = $(this).hasClass('wsf-select-list-open');
 
 			$('.wsf-select-list', $('#wsf-sidebars')).remove();
-			$('.wsf-select-list-open').removeClass('wsf-select-list-open');
+			$('.wsf-select-list-open').removeClass('wsf-select-list-open').attr('autocomplete', false);
 
 			if(!already_open) {
 
-				$(this).addClass('wsf-select-list-open');
+				$(this).addClass('wsf-select-list-open').attr('autocomplete', 'off');
 
 				if(typeof($.WS_Form.meta_keys[meta_key]['select_list']) === 'object') {
 
@@ -4029,13 +4089,58 @@
 				} else {
 
 					// Fallback to variables
-					$.WS_Form.this.api_call('helper/variables/', 'GET', false, function(list) {
+					var list = $.WS_Form.parse_variable_help;
 
-						$.WS_Form.this.sidebar_select_list_process(field_wrapper, list, meta_key);
-					});
+					// Inject fields
+					var list_fields = $.WS_Form.this.get_select_options_field();
+
+					list = list_fields.concat(list);
+
+					$.WS_Form.this.sidebar_select_list_process(field_wrapper, list, meta_key, $.WS_Form.this.language('fields'));
 				}
 			}
 		});
+	}
+
+	// Get list of options for a select containing the form fields
+	$.WS_Form.prototype.get_select_options_field = function(calc_out_filter) {
+
+		if(typeof(calc_out_filter) !== 'undefined') { var calc_out_filter = false; }
+
+		var list_fields = [];
+
+		for(var group_index in $.WS_Form.this.form.groups) {
+
+			var group = $.WS_Form.this.form.groups[group_index];
+
+			for(var section_index in group.sections) {
+
+				var section = group.sections[section_index];
+
+				for(var field_index in section.fields) {
+
+					var field = section.fields[field_index];
+
+					var field_type_config = $.WS_Form.field_type_cache[field.type];
+
+					var value_out = (typeof(field_type_config['value_out'])) ? field_type_config['value_out'] : false;
+
+					var calc_out = !calc_out_filter || ((typeof(field_type_config['calc_out'])) ? field_type_config['calc_out'] : false);
+
+					if(value_out && calc_out) {
+
+						list_fields.push({
+
+							'text': field.label + ' (' + this.language('id') + ': ' + field.id + ')',
+							'value': '#field(' + field.id + ')',
+							'group': $.WS_Form.this.language('field')
+						});
+					}
+				}
+			}
+		}
+
+		return list_fields;
 	}
 
 	$.WS_Form.prototype.sidebar_select_list_process = function(obj, list, meta_key, heading) {
@@ -4049,11 +4154,25 @@
 
 		list_html += '<tbody>';
 
+		var group_id_last = false;
+
 		for(var list_index in list) {
 
 			var list_item = list[list_index];
 
-			list_html += '<tr data-action="wsf-list-item-insert" data-action-html="' + $.WS_Form.this.html_encode(list_item.value) + '"><td>' + list_item.text + '</td></tr>';
+			if(typeof(list_item.group_id) !== 'undefined') {
+
+				var group_id = list_item.group_id;
+				if(group_id !== group_id_last) {
+
+					list_html += '<tr><th>' + list_item.group_label + '</th></tr>';
+
+					group_id_last = group_id;
+				}
+
+			}
+
+			list_html += '<tr data-action="wsf-list-item-insert" data-action-html="' + $.WS_Form.this.html_encode(list_item.value) + '"><td title="' + $.WS_Form.this.html_encode(list_item.description) + '">' + list_item.text + '</td></tr>';
 		}
 
 		list_html += '</tbody></table></div>';
@@ -4751,7 +4870,7 @@
 			cancel: '.wsf-field-disabled, .wsf-pro-required',
 			appendTo: '#wsf-field-draggable ul',
 			distance: 3,
-			start: function(event, ui) {
+			start: function(e, ui) {
 
 				// Set correct width
 				ui.helper.width($(this).width());
@@ -4762,7 +4881,7 @@
 				// Reset sidebar
 				$.WS_Form.this.sidebar_reset();
 			},
-			drag: function(event, ui) {
+			drag: function() {
 
 				$.WS_Form.this.field_type_click_drag_check = true;
 			}
@@ -4843,11 +4962,11 @@
 
 				tinymce: { 
 
-					wpautop: 		true,
-					plugins: 		'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview', 
-					toolbar1: 		'formatselect bold italic | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | wp_more | spellchecker | fullscreen | wp_adv',
-					toolbar2: 		'strikethrough hr forecolor pastetext removeformat charmap outdent indent undo redo',
-					height: 		'200px',
+					wpautop: 			true,
+					plugins: 			'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview', 
+					toolbar1: 			'formatselect bold italic | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | wp_more | spellchecker | fullscreen | wp_adv',
+					toolbar2: 			'strikethrough hr forecolor pastetext removeformat charmap outdent indent undo redo',
+					height: 			'200px', 
 
 					init_instance_callback: function (editor) {
 
@@ -4878,7 +4997,14 @@
 		$('button[data-action="wsf-sidebar-save"]', obj_outer).click(function() {
 
 			// Save
-			$.WS_Form.this.object_button_save(obj);
+			$.WS_Form.this.object_button_save(obj, false);
+		});
+
+		// Init save and close events
+		$('button[data-action="wsf-sidebar-save-close"]', obj_outer).click(function() {
+
+			// Save and close
+			$.WS_Form.this.object_button_save(obj, true);
 		});
 
 		// Init cancel events
@@ -4904,7 +5030,7 @@
 
 		// Set up key shortcuts
 		$.WS_Form.this.keydown[27] = {'function': function() { $.WS_Form.this.object_button_cancel(obj); }, 'ctrl_key': false};
-		$.WS_Form.this.keydown[83] = {'function': function() { $.WS_Form.this.object_button_save(obj); }, 'ctrl_key': true};
+		$.WS_Form.this.keydown[83] = {'function': function() { $.WS_Form.this.object_button_save(obj, true); }, 'ctrl_key': true};
 	}
 
 	// Sidebar - Init conditions
@@ -5243,138 +5369,6 @@
 		var form_breakpoint_class = framework_breakpoints[breakpoint]['id'];
 		$('#' + this.form_obj_id).attr('data-breakpoint', form_breakpoint_class);
 
-	}
-
-	// Footer - Breakpoint slider - Optimize
-	$.WS_Form.prototype.breakpoint_optimize = function() {
-
-		var framework = $.WS_Form.settings_plugin.framework;
-
-		// Get current group
-		var group_obj = $($('.wsf-group-tab.ui-tabs-active a').attr('href'));
-
-		// Sections
-		for(var object_id in this.section_data_cache) {
-
-			var object = this.section_data_cache[object_id];
-
-			// Optimize
-			$.WS_Form.this.breakpoint_optimize_process(object);
-		};
-
-		// Fields
-		for(var object_id in this.field_data_cache) {
-
-			var object = this.field_data_cache[object_id];
-
-			// Optimize
-			$.WS_Form.this.breakpoint_optimize_process(object);
-		};
-
-		// Loader on
-		$.WS_Form.this.loader_on();
-
-		// Call AJAX request
-		$.WS_Form.this.api_call('form/' + $.WS_Form.this.form_id + '/full', 'PUT', {'form': $.WS_Form.this.form, 'history_method': 'put_optimize'}, function(response) {
-
-			// Form build
-			$.WS_Form.this.form_build();
-
-			// Loader off
-			$.WS_Form.this.loader_off();
-		});
-	}
-
-	// Footer - Breakpoint slider - Reset
-	$.WS_Form.prototype.breakpoint_reset = function() {
-
-		var framework = $.WS_Form.settings_plugin.framework;
-
-		// Get current group
-		var group_obj = $($('.wsf-group-tab.ui-tabs-active a').attr('href'));
-
-		// Sections
-		for(var object_id in this.section_data_cache) {
-
-			var object = this.section_data_cache[object_id];
-
-			// Optimize
-			$.WS_Form.this.breakpoint_reset_process(object);
-		};
-
-		// Fields
-		for(var object_id in this.field_data_cache) {
-
-			var object = this.field_data_cache[object_id];
-
-			// Optimize
-			$.WS_Form.this.breakpoint_reset_process(object);
-		};
-
-		// Form build
-		$.WS_Form.this.form_build();
-
-		// Loader on
-		$.WS_Form.this.loader_on();
-
-		// Call AJAX request
-		$.WS_Form.this.api_call('form/' + $.WS_Form.this.form_id + '/full', 'PUT', {'form': $.WS_Form.this.form, 'history_method': 'put_reset'}, function(response) {
-
-			// Loader off
-			$.WS_Form.this.loader_off();
-		});
-	}
-
-	// Footer - Breakpoint slider - Set
-	$.WS_Form.prototype.breakpoint_set = function(key) {
-
-		// Get framework
-		var framework = $.WS_Form.settings_plugin.framework;
-
-		// Get breakpoint ID
-		var form_data_breakpoint = $.WS_Form.frameworks.types[framework]['breakpoints'][key]['id'];
-
-		// Set new breakpoint
-		$.WS_Form.this.set_object_meta_value($.WS_Form.this.form, 'breakpoint', key);
-
-		// Set breakpoint ID in form data-breakpoint attribute
-		$('#' + $.WS_Form.this.form_obj_id).attr('data-breakpoint', form_data_breakpoint);
-	};
-
-	// Footer - Breakpoint slider - Button rendering
-	$.WS_Form.prototype.breakpoint_buttons = function() {
-
-		var can_optimize = false;
-		var can_reset = false;
-
-		// Get current group
-		var group_obj = $($('.wsf-group-tab.ui-tabs-active a').attr('href'));
-
-		// Sections
-		for(var object_id in this.section_data_cache) {
-
-			var object = this.section_data_cache[object_id];
-
-			var optimize_result = $.WS_Form.this.breakpoint_optimize_process(object, true);
-
-			can_optimize = can_optimize || optimize_result.can_optimize;
-			can_reset = can_reset || optimize_result.can_reset;
-		};
-
-		// Fields
-		for(var object_id in this.field_data_cache) {
-
-			var object = this.field_data_cache[object_id];
-
-			var optimize_result = $.WS_Form.this.breakpoint_optimize_process(object, true);
-
-			can_optimize = can_optimize || optimize_result.can_optimize;
-			can_reset = can_reset || optimize_result.can_reset;
-		};
-
-		// Set buttons
-		$('#wsf-breakpoints [data-action="wsf-optimize"]').attr('disabled', !can_optimize);
-		$('#wsf-breakpoints [data-action="wsf-reset"]').attr('disabled', !can_reset);
 	}
 
 
@@ -5943,7 +5937,14 @@
 
 				var table_padding_right = th_icon_icons_width;
 
-				$(this).css({'padding-right': table_padding_right + 'px'});
+				if(ws_form_settings.rtl) {
+
+					$(this).css({'padding-left': table_padding_right + 'px'});
+
+				} else {
+
+					$(this).css({'padding-right': table_padding_right + 'px'});
+				}
 			});
 
 			// Drag enter
@@ -6300,7 +6301,7 @@
 
 					active: group_index,
 
-					activate: function(event, ui) {
+					activate: function(e, ui) {
 
 						// Refresh sortable positions (to ensure li helpers vertical positioning is correct)
 						$('table', obj).sortable('refreshPositions');
@@ -6319,7 +6320,7 @@
 						var meta_value_old = $.WS_Form.this.get_object_meta_value(object_data_old, meta_key, false);
 						if(meta_value_old === false) { $.WS_Form.this.error('error_object_meta_value'); }
 
-						if(typeof meta_value_old.groups[group_index_new] !== 'undefined') {
+						if(typeof(meta_value_old.groups[group_index_new]) !== 'undefined') {
 
 							// Loader on
 							$.WS_Form.this.loader_on();
@@ -6360,7 +6361,7 @@
 					cancel:				'.wsf-ui-cancel',
 					items:				'li:not(.wsf-ui-cancel)',
 
-					start: function(event, ui) {
+					start: function(e, ui) {
 
 						// Get index being dragged
 						$.WS_Form.data_grid_group_tab_index_dragged_from = ui.helper.index();
@@ -6375,7 +6376,7 @@
 						ui.placeholder.attr('style', styles);
 					},
 
-					stop: function(event, ui) {
+					stop: function(e, ui) {
 
 						// Get meta value
 						var meta_value = $.WS_Form.this.get_object_meta_value(object_data, meta_key);
@@ -6639,7 +6640,7 @@
 				axis: 'y',
 				cancel: '.wsf-ui-cancel, input[type=text]:not([readonly])',
 
-				start: function(event, ui) {
+				start: function(e, ui) {
 
 
 					// Refresh sortable positions (to ensure li helpers vertical positioning is correct)
@@ -6649,7 +6650,7 @@
 					$.WS_Form.data_grid_index_dragged_from = (ui.helper.index());
 				},
 
-				stop: function(event, ui) {
+				stop: function(e, ui) {
 
 					// Get meta value
 					var meta_value = $.WS_Form.this.get_object_meta_value(object_data, meta_key);
@@ -7147,12 +7148,12 @@
 				var xhrobj = $.ajaxSettings.xhr();
 				if (xhrobj.upload) {
 
-					xhrobj.upload.addEventListener('progress', function(event) {
+					xhrobj.upload.addEventListener('progress', function(e) {
 
 						var percent = 0;
-						var position = event.loaded || event.position;
-						var total = event.total;
-						if (event.lengthComputable) {
+						var position = e.loaded || e.position;
+						var total = e.total;
+						if (e.lengthComputable) {
 							percent = Math.ceil(position / total * 100);
 						}
 
@@ -7188,14 +7189,21 @@
 
 					var data = response.responseJSON;
 
+					// Trap an error
 					if(data.error) {
 
-						// Show error
-						$.WS_Form.this.error('error_bad_request', data.error_message);
+						if(data.error_message) {
 
-						// Hide drag and drop zone
-						obj.fadeOut(200);
+							$.WS_Form.this.error('error_bad_request_message', data.error_message);
+
+						} else {
+
+							$.WS_Form.this.error('error_bad_request');
+						}
 					}
+
+					// Hide drag and drop zone
+					obj.fadeOut(200);
 				},
 
 				// Forbidden (Error from API)
@@ -7572,7 +7580,7 @@
 			$('.CodeMirror').each(function() {
 
 				var code_editor = $(this)[0].CodeMirror;
-				code_editor.on("keyup", function (cm, event) {
+				code_editor.on("keyup", function (cm) {
 
 					var code_editor_value = cm.getValue();
 					var code_editor_textarea = cm.getTextArea();
@@ -8225,7 +8233,6 @@
 
 			$.WS_Form.this.sidebar_expanded_obj = $(this).closest('.wsf-sidebar');
 			$.WS_Form.this.sidebar_expanded_obj.addClass('wsf-sidebar-expanded');
-			$.WS_Form.this.sidebar_resize();
 		});
 
 		// Contract button event
@@ -8362,21 +8369,10 @@
 
 		if($.WS_Form.this.sidebar_expanded_obj !== false) {
 
-			$.WS_Form.this.sidebar_expanded_obj.css({'width': ''});
 			$.WS_Form.this.sidebar_expanded_obj.removeClass('wsf-sidebar-expanded');
 		}
 
 		$.WS_Form.this.sidebar_expanded_obj = false;
-	}
-
-	// Sidebar - Resize
-	$.WS_Form.prototype.sidebar_resize = function() {
-
-		if($.WS_Form.this.sidebar_expanded_obj !== false) {
-
-			var wpcontent_width = $('#wpcontent').outerWidth();
-			$.WS_Form.this.sidebar_expanded_obj.width(wpcontent_width);
-		}
 	}
 
 	// Sidebar - Add wrapper
@@ -8493,6 +8489,9 @@
 	// History - Push
 	$.WS_Form.prototype.history_push = function(data) {
 
+		// Update preview window
+		this.preview_update();
+
 		// Clear history after current history index
 		this.form_history = this.form_history.slice(0, (this.history_index + 1));
 
@@ -8523,7 +8522,6 @@
 
 		// Update undo / redo buttons
 		this.undo_redo_update();
-
 	}
 
 	// History - Pull
@@ -8930,6 +8928,9 @@
 			var obj_offset = obj.offset();
 			var obj_left = obj_offset.left;
 
+			// Object width
+			var obj_width = obj.width();
+
 			// Calculate max size
 			var column_size_max = framework_column_count - offset;
 
@@ -8938,18 +8939,25 @@
 
 				e.preventDefault();
 
-				$.WS_Form.this.column_size_change(e, obj, obj_left, ul_width, object, column_size_max);
+				$.WS_Form.this.column_size_change(e, obj, obj_left, obj_width, ul_width, object, column_size_max);
 			});
 		});
 	}
 
 	// Column size - Change (Called on mousemove)
-	$.WS_Form.prototype.column_size_change = function(e, obj, obj_left, ul_width, object, column_size_max) {
+	$.WS_Form.prototype.column_size_change = function(e, obj, obj_left, obj_width, ul_width, object, column_size_max) {
 
 		if(this.column_size_change_obj !== false) {
 
 			// Get relative x position
-			var mouse_offset_x = e.pageX - obj_left;
+			if(ws_form_settings.rtl) {
+
+				var mouse_offset_x = (obj_left + obj_width) - e.pageX;
+
+			} else {
+
+				var mouse_offset_x = e.pageX - obj_left;
+			}
 			if(mouse_offset_x < 0) { mouse_offset_x = 0; }
 
 			// Get number of columns
@@ -9027,6 +9035,8 @@
 					// Update object (To ensure we overwrite any updates from the API)
 					this.column_size_set(this.section_data_cache[api_object_id], breakpoint, this.column_size);
 
+					var object = this.section_data_cache[api_object_id];
+
 					api_object_type = 'section';
 					api_params = {'section': this.section_data_cache[api_object_id]};
 				}
@@ -9037,8 +9047,10 @@
 					// Update object (To ensure we overwrite any updates from the API)
 					this.column_size_set(this.field_data_cache[api_object_id], breakpoint, this.column_size);
 
+					var object = this.field_data_cache[api_object_id];
+
 					api_object_type = 'field';
-					api_params = {'field': this.field_data_cache[api_object_id]};
+					api_params = {'field': object};
 				}
 
 				if(api_object_type === false) { return false; }
@@ -9203,6 +9215,9 @@
 			var obj_offset = obj.offset();
 			var obj_left = obj_offset.left;
 
+			// Get object width
+			var obj_width = obj.width();
+
 			// Calculate max size
 			var offset_max = framework_column_count - column_size;
 
@@ -9211,18 +9226,25 @@
 
 				e.preventDefault();
 
-				$.WS_Form.this.offset_change(e, obj, obj_left, ul_width, object, offset_max);
+				$.WS_Form.this.offset_change(e, obj, obj_left, obj_width, ul_width, object, offset_max);
 			});
 		});
 	}
 
 	// Column size - Change (Called on mousemove)
-	$.WS_Form.prototype.offset_change = function(e, obj, obj_left, ul_width, object, offset_max) {
+	$.WS_Form.prototype.offset_change = function(e, obj, obj_left, obj_width, ul_width, object, offset_max) {
 
 		if(this.offset_change_obj !== false) {
 
 			// Get relative x position
-			var mouse_offset_x = e.pageX - obj_left;
+			if(ws_form_settings.rtl) {
+
+				var mouse_offset_x = (obj_left + obj_width) - e.pageX;
+
+			} else {
+
+				var mouse_offset_x = e.pageX - obj_left;
+			}
 
 			// Get number of columns
 			var framework_column_count = $.WS_Form.settings_plugin.framework_column_count;
@@ -9396,7 +9418,7 @@
 			cancel:				'.wsf-ui-cancel, input[type=text]:not([readonly])',
 			items:				'> li:not(.wsf-ui-cancel)',
 
-			start: function (event, ui) {
+			start: function (e, ui) {
 
 				// Get object being sorted
 				var obj = ui.placeholder;
@@ -9414,7 +9436,7 @@
 				$.WS_Form.this.next_sibling_id_old = (typeof obj.next().attr('data-id') !== 'undefined') ? obj.next().attr('data-id') : 0;
 			},
 
-			stop: function(event, ui) {
+			stop: function(e, ui) {
 
 				// Push field sort index to AJAX
 				$.WS_Form.this.group_put_sort_index(ui.item);
@@ -9437,7 +9459,7 @@
 			cancel: 			'.wsf-section-blank, .wsf-ui-cancel, input[type=text]:not([readonly])',
 			connectWith: 		'.wsf-sections',
 
-			start: function (event, ui) {
+			start: function (e, ui) {
 
 				// Get object being sorted
 				var obj = ui.placeholder;
@@ -9459,7 +9481,7 @@
 				$.WS_Form.this.section_field_being_dragged = true;
 			},
 
-			over: function(event, ui) {
+			over: function(e, ui) {
 
 				$.WS_Form.this.object_blank_update();
 
@@ -9469,7 +9491,7 @@
 
 			},
 
-			stop: function(event, ui) {
+			stop: function(e, ui) {
 
 				$.WS_Form.this.object_blank_update();
 
@@ -9496,7 +9518,7 @@
 			cancel: 			'.wsf-field-blank, .wsf-ui-cancel, input[type=text]:not([readonly])',
 			connectWith: 		'.wsf-fields',
 
-			start: function (event, ui) {
+			start: function (e, ui) {
 
 				if(!$.WS_Form.this.dragged_field) {
 
@@ -9520,7 +9542,7 @@
 				}
 			},
 
-			over: function(event, ui) {
+			over: function(e, ui) {
 
 				$.WS_Form.this.object_blank_update();
 
@@ -9538,12 +9560,12 @@
 				}
 			},
 
-			out: function(event, ui) {
+			out: function(e, ui) {
 
 				$.WS_Form.this.object_blank_update();
 			},
 
-			stop: function(event, ui) {
+			stop: function(e, ui) {
 
 				$.WS_Form.this.object_blank_update();
 
@@ -9582,10 +9604,10 @@
 			accept: '.wsf-section, .wsf-fields .wsf-field-wrapper',
 			hoverClass: 'wsf-group-tab-hover',
 			tolerance: 'pointer',
-			over: function(event, ui) {
+			over: function(e, ui) {
 
 				// Show tab
-				$('a', event.target).click();
+				$('a', e.target).click();
 
 				// Move helper to current group
 				if(ui.helper.hasClass('wsf-section')) { var ul_dummy_selector = '.wsf-sections'; }
@@ -9657,7 +9679,7 @@
 		// Tabs (Run initially to avoid jolt in tabs)
 		$('#wsf-form-add').tabs({
 
-			activate: function(event, ui) {
+			activate: function(e, ui) {
 
 				var action_populated = ui.newPanel.attr('data-populated');
 				if(action_populated === 'true') { return; }
@@ -9980,9 +10002,14 @@
 			e.preventDefault();
 
 			var files = e.originalEvent.dataTransfer.files;
+
 			$.WS_Form.this.form_upload_json(files, $(this), function() {
 
 				location.reload();
+
+			}, function() {
+
+				$('.wsf-form-upload-json-window', form_table_obj).fadeOut(200);
 			});
 		});
 
@@ -9998,6 +10025,7 @@
 			// Click file input
 			$('input[id="wsf-form-upload-file"]').click();
 		});
+
 		$('input[id="wsf-form-upload-file"]').change(function() {
 
 			var files = $('input[id="wsf-form-upload-file"]').prop("files");
@@ -10009,6 +10037,10 @@
 				$.WS_Form.this.form_upload_json(files, form_upload_window, function() {
 
 					location.reload();
+
+				}, function() {
+
+					$('.wsf-form-upload-json-window', form_table_obj).fadeOut(200);
 				});
 			}
 		});
@@ -10356,25 +10388,6 @@
 
 		// Date fields
 		$('#wsf_filter_date_from,#wsf_filter_date_to').datepicker();
-
-		// Window - Resize
-		$(window).on('resize', function() { 
-
-			// Admin resize - Sidebar
-			$.WS_Form.this.admin_size_sidebar();
-		});
-
-		// Admin resize - Sidebar
-		this.admin_size_sidebar();
-
-		// Sidebar expanded resizing
-		$(window).on('resize', function() { 
-
-			if($.WS_Form.this.sidebar_expanded_obj !== false) {
-
-				$.WS_Form.this.sidebar_resize();
-			}
-		});
 	}
 
 	// Remove hidden form elements we don't need
@@ -10981,7 +10994,7 @@
 
 		// Header row
 		sidebar_actions_html += '<thead><tr>';
-		sidebar_actions_html += '<th>' + this.language('submit_actions_column_index') + '</th>';
+		sidebar_actions_html += '<th width="16">' + this.language('submit_actions_column_index') + '</th>';
 		sidebar_actions_html += '<th>' + this.language('submit_actions_column_action') + '</th>';
 		sidebar_actions_html += '<th></th>';
 		sidebar_actions_html += '<th></th>';
@@ -11253,7 +11266,7 @@
 		// Preview?
 		var preview = (typeof(submit.preview) !== 'undefined') ? submit.preview : false;
 
-		var return_html = '<tr><th>' + label + '</th><td>';
+		var return_html = '<tr><th width="80">' + label + '</th><td>';
 
 		switch(type) {
 
@@ -11468,7 +11481,17 @@
 					} else {
 
 						// Trap an error
-						if(data.error) { $.WS_Form.this.error('error_bad_request'); }
+						if(data.error) {
+
+							if(data.error_message) {
+
+								$.WS_Form.this.error('error_bad_request_message', data.error_message);
+
+							} else {
+
+								$.WS_Form.this.error('error_bad_request');
+							}
+						}
 					}
 
 					// Process next API call
@@ -11627,6 +11650,19 @@
 		} else {
 
 			return notice;
+		}
+	}
+
+	$.WS_Form.prototype.preview_update = function() {
+
+		if(
+			(typeof(this.preview_window) !== 'undefined') &&
+			(typeof(this.preview_window.location) !== 'undefined') &&
+			(typeof(this.preview_window.location.reload) !== 'undefined') &&
+			$.WS_Form.settings_plugin.helper_live_preview
+		) {
+
+			this.preview_window.location.reload();
 		}
 	}
 

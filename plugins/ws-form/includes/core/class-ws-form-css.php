@@ -5,8 +5,10 @@
 		// Admin
 		public function get_admin() {
 
+			$rtl = is_rtl();
+
 			// Get form column count
-			$columns = abs(WS_Form_Common::option_get('framework_column_count', 0));
+			$columns = intval(WS_Form_Common::option_get('framework_column_count', 0));
 			if($columns == 0) { self::db_throw_error(__('Invalid framework column count', 'ws-form')); }
 
 			// Read frameworks
@@ -191,7 +193,7 @@
 							$css_return .= " {";
 
 							$css_return .= "\n\tbackground-size: " . $column_width_percentage . "%;";
-							$css_return .= "\n\tmargin-left: " . $column_width_percentage . "%;";
+							$css_return .= "\n\tmargin-" . ($rtl ? 'right' : 'left') . ": " . $column_width_percentage . "%;";
 
 							$css_return .= "\n}\n\n";
 
@@ -218,16 +220,10 @@
 		// Public
 		public function get_public() {
 
+			$rtl = is_rtl();
+
 			// Build CSS
 			$css_return = '';
-
-			// Check for wizard call
-			$wizard = WS_Form_Common::get_query_var('wizard', false);
-			if($wizard) {
-
-				global $wizard;
-				$wizard = true;
-			}
 
 			// Read frameworks
 			$frameworks = WS_Form_Config::get_frameworks();
@@ -243,7 +239,7 @@
 			$columns_default = $framework['columns']['column_count'];
 
 			// Get form column count
-			$columns = abs(WS_Form_Common::option_get('framework_column_count', 0));
+			$columns = intval(WS_Form_Common::option_get('framework_column_count', 0));
 			if($columns == 0) { self::db_throw_error(__('Invalid framework column count', 'ws-form')); }
 
 			$grid_spacing = 0;
@@ -269,8 +265,8 @@
 
 			if($grid_spacing > 0) {
 
-				$css_return .= "\tmargin-left: " . (($grid_spacing / 2) * -1) . $grid_spacing_unit . ";\n";
-				$css_return .= "\tmargin-right: " . (($grid_spacing / 2) * -1) . $grid_spacing_unit . ";\n";
+				$css_return .= "\tmargin-left: " . (($grid_spacing / 2) * -1) . $grid_spacing_unit . " !important;\n";
+				$css_return .= "\tmargin-right: " . (($grid_spacing / 2) * -1) . $grid_spacing_unit . " !important;\n";
 			}
 
 			$css_return .= "}\n\n";
@@ -282,8 +278,8 @@
 			$css_return .= "\tbox-sizing: border-box;\n";
 
 			if($grid_spacing > 0) {
-				$css_return .= "\tpadding-left: " . ($grid_spacing / 2) . $grid_spacing_unit . ";\n";
-				$css_return .= "\tpadding-right: " . ($grid_spacing / 2) . $grid_spacing_unit . ";\n";
+				$css_return .= "\tpadding-left: " . ($grid_spacing / 2) . $grid_spacing_unit . " !important;\n";
+				$css_return .= "\tpadding-right: " . ($grid_spacing / 2) . $grid_spacing_unit . " !important;\n";
 			}
 			$css_return .= "}\n\n";
 
@@ -336,10 +332,10 @@
 
 					$css_return .= " {";
 
-					$css_return .= "\n" . $css_indent . "\t-webkit-box-flex: 0;";
-					$css_return .= "\n" . $css_indent . "\t-ms-flex: 0 0 " . $column_width_percentage . "%;";
-					$css_return .= "\n" . $css_indent . "\tflex: 0 0 " . $column_width_percentage . "%;";
-					$css_return .= "\n" . $css_indent . "\tmax-width: " . $column_width_percentage . "%;";
+					$css_return .= "\n" . $css_indent . "\t-webkit-box-flex: 0 !important;";
+					$css_return .= "\n" . $css_indent . "\t-ms-flex: 0 0 " . $column_width_percentage . "% !important;";
+					$css_return .= "\n" . $css_indent . "\tflex: 0 0 " . $column_width_percentage . "% !important;";
+					$css_return .= "\n" . $css_indent . "\tmax-width: " . $column_width_percentage . "% !important;";
 
 					$css_return .= "\n" . $css_indent . "}\n\n";
 				}
@@ -401,7 +397,7 @@
 					$css_return .= $css_indent . $offset_single . " {\n";
 
 					// Build offset CSS
-					$css_return .= $css_indent . "\tmargin-left: " . $column_width_percentage . "%;\n";
+					$css_return .= $css_indent . "\tmargin-" . ($rtl ? 'right' : 'left') . ": " . $column_width_percentage . "% !important;\n";
 
 					$css_return .= $css_indent . "}\n\n";
 				}
@@ -414,27 +410,27 @@
 			}
 
 			$css_return .= ".wsf-bottom .wsf-grid {\n";
-			$css_return .= "\talign-items: flex-end;\n";
+			$css_return .= "\talign-items: flex-end !important;\n";
 			$css_return .= "}\n\n";
 
 			$css_return .= ".wsf-top .wsf-grid {\n";
-			$css_return .= "\talign-items: flex-start;\n";
+			$css_return .= "\talign-items: flex-start !important;\n";
 			$css_return .= "}\n\n";
 
 			$css_return .= ".wsf-middle .wsf-grid {\n";
-			$css_return .= "\talign-items: center;\n";
+			$css_return .= "\talign-items: center !important;\n";
 			$css_return .= "}\n\n";
 
 			$css_return .= ".wsf-field-wrapper.wsf-bottom {\n";
-			$css_return .= "\talign-self: flex-end;\n";
+			$css_return .= "\talign-self: flex-end !important;\n";
 			$css_return .= "}\n\n";
 
 			$css_return .= ".wsf-field-wrapper.wsf-top {\n";
-			$css_return .= "\talign-self: flex-start;\n";
+			$css_return .= "\talign-self: flex-start !important;\n";
 			$css_return .= "}\n\n";
 
 			$css_return .= ".wsf-field-wrapper.wsf-middle {\n";
-			$css_return .= "\talign-self: center;\n";
+			$css_return .= "\talign-self: center !important;\n";
 			$css_return .= "}\n\n";
 
 			// Minify
@@ -659,12 +655,6 @@
 	display: inline-flex;
 	flex-direction: column;
 	margin-right: <?php self::e($spacing_small . $unit_of_measurement); ?>;
-}
-
-html.rtl .wsf-inline,
-body.rtl .wsf-inline {
-	margin-left: <?php self::e($spacing_small . $unit_of_measurement); ?>;
-	margin-right: 0;
 }
 
 label.wsf-label {
@@ -1072,20 +1062,6 @@ input[type=checkbox].wsf-field.wsf-switch:checked:disabled + label.wsf-label:aft
 	opacity: .5;
 }
 
-html.rtl input[type=checkbox].wsf-field + label.wsf-label,
-body.rtl input[type=checkbox].wsf-field + label.wsf-label {
-	padding-left: 0;
-	padding-right: <?php self::e(($checkbox_size + $spacing_extra_small) . $unit_of_measurement); ?>;
-}
-
-html.rtl input[type=checkbox].wsf-field + label.wsf-label:before,
-body.rtl input[type=checkbox].wsf-field + label.wsf-label:before {
-	left: initial;
-	margin-right: <?php self::e($spacing_extra_small . $unit_of_measurement); ?>;
-	margin-right: 0;
-	right: 0;
-}
-
 input[type=radio].wsf-field {
 	height: <?php self::e($radio_size . $unit_of_measurement); ?>;
 	margin: 0;
@@ -1179,20 +1155,6 @@ input[type=radio].wsf-field:checked + label.wsf-label:before {
 
 input[type=radio].wsf-field:checked:disabled + label.wsf-label:before {
 	opacity: .5;
-}
-
-html.rtl input[type=radio].wsf-field + label.wsf-label,
-body.rtl input[type=radio].wsf-field + label.wsf-label {
-	padding-left: 0;
-	padding-right: <?php self::e(($radio_size + $spacing_extra_small) . $unit_of_measurement); ?>;
-}
-
-html.rtl input[type=radio].wsf-field + label.wsf-label:before,
-body.rtl input[type=radio].wsf-field + label.wsf-label:before {
-	left: initial;
-	margin-right: <?php self::e($spacing_extra_small . $unit_of_measurement); ?>;
-	margin-right: 0;
-	right: 0;
 }
 
 input[type=checkbox].wsf-field.wsf-button + label.wsf-label,
@@ -1885,6 +1847,10 @@ button.wsf-button:disabled {
 	margin-bottom: <?php self::e($grid_gutter . $unit_of_measurement); ?>;
 }
 
+.wsf-alert > :first-child {
+	margin-top: 0;
+}
+
 .wsf-alert > :last-child {
 	margin-bottom: 0;
 }
@@ -1971,10 +1937,138 @@ button.wsf-button:disabled {
 <?php
 		}
 
+		// Skin - RTL
+		public function render_skin_rtl() {
+			// Components
+			$border = (WS_Form_Common::option_get('skin_border', false, false, $enable_cache) == 'true');
+			$border_width = WS_Form_Common::option_get('skin_border_width', false, false, $enable_cache);
+			$border_style = WS_Form_Common::option_get('skin_border_style', false, false, $enable_cache);
+			$border_radius = WS_Form_Common::option_get('skin_border_radius', false, false, $enable_cache);
+
+			// Transitions
+			$transition = (WS_Form_Common::option_get('skin_transition', false, false, $enable_cache) == 'true');
+			$transition_speed = WS_Form_Common::option_get('skin_transition_speed', false, false, $enable_cache);
+			$transition_timing_function = WS_Form_Common::option_get('skin_transition_timing_function', false, false, $enable_cache);
+
+			// Typography
+			$font_size = WS_Form_Common::option_get('skin_font_size', false, false, $enable_cache);
+			$line_height = WS_Form_Common::option_get('skin_line_height', false, false, $enable_cache);
+
+			// Advanced
+			$unit_of_measurement = 'px';
+			$grid_gutter = WS_Form_Common::option_get('skin_grid_gutter', false, false, $enable_cache);
+
+			// Spacing
+			$spacing = 20;
+			$spacing_extra_large = 80;
+			$spacing_large = 40;
+			$spacing_small = 10;
+			$spacing_extra_small = 5;
+
+			// Forms
+			$form_border = $border; // true | false
+			$form_border_color = $color_default_lighter;
+			$form_border_style = $border_style;
+			$form_border_width = $border_width;
+			$form_border_radius = $border_radius;
+			$form_font_size = $font_size;
+			$form_spacing_horizontal = $spacing_small;
+			$form_spacing_vertical = ($spacing_small * .85);
+			$form_transition = $transition; // true | false
+			$form_transition_timing_function = $transition_timing_function;
+			$form_transition_speed = $transition_speed . 'ms ' . $form_transition_timing_function;
+			$input_height = ((round($form_font_size * $line_height) + ($form_spacing_vertical * 2)) + ($form_border_width * 2));
+			$checkbox_size = round($form_font_size * $line_height);
+			$radio_size = round($form_font_size * $line_height);
+			$color_size = $input_height;
+?>
+.wsf-inline {
+	margin-left: <?php self::e($spacing_small . $unit_of_measurement); ?>;
+	margin-right: 0;
+}
+
+select.wsf-field:not([multiple]):not([size]) {
+	background-position: left <?php self::e($spacing_small . $unit_of_measurement); ?> center;
+	padding-left: <?php self::e((($form_spacing_horizontal * 2) + $spacing_small) . $unit_of_measurement); ?>;
+	padding-right: <?php self::e($form_spacing_horizontal . $unit_of_measurement); ?>;
+}
+
+input[type=checkbox].wsf-field + label.wsf-label {
+	padding-left: 0;
+	padding-right: <?php self::e(($checkbox_size + $spacing_extra_small) . $unit_of_measurement); ?>;
+}
+
+input[type=checkbox].wsf-field + label.wsf-label:before {
+	left: initial;
+	margin-right: <?php self::e($spacing_extra_small . $unit_of_measurement); ?>;
+	margin-right: 0;
+	right: 0;
+}
+
+input[type=checkbox].wsf-field.wsf-switch + label.wsf-label {
+	padding-left: 0;
+	padding-right: <?php self::e((($checkbox_size * 2) + $spacing_extra_small) . $unit_of_measurement); ?>;
+}
+
+input[type=checkbox].wsf-field.wsf-switch + label.wsf-label:after {
+	left: auto;
+	right: 0;
+<?php if ($form_transition) { ?>
+	transition: background-color <?php self::e($form_transition_speed); ?>, border-color <?php self::e($form_transition_speed); ?>, right <?php self::e($form_transition_speed); ?>;
+<?php } ?>
+}
+
+input[type=checkbox].wsf-field.wsf-switch:checked + label.wsf-label:after {
+	left: auto;
+	right: <?php self::e($checkbox_size . $unit_of_measurement); ?>;
+}
+
+input[type=radio].wsf-field + label.wsf-label {
+	padding-left: 0;
+	padding-right: <?php self::e(($radio_size + $spacing_extra_small) . $unit_of_measurement); ?>;
+}
+
+input[type=radio].wsf-field + label.wsf-label:before {
+	left: initial;
+	margin-right: <?php self::e($spacing_extra_small . $unit_of_measurement); ?>;
+	margin-right: 0;
+	right: 0;
+}
+
+input[type=file].wsf-field + label.wsf-label:after {
+<?php if ($form_border_radius > 0) { ?>
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
+<?php } ?>
+	right: initial;
+	left: -<?php self::e($form_border_width . $unit_of_measurement); ?>;
+}
+
+.wsf-alert {
+<?php if ($form_border) { ?>
+	border-left: none;
+	border-right: 4px <?php self::e($form_border_style . ' ' . $form_border_color); ?>;
+<?php } ?>
+<?php
+		}
+
 		public function get_skin() {
 
 			ob_start();
 			self::render_skin();
+			$css_return = ob_get_contents();
+			ob_end_clean();
+
+			// Minify
+			$css_minify = WS_Form_Common::option_get('css_minify', false);
+
+			return $css_minify ? self::minify($css_return) : $css_return;
+		}
+
+		public function get_skin_rtl() {
+
+			ob_start();
+			self::render_skin_rtl();
 			$css_return = ob_get_contents();
 			ob_end_clean();
 

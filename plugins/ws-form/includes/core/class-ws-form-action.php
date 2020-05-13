@@ -4,6 +4,7 @@
 
 		// Variables global to this abstract class
 		public static $actions = array();
+		public static $action_post_count = array();
 		private static $return_array = array();
 		private static $form_tab_populate_added = false;
 		public static $spam_level = null;
@@ -182,8 +183,12 @@
 			$action_obj = apply_filters('wsf_action_pre_post', $action_obj, $form, $submit, $config);
 			$action_obj = apply_filters('wsf_action_pre_post_' . $id, $action_obj, $form, $submit, $config);
 
+			// Action post count
+			if(!isset(self::$action_post_count[$id])) { self::$action_post_count[$id] = 0; }
+			self::$action_post_count[$id]++;
+
 			// Run the action
-			$return_value = $action_obj->post($form, $submit, $config);
+			$return_value = $action_obj->post($form, $submit, $config, self::$action_post_count[$id]);
 
 			// Do complete action
 			if($complete_action !== false) { do_action($complete_action, self::$return_array, true); }
@@ -1016,6 +1021,10 @@
 				$form_structure[$form_structure_group_index][$form_structure_section_index][] = $list_field;
 			}
 
+			// Check for empty structure
+			if(!isset($form_structure[0])) { $form_structure[0] = array(); }
+			if(!isset($form_structure[0][0])) { $form_structure[0][0] = array(); }
+
 			// Run through each group and section
 			$section_count = 0;
 
@@ -1802,19 +1811,19 @@
 		// Get form ID
 		public static function api_get_form_id() {
 
-			return absint(WS_Form_Common::get_query_var_nonce('form_id', 0));
+			return intval(WS_Form_Common::get_query_var_nonce('form_id', 0));
 		}
 
 		// Get submit ID
 		public static function api_get_submit_id() {
 
-			return absint(WS_Form_Common::get_query_var_nonce('submit_id', 0));
+			return intval(WS_Form_Common::get_query_var_nonce('submit_id', 0));
 		}
 
 		// Get submit action index
 		public static function api_get_submit_action_index() {
 
-			return absint(WS_Form_Common::get_query_var_nonce('submit_action_index', 0));
+			return intval(WS_Form_Common::get_query_var_nonce('submit_action_index', 0));
 		}
 
 		// Get config

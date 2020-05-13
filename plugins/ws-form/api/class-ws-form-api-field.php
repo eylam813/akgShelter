@@ -36,7 +36,7 @@
 			$ws_form_field->type = WS_Form_Common::get_query_var_nonce('type', '', $parameters);
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Create field
 			$ws_form_field->db_create($next_sibling_id);
@@ -350,7 +350,7 @@
 
 						case $column_key_wsf_id:
 
-							$row_id = absint($field_lower);
+							$row_id = intval($field_lower);
 							if($row_id > 0) { $id = $row_id; }
 							break;
 
@@ -376,7 +376,7 @@
 
 						case $column_key_id :
 
-							$row_id = absint($field_lower);
+							$row_id = intval($field_lower);
 							if($row_id > 0) { $id = $row_id; }
 
 						default :
@@ -499,7 +499,7 @@
 			$ws_form_field->section_id = self::api_get_section_id($parameters);
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Process sort index
 			$ws_form_field->db_object_sort_index($ws_form_field->table_name, 'section_id', $ws_form_field->section_id, $next_sibling_id);
@@ -540,7 +540,7 @@
 			$ws_form_field->section_id = $ws_form_field->db_get_section_id();
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Get sort_index
 			$ws_form_field->sort_index = $ws_form_field->db_object_sort_index_get($ws_form_field->table_name, 'section_id', $ws_form_field->section_id, $next_sibling_id);
@@ -616,24 +616,24 @@
 		// Get form ID
 		public function api_get_form_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('id', 0, $parameters));
 		}
 
 		// Get section ID
 		public function api_get_section_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('section_id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('section_id', 0, $parameters));
 		}
 
 		// Get section ID from (used to determine where a field was dragged from)
 		public function api_get_section_id_from($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('section_id_from', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('section_id_from', 0, $parameters));
 		}
 
 		// Get field ID
 		public function api_get_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('field_id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('field_id', 0, $parameters));
 		}
 	}
