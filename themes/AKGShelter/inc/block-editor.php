@@ -8,6 +8,14 @@ register_block_style(
 );
 
 register_block_style(
+    'core/button',
+    array(
+        'name'         => 'blue-outline-margin-top',
+        'label'        => __( 'Blue Outline - Margin Top' ),
+    )
+);
+
+register_block_style(
     'core/columns',
     array(
         'name'         => 'blue-card',

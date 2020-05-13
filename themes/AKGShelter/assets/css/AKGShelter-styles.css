@@ -37,6 +37,27 @@ body {
     background-color: rgba(133, 164, 206, 0.671);
 }
 
+/* blue-outline-margin-top block style */
+.is-style-blue-outline-margin-top.wp-block-button{
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+    background-color: #00000000;
+}
+/* .is-style-blue-outline-margin-top.wp-block-button < div{
+    margin-top: auto;
+} */
+.marginTop{
+    margin-top:auto;
+}
+.is-style-blue-outline-margin-top.wp-block-button .wp-block-button__link {
+    background-color: #00000000;
+    border: none;
+    border-radius: 10px;
+}
+.is-style-blue-outline-margin-top.wp-block-button .wp-block-button__link:hover {
+    background-color: rgba(133, 164, 206, 0.671);
+}
+
 
 /* columns */
 .is-style-blue-card.wp-block-columns{
