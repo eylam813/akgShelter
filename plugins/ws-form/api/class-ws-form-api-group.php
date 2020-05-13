@@ -24,7 +24,7 @@
 			$ws_form_group->db_tab_index_save($parameters);
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Create group
 			$ws_form_group->db_create($next_sibling_id);
@@ -97,7 +97,7 @@
 			$ws_form_group->db_tab_index_save($parameters);
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Process sort index
 			$ws_form_group->db_object_sort_index($ws_form_group->table_name, 'form_id', $ws_form_group->form_id, $next_sibling_id);
@@ -136,7 +136,7 @@
 			$ws_form_group->db_read();
 
 			// Get next sibling ID
-			$next_sibling_id = absint(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
+			$next_sibling_id = intval(WS_Form_Common::get_query_var_nonce('next_sibling_id', 0, $parameters));
 
 			// Get sort_index
 			$ws_form_group->sort_index = $ws_form_group->db_object_sort_index_get($ws_form_group->table_name, 'form_id', $ws_form_group->form_id, $next_sibling_id);
@@ -208,13 +208,13 @@
 		// Get form ID
 		public function api_get_form_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('id', 0, $parameters));
 		}
 
 		// Get group ID
 		public function api_get_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('group_id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('group_id', 0, $parameters));
 		}
 
 	}

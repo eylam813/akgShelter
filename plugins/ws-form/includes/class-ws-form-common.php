@@ -101,10 +101,6 @@
 			}
 			$options_array = (is_array(self::$options)) ? self::$options : array();
 
-			// Wizard overrides
-			global $wizard;
-			if($wizard && ($key == 'framework')) { return WS_FORM_DEFAULT_FRAMEWORK; }
-
 			// If key exists, return the value
 			if(isset($options_array[$key])) {
 
@@ -159,6 +155,12 @@
 
 			// Did not find key
 			return false;
+		}
+
+		// Force WS Form framework
+		public static function option_get_framework_ws_form($value, $key) {
+
+			return ($key == 'framework') ? 'ws-form' : $value;
 		}
 
 		// Get admin URL
@@ -307,9 +309,6 @@
 						)
 					) {
 
-						// DEBUG
-						// echo debug_backtrace()[1]['function'];
-						// echo debug_backtrace()[1]['class'];
 						self::error_nonce();
 
 					} else {
@@ -584,6 +583,12 @@
 		// Is debug enabled?
 		public static function debug_enabled() {
 
+			if(
+				self::is_block_editor() ||
+				self::is_customize_preview()
+
+			) { return false; }
+
 			$debug_enabled = false;
 
 			switch(self::option_get('helper_debug', 'off')) {
@@ -804,7 +809,7 @@
 
 			// This limit was added in PHP 5.3.1
 			if(ini_get('max_file_uploads')) {
-				$max_file_uploads = absint(ini_get('max_file_uploads'));
+				$max_file_uploads = intval(ini_get('max_file_uploads'));
 			} else {
 				$max_file_uploads = 20;
 			}
@@ -855,7 +860,7 @@
 			$ini_value  = trim($ini_value);
 			$last = strtolower($ini_value[strlen($ini_value)-1]);
 			$ini_value  = substr($ini_value, 0, -1); // necessary since PHP 7.1; otherwise optional
-			$ini_value = absint($ini_value);
+			$ini_value = intval($ini_value);
 
 			switch($last) {
 
@@ -937,9 +942,58 @@
 		}
 
 		// Extract float with fraction from string
-		public static function get_number($input) {
+		public static function get_number($number_input, $default_value = 0, $process_currency = false, $decimals = false) {
 
-			return filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+			// Convert numbers to text
+			if(is_numeric($number_input)) { $number_input = strval($number_input); }
+
+			// Check input is a string
+			if(!is_string($number_input)) { return 0; }
+
+			// Trim input
+			$number_input = trim($number_input);
+
+			// Convert from current currency
+			if($process_currency) {
+
+				$currency = self::get_currency();
+
+				// Filter characters required for parseFloat
+				$decimal_separator = $currency['decimal_separator'];
+				$thousand_separator = $currency['thousand_separator'];
+
+				// Ensure the decimal separator setting is included in the regex (Add ,. too in case default value includes alternatives)
+				$number_input = preg_replace('/[^0-9-' . $decimal_separator . ']/', '', $number_input);
+
+				if($decimal_separator === $thousand_separator) {
+
+					// Convert decimal separators to periods so parseFloat works
+					if(substr($number_input, -3, 1) === $decimal_separator) {
+
+						$decimal_index = (strlen($number_input) - 3);
+						$number_input = substr($number_input, 0, $decimal_index) . '[dec]' . substr($number_input, $decimal_index + 1);
+					}
+
+					// Remove thousand separators
+					$number_input = str_replace($thousand_separator, '', $number_input);
+
+					// Replace [dec] back to decimal separator for parseFloat
+					$number_input = str_replace('[dec]', '.', $number_input);
+
+				} else {
+
+					// Replace [dec] back to decimal separator for parseFloat
+					$number_input = str_replace($decimal_separator, '.', $number_input);
+				}
+			}
+
+			// parseFloat converts decimal separator to period to ensure that function works
+			$number_output = (trim($number_input) === '') ? $default_value : (!is_numeric($number_input) ? $default_value : floatVal($number_input));
+
+			// Round
+			if($decimals !== false) { $number_output = round(parseFloat($number_output), $decimals); }
+
+			return $number_output;
 		}
 
 		// Get array of MIME types
@@ -1640,7 +1694,7 @@
 			// User
 			if(strpos($parse_string, 'user')) {
 
-				$user_id = (($user === false) ? 0 : $user->id);
+				$user_id = (($user === false) ? 0 : $user->ID);
 
 				$variables['user_id'] = $user_id;
 				$variables['user_login'] = (($user_id > 0) ? $user->user_login : '');
@@ -2278,6 +2332,9 @@
 				}
 			}
 
+			// Return unique values to avoid duplicates if there are duplicate values
+			$value_label_lookup_array = array_unique($value_label_lookup_array);
+
 			return (($content_type == 'text/html') ? implode("<br />", $value_label_lookup_array) : implode("\n", $value_label_lookup_array));
 		}
 
@@ -2644,5 +2701,27 @@
 			}
 
 			return $user;
+		}
+
+		// Is block editor on page?
+		public static function is_block_editor() {
+
+			if(!function_exists('get_current_screen')) { return false; }
+			if(!is_object(get_current_screen())) { return false; }
+			if(!method_exists(get_current_screen(), 'is_block_editor')) { return false; }
+
+			return get_current_screen()->is_block_editor();
+		}
+
+		// Is this a REST request
+		public static function is_rest_request() {
+
+			return (defined('REST_REQUEST') && REST_REQUEST);
+		}
+
+		// Is this customize preview?
+		public static function is_customize_preview() {
+
+			return (self::get_query_var('customize_theme') != '');
 		}
 	}

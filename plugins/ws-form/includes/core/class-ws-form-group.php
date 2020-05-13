@@ -341,11 +341,11 @@
 			if(!WS_Form_Common::can_user('edit_form')) { return false; }
 
 			// Check for group ID in $group
-			if(isset($group['id']) && !$new) { $this->id = absint($group['id']); }
+			if(isset($group['id']) && !$new) { $this->id = intval($group['id']); }
 			if($new) {
 
 				$this->id = 0;
-				$group_id_old = (isset($group['id'])) ? absint($group['id']) : 0;
+				$group_id_old = (isset($group['id'])) ? intval($group['id']) : 0;
 				if(isset($group['id'])) { unset($group['id']); }
 			}
 
@@ -444,7 +444,7 @@
 			if(!WS_Form_Common::can_user('edit_form')) { return false; }
 
 			// Store tab index to form meta
-			$form_tab_index = absint(WS_Form_Common::get_query_var('form_tab_index', false, $parameters));
+			$form_tab_index = intval(WS_Form_Common::get_query_var('form_tab_index', false, $parameters));
 			if($form_tab_index !== false) {
 
 				$group_meta = New WS_Form_Meta();

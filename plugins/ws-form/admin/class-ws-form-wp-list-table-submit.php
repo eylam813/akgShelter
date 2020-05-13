@@ -313,7 +313,7 @@
 			$icon = isset($file_types[$mime_type]) ? $file_types[$mime_type]['icon'] : $file_types['default']['icon'];
 
 			// Download
-			$return_html = sprintf('<a href="%s" title="%s">%s</a>', WS_Form_Common::get_api_path('helper/file_download', sprintf('hash=%s&field_id=%u&file_index=%u&_wpnonce=%s&download=1', urlencode($hash), $id, $index, wp_create_nonce('wp_rest'))), htmlentities($name), WS_Form_Config::get_icon_16_svg($icon));
+			$return_html = sprintf('<a href="%s" title="%s">%s</a>', WS_Form_Common::get_api_path('helper/file_download', sprintf('hash=%s&field_id=%u&file_index=%u&_wpnonce=%s&%s=%s&download=1', rawurlencode($hash), rawurlencode($id), rawurlencode($index), wp_create_nonce('wp_rest'), rawurlencode(WS_FORM_POST_NONCE_FIELD_NAME), rawurlencode(wp_create_nonce(WS_FORM_POST_NONCE_ACTION_NAME)))), htmlentities($name), WS_Form_Config::get_icon_16_svg($icon));
 
 			return $return_html;
 		}
@@ -327,11 +327,8 @@
 		// Column - ID
 		function column_id($item) {
 
-			// Create a nonce
-			$delete_nonce = wp_create_nonce('ws_form_delete_form');
-
-			// URLs
-			$id = absint($item['id']);
+			// Get ID
+			$id = intval($item['id']);
 
 			// Title
 			$title = sprintf('<strong><a href="#%1$u" data-action="wsf-view" data-id="%1$u">%1$u</a></strong>', $item['id']);
@@ -732,9 +729,9 @@
 				// Filters
 				if($this->form_id > 0) {
 ?>
-<input type="text" id="wsf_filter_date_from" name="date_from" value="<?php echo esc_attr($this->date_from); ?>" placeholder="<?php esc_html_e('Date from', 'ws-form'); ?>" />
+<input type="text" id="wsf_filter_date_from" name="date_from" value="<?php echo esc_attr($this->date_from); ?>" placeholder="<?php esc_html_e('Date from', 'ws-form'); ?>" autocomplete="off" />
 
-<input type="text" id="wsf_filter_date_to" name="date_to" value="<?php echo esc_attr($this->date_to); ?>" placeholder="<?php esc_html_e('Date to', 'ws-form'); ?>" />
+<input type="text" id="wsf_filter_date_to" name="date_to" value="<?php echo esc_attr($this->date_to); ?>" placeholder="<?php esc_html_e('Date to', 'ws-form'); ?>" autocomplete="off" />
 
 <input type="button" id="wsf_filter_do" class="button" value="Filter" />
 <input type="button" id="wsf_filter_reset" class="button" value="Reset" />

@@ -406,7 +406,7 @@
 			if(!self::db_check_licensed($field['type'])) { return false; }
 
 			// Check for field ID in $field
-			if(isset($field['id']) && !$new) { $this->id = absint($field['id']); }
+			if(isset($field['id']) && !$new) { $this->id = intval($field['id']); }
 			if($new) {
 
 				$this->id = 0;

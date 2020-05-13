@@ -70,15 +70,22 @@
 				$ws_form_api_form = New WS_Form_Form();
 				$ws_form_api_form->id = $form_id;
 
-				if($form_published) {
+				try {
 
-					// Published
-					$json_array['form'] = $ws_form_api_form->db_read_published();
+					if($form_published) {
 
-				} else {
+						// Published
+						$json_array['form'] = $ws_form_api_form->db_read_published();
 
-					// Draft
-					$json_array['form'] = $ws_form_api_form->db_read($form_full, $form_full);
+					} else {
+
+						// Draft
+						$json_array['form'] = $ws_form_api_form->db_read($form_full, $form_full);
+					}
+
+				} catch (Exception $e) {
+
+					self::api_throw_error($e->getMessage());
 				}
 
 				$json_array['form_full'] = $form_full || $form_published;
@@ -132,11 +139,11 @@
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/setup_push/', array('methods' => 'POST', 'callback' => array($plugin_api_helper, 'api_setup_push')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/ws_form_css/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_ws_form_css')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/ws_form_css_skin/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_ws_form_css_skin')));
+			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/ws_form_css_skin_rtl/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_ws_form_css_skin_rtl')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/ws_form_css_admin/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_ws_form_css_admin')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/css_email/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_css_email')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/file_download/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_file_download')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/user_meta_hidden_column/', array('methods' => 'POST', 'callback' => array($plugin_api_helper, 'api_user_meta_hidden_columns')));
-			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/variables/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_variables')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/support_contact_submit/', array('methods' => 'POST', 'callback' => array($plugin_api_helper, 'api_support_contact_submit')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/deactivate_feedback_submit/', array('methods' => 'POST', 'callback' => array($plugin_api_helper, 'api_deactivate_feedback_submit')));
 			register_rest_route(WS_FORM_RESTFUL_NAMESPACE, '/helper/count_submit_unread/', array('methods' => 'GET', 'callback' => array($plugin_api_helper, 'api_count_submit_unread')));

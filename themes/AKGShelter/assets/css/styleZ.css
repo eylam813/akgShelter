@@ -58,20 +58,26 @@ nav a:hover{
                 -20px -20px 60px #ffffff;
     border-radius: 10px;
     height: 30rem;
+    max-width: 25vw;
     padding: 1rem;
-}
-.homeCards .wp-block-button__link{
-    border: 1px solid var(--blue);
-    border-radius: 10px;
-}
-.homeCards .wp-block-button__link{
-    background-color: none;
 }
 .homeCards p{
     height: 25%;
 }
 .homeCards a:hover, .serviceCard a:hover{
     color: var(--pink);
+}
+
+@media screen and (max-width: 39.9375em) {
+    .wp-block-columns.homeCards .wp-block-column{
+        display:block;
+        width: 90vw;
+    }
+    .homeCards .wp-block-column{
+        display: flex;
+        flex-direction: row;
+        max-width: 94vw;
+    }
 }
 .homeQuote{
     align-self: center;

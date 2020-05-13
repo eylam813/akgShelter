@@ -36,16 +36,13 @@
 		private $hook_suffix_form_add_ons = false;
 
 		// Initialize the class and set its properties.
-		public function __construct($plugin_name, $version) {
+		public function __construct() {
 
-			$this->plugin_name = $plugin_name;
-			$this->version = $version;
+			$this->plugin_name = WS_FORM_NAME;
+			$this->version = WS_FORM_VERSION;
 			$this->user_meta_hidden_columns = 'managews-form_page_ws-form-submitcolumnshidden';	// AJAX function is in helper API
 			$this->intro = WS_Form_Common::option_get('intro', false);
 			$this->customize_enabled = (WS_Form_Common::option_get('framework', 'ws-form') === 'ws-form');
-
-			$edition = WS_Form_Common::option_get('edition');
-			$test = WS_Form_Common::option_get('test');
 
 			// Activator to check for edition and version changes
 			require_once WS_FORM_PLUGIN_DIR_PATH . 'includes/class-ws-form-activator.php';
@@ -55,8 +52,6 @@
 		// Register the stylesheets for the admin area.
 		public function enqueue_styles($hook) {
 
-			$base_dependencies = array();
-
 			switch($hook) {
 
 				// Form - Add
@@ -64,6 +59,10 @@
 
 					// CSS - Framework
 					wp_enqueue_style($this->plugin_name . '-css-layout', WS_Form_Common::get_api_path('helper/ws_form_css_admin'), array(), $this->version . '.' . WS_FORM_EDITION, 'all');
+
+					// CSS - Template
+					wp_enqueue_style($this->plugin_name . '-wizard', plugin_dir_url(__FILE__) . 'css/ws-form-admin-wizard.css', array(), $this->version, 'all');
+
 					break;
 
 				// Form - Edit
@@ -76,7 +75,6 @@
 					if($this->intro) {
 
 						wp_enqueue_style($this->plugin_name . '-css-intro', plugin_dir_url(__FILE__) . 'css/external/introjs/introjs.min.css', array(), $this->version, 'all');
-						$base_dependencies[] = $this->plugin_name . '-css-intro';
 					}
 					break;
 
@@ -84,9 +82,15 @@
 				case $this->hook_suffix_form_submit :	
 
 					// CSS - JQuery UI
-					wp_enqueue_style($this->plugin_name . '-css-jquery', plugin_dir_url(__FILE__) . 'jquery/jquery-ui.css', array($this->plugin_name . '-base'), $this->version, 'all');
+					wp_enqueue_style($this->plugin_name . '-css-jquery', plugin_dir_url(__FILE__) . 'jquery/jquery-ui.css', array(), $this->version, 'all');
 					break;
 
+				// WordPress Posts
+				case 'post.php' : 
+				case 'post-new.php' :
+
+					// CSS - Template
+					wp_enqueue_style($this->plugin_name . '-wizard', plugin_dir_url(__FILE__) . 'css/ws-form-admin-wizard.css', array(), $this->version, 'all');
 			}
 
 			// CSS - WordPress (Used throughout WordPress to style admin icon and other integral functions like the 'Add Form' feature)
@@ -95,10 +99,13 @@
 			if(strpos($hook, WS_FORM_NAME) !== false) {
 
 				// CSS - Admin
-				wp_enqueue_style($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'css/ws-form-admin.css', $base_dependencies, $this->version, 'all');
+				wp_enqueue_style($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'css/ws-form-admin.css', array(), $this->version, 'all');
 
-				// CSS - Template
-				wp_enqueue_style($this->plugin_name . '-wizard', plugin_dir_url(__FILE__) . 'css/ws-form-admin-wizard.css', $base_dependencies, $this->version, 'all');
+				if(is_rtl()) {
+
+					// CSS - RTL
+					wp_enqueue_style($this->plugin_name . '-rtl', plugin_dir_url(__FILE__) . 'css/ws-form-admin-rtl.css', array(), $this->version, 'all');
+				}
 			}
 		}
 
@@ -170,24 +177,43 @@
 				'sidebar_reset_id'			=> $sidebar_reset_id,
 				'sidebar_tab_key'			=> $sidebar_tab_key,
 
+				// Preview update
+				'helper_live_preview'		=> WS_Form_Common::option_get('helper_live_preview', true),
+
+				// RTL
+				'rtl'						=> is_rtl(),
 			);
 
 			// Form class
 			wp_register_script($this->plugin_name . '-form-common', plugin_dir_url(__DIR__) . 'shared/js/ws-form.js', array('jquery'), $this->version, true);
-			wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
-			wp_enqueue_script($this->plugin_name . '-form-common');
 
 			// Form class - Admin
 			wp_register_script($this->plugin_name, plugin_dir_url(__DIR__) . 'admin/js/ws-form-admin.js', array('jquery', $this->plugin_name . '-form-common'), $this->version, true);
-			wp_enqueue_script($this->plugin_name);
 
 			// Scripts by hook
 			switch($hook) {
 
+				// WS Form - Welcome / Forms
+				case $this->hook_suffix_form_sub :
+				case $this->hook_suffix_form_welcome :
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
+
+					break;
+
 				// WS Form - Add Form
 				case $this->hook_suffix_form_add :
 
+					// JQuery UI
 					wp_enqueue_script('jquery-ui-tabs');
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
 
 					break;
 
@@ -203,6 +229,11 @@
 					wp_enqueue_script('jquery-ui-resizable');
 					wp_enqueue_script('jquery-ui-slider');
 					wp_enqueue_script('jquery-touch-punch');
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
 
 					// Enqueue WP editors
 					global $wp_version;
@@ -231,17 +262,42 @@
 
 					break;
 
-				// WS Form - Edit Form
+				// WS Form - Form Submissions
 				case $this->hook_suffix_form_submit :
 
+					// JQuery UI
 					wp_enqueue_script('jquery-ui-datepicker');
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
+
+					break;
+
+				// WS Form - Migrate
+				case $this->hook_suffix_form_migrate :
+
+					// JQuery UI
+					wp_enqueue_script('jquery-ui-tabs');
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
 
 					break;
 
 				// WS Form - Settings
 				case $this->hook_suffix_form_settings :
 
+					// WordPress Media
 					wp_enqueue_media();
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
 
 					break;
 
@@ -256,6 +312,30 @@
 						add_action('media_buttons', array($this, 'media_button'));
 						add_action('admin_footer', array($this, 'media_buttons_html'));
 					}
+
+					if(WS_Form_Common::is_block_editor()) {
+
+						// Create public instance
+						$ws_form_public = new WS_Form_Public();
+
+						// Set visual builder scripts to enqueue
+						do_action('wsf_enqueue_visual_builder');
+
+						// Enqueue scripts
+						$ws_form_public->enqueue();
+
+						// Add public footer to speed up loading of config
+						$ws_form_public->wsf_form_json[0] = true;
+						add_action('admin_footer', array($ws_form_public, 'wp_footer'));
+
+					} else {
+
+						// WS Form
+						wp_enqueue_script($this->plugin_name . '-form-common');
+						wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+						wp_enqueue_script($this->plugin_name);
+					}
+
 					break;
 
 				// Dashboard
@@ -263,6 +343,12 @@
 
 					// Chart
 					wp_enqueue_script($this->plugin_name . '-chart', plugin_dir_url(__FILE__) . 'js/external/chart/Chart.min.js', array('jquery'), $this->version, true);
+
+					// WS Form
+					wp_enqueue_script($this->plugin_name . '-form-common');
+					wp_localize_script($this->plugin_name . '-form-common', 'ws_form_settings', $ws_form_settings);
+					wp_enqueue_script($this->plugin_name);
+
 					break;
 
 				// Plugins
@@ -944,48 +1030,94 @@
 				true
 			);
 
+			// Get SVG
+			$ws_form_wizard = new WS_Form_Wizard();
+			$ws_form_wizard->id = 'contact-us';
+			$svg = $ws_form_wizard->svg();
+			$svg = str_replace('#label', $ws_form_wizard->label, $svg);
+
 			// Localize block JavaScript
 			wp_localize_script('wsf-block', 'wsf_settings_block', array(
 
-				'title'						=> __('WS Form', 'ws-form'),
-				'intro'						=> __('Select the form you would like to insert into this block:', 'ws-form'),
-				'intro_no_forms'			=> __("You haven't created any forms yet.", 'ws-form'),
-				'intro_no_forms_link'		=> WS_Form_Common::get_admin_url('ws-form-add'),
-				'intro_no_forms_link_text'	=> __('Click here to create a form', 'ws-form'),
-				'select'					=> __('Select form...', 'ws-form'),
-				'id'						=> __('ID', 'ws-form'),
-				'forms'						=> $forms
+				// Add Form
+				'form_add' => array(
+
+					'name'				=> 'wsf-block/form-add',
+					'label'				=> WS_FORM_NAME_PRESENTABLE,
+					'description'		=> sprintf(__('Add a form to your web page using %s.', 'ws-form'), WS_FORM_NAME_PRESENTABLE),
+					'category'			=> WS_FORM_NAME,
+					'keywords'			=> array(WS_FORM_NAME_PRESENTABLE, __('form', 'ws-form')),
+					'preview'			=> $svg,
+					'no_forms'			=> __("You haven't created any forms yet.", 'ws-form'),
+					'form_not_selected'	=> __('Choose the form you would like add in the block settings sidebar.', 'ws-form'),
+					'options_label'		=> __('Form', 'ws-form'),
+					'options_select'	=> __('Select...', 'ws-form'),
+					'id'				=> __('ID', 'ws-form'),
+					'add'				=> __('Add New', 'ws-form'),
+					'url_add'			=> WS_Form_Common::get_admin_url('ws-form-add'),
+					'form_action'		=> WS_Form_Common::get_api_path() . 'submit'
+				),
+
+				'forms'						=> $forms,
 			));
 		}
 
-		// Gutenberg Editor Block - Register
-		public function register_block() {
+		// Gutenbery Editor Block - Register category
+		public function block_categories($categories, $post) {
+
+			return array_merge(
+
+				$categories,
+
+				array(
+
+					array(
+
+						'slug'  => WS_FORM_NAME,
+						'title' => WS_FORM_NAME_PRESENTABLE
+					)
+				)
+			);
+		}
+
+		// Gutenberg Editor Blocks - Register
+		public function register_blocks() {
 
 			if(function_exists('register_block_type')) {
 
-				register_block_type('wsf-block/form-add', array(
+				$block_config = array(
 
-					'editor_script' => 'wsf-block',
-					'render_callback' => array($this, 'block_render'),
-				));
+					'editor_script'		=> 'wsf-block',
+
+					'render_callback'	=> array($this, 'block_render'),
+
+					'attributes'		=> array(
+
+						'form_id'	=> array(
+
+							'type'    => 'string'
+						)
+					)
+				);
+
+				register_block_type('wsf-block/form-add', $block_config);
 			}
 		}
 
 		// Block rendering
 		public function block_render($attributes, $content) {
 
-			// Do not render on preview
-			if(isset($_GET['wsf_preview_form_id'])) { return ''; }	// phpcs:ignore
-
 			// Do not render if form ID is not set
 			if(!isset($attributes['form_id'])) { return ''; }
 
-			$form_id = absint($attributes['form_id']);
+			$form_id = intval($attributes['form_id']);
 
 			// Do not render if form ID = 0
 			if($form_id == 0) { return ''; }
 
-			return sprintf('[%s id="%u"]', WS_FORM_SHORTCODE, $form_id);
+			$return_html = do_shortcode(sprintf('[%s id="%u"]', WS_FORM_SHORTCODE, $form_id));
+
+			return $return_html;
 		}
 
 		// Plugins loaded
@@ -995,11 +1127,21 @@
 			do_action('wsf_plugins_loaded');
 		}
 
+		// WP loaded
+		public function current_screen() {
+
+			if(WS_Form_Common::is_block_editor()) {
+
+				// Force framework to be ws-form
+				add_filter('wsf_option_get', array('WS_Form_Common', 'option_get_framework_ws_form'), 10, 2);
+			}
+		}
+
 		// Form processing
 		public function init() {
 
 			// Register block
-			self::register_block();
+			self::register_blocks();
 
 			// AJAX handler for hidden column changes (Form ID specific)
 	        add_action('wp_ajax_ws_form_hidden_columns', array($this, 'ws_form_hidden_columns'), 1);

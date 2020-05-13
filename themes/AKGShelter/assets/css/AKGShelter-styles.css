@@ -16,6 +16,27 @@ body {
     font-family: everythingFont;
 }
 
+/**
+*
+* Block Editor Styles
+*
+*/
+
+/** blue-outline-button block style */
+.is-style-blue-outline-button.wp-block-button{
+/* .is-style-blue-outline-button .wp-block-button__link{ */
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+    background-color: #00000000;
+}
+.is-style-blue-outline-button.wp-block-button .wp-block-button__link {
+    background-color: #00000000;
+    border: none;
+}
+
+
+
+
 /* ************* HEADER ************* */
 /* ? Preheader */
 #preheader {

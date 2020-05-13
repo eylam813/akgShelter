@@ -349,7 +349,7 @@
 			}
 
 			// Minimum
-			$minimum = (isset($config['minimum'])) ? absint($config['minimum']) : false;
+			$minimum = (isset($config['minimum'])) ? intval($config['minimum']) : false;
 
 			// Maximum
 			if(isset($config['maximum'])) {
@@ -605,7 +605,7 @@
 ?> />
 <?php
 					// Get the image ID
-					$image_id = absint($value);
+					$image_id = intval($value);
 					if($image_id == 0) { break; }
 
 					// Show preview image

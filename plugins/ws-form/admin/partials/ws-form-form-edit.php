@@ -9,6 +9,7 @@
 <div id="wsf-wrapper" class="<?php WS_Form_Common::wrapper_classes(); ?>">
 
 <!-- Header -->
+<div class="wsf-loading-hidden">
 <div class="wsf-heading">
 <h1 class="wp-heading-inline"><?php esc_html_e('Edit Form', 'ws-form') ?></h1>
 
@@ -24,7 +25,7 @@
 
 	// Preview
 ?>
-<a data-action="wsf-preview" class="wsf-button wsf-button-small" href="<?php echo esc_attr(WS_Form_Common::get_preview_url($form_id)); ?>" target="_blank"><?php WS_Form_Common::render_icon_16_svg('visible'); ?> <?php esc_html_e('Preview', 'ws-form'); ?></a>
+<a data-action="wsf-preview" class="wsf-button wsf-button-small" href="<?php echo esc_attr(WS_Form_Common::get_preview_url($form_id)); ?>" target="wsf-preview-<?php echo esc_attr($form_id); ?>"><?php WS_Form_Common::render_icon_16_svg('visible'); ?> <?php esc_html_e('Preview', 'ws-form'); ?></a>
 <?php
 
 	// Submissions
@@ -67,6 +68,7 @@
 	}
 ?>
 </div>
+</div>
 <hr class="wp-header-end">
 <!-- /Header -->
 <?php
@@ -75,7 +77,7 @@
 	WS_Form_Common::review();
 ?>
 <!-- Wrapper -->
-<div id="poststuff"><div id="post-body" class="metabox-holder columns-2"><div id="post-body-content" style="position: relative;">
+<div id="poststuff" class="wsf-loading-hidden"><div id="post-body" class="metabox-holder columns-2"><div id="post-body-content" style="position: relative;">
 
 <!-- Title -->
 <div id="titlediv">
@@ -130,6 +132,11 @@
 
 		// On load
 		$(function() {
+
+			// Manually inject language strings (Avoids having to call the full config)
+			$.WS_Form.settings_form = [];
+			$.WS_Form.settings_form.language = [];
+			$.WS_Form.settings_form.language['error_server'] = '<?php esc_html_e('500 Server error response from server.', 'ws-form'); ?>';
 
 			// Initialize WS Form
 			var wsf_obj = new $.WS_Form();

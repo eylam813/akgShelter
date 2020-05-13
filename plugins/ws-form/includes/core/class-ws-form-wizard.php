@@ -13,6 +13,9 @@
 		private $config;
 		private $config_file;
 
+		public $svg_width = 140;
+		public $svg_height = 180;
+
 		public $color_default;
 		public $color_default_inverted;
 		public $color_default_lighter;
@@ -124,6 +127,10 @@
 		// Build SVG from form
 		public function svg($form_array = false) {
 
+			// Get form column count
+			$columns = intval(WS_Form_Common::option_get('framework_column_count', 0));
+			if($columns == 0) { self::db_throw_error(__('Invalid framework column count', 'ws-form')); }
+
 			if($form_array !== false) {
 
 				$this->form = $form_array;
@@ -140,14 +147,17 @@
 
 			// Build SVG
 			$svg = sprintf(
-				'<svg class="wsf-responsive" viewBox="0 0 140 180"><rect width="100%%" height="100%%" fill="%s"/><text fill="%s" class="wsf-wizard-title"><tspan x="5" y="16">%s</tspan></text>',
+				'<svg xmlns="http://www.w3.org/2000/svg" class="wsf-responsive" viewBox="0 0 %u %u"><rect width="100%%" height="100%%" fill="%s"/><text fill="%s" class="wsf-wizard-title"><tspan x="%u" y="16">%s</tspan></text>',
+				$this->svg_width,
+				$this->svg_height,
 				$this->color_default_inverted,
 				$this->color_default,
+				is_rtl() ? ($this->svg_width - 5) : 5,
 				(($label !== false) ? $label : '#label')
 			);
 
 			$col_index = 0;
-			$col_index_max = 12;
+			$col_index_max = $columns;
 			$col_index_field = 0;
 			$col_width = 10.8333;
 			$gutter_width = $this->grid_gutter;
@@ -188,7 +198,7 @@
 			foreach($fields as $field) {
 
 				// Field
-				$field_size = ($field['size'] > 0) ? $field['size'] : 12;
+				$field_size = ($field['size'] > 0) ? $field['size'] : $columns;
 				$field_offset = ($field['offset'] > 0) ? $field['offset'] : 0;
 
 				if(isset($field_type_buttons[$field['type']])) {
@@ -249,19 +259,33 @@
 				$field_width_offset = ($field_cols_offset > 0) ? ($field_offset * $col_width) - (($field_cols_offset > 1) ? ((1 - (1 / $field_cols_offset)) * $gutter_width) - $gutter_width : 0) : 0;
 
 				// Label
-				$text_xpos = ($xpos_origin + $xpos_offset) + $field_width_offset;
+				if(is_rtl()) {
+
+					$text_xpos = $this->svg_width - (($xpos_origin + $xpos_offset) + $field_width_offset);
+
+				} else {
+
+					$text_xpos = ($xpos_origin + $xpos_offset) + $field_width_offset;
+				}
 				$text_ypos = ($ypos_origin + $ypos_offset);
 
 				// Field
-				$field_xpos = ($xpos_origin + $xpos_offset + $field_adjust_x) + $field_width_offset;
+				if(is_rtl()) {
+
+					$field_xpos = $this->svg_width - (($xpos_origin + $xpos_offset + $field_adjust_x) + $field_width_offset + $field_width);
+
+				} else {
+
+					$field_xpos = ($xpos_origin + $xpos_offset + $field_adjust_x) + $field_width_offset;
+				}
 
 				if(isset($field_type_buttons[$field['type']])) {
 
-					$button_text_xpos = ($field_width / 2);
+					$button_text_xpos = $field_xpos + ($field_width / 2);
 					$alignment_y = ($input_found) ? $text_height : 0;
 
 					$svg .= '<rect x="' . $field_xpos . '" y="' . ($field_ypos + $alignment_y) . '" class="wsf-wizard-button" fill="' . $button_fill . '" stroke="' . $button_fill . '" rx="' . $this->border_radius . '" width="' . $field_width . '" height="' . $field_height . '"/>';
-					$svg .= '<text transform="matrix(1 0 0 1 ' . ($text_xpos + $button_text_xpos) . ' ' . ($field_ypos + $text_y_offset + 1 + $alignment_y) . ')" class="wsf-wizard-label" fill="' . $text_color . '" text-anchor="middle">' . $field['label'] . '</text>';
+					$svg .= '<text transform="matrix(1 0 0 1 ' . $button_text_xpos . ' ' . ($field_ypos + $text_y_offset + 1 + $alignment_y) . ')" class="wsf-wizard-label" fill="' . $text_color . '" text-anchor="middle">' . $field['label'] . '</text>';
 
 				} elseif (isset($field_type_price_span[$field['type']])) {
 
@@ -274,9 +298,11 @@
 
 						case 'progress' :
 
+							$progress_width = ($field_width / 3);
+
 							$svg .= '<text fill="' . $this->color_default . '" transform="matrix(1 0 0 1 ' . $text_xpos . ' ' . ($text_ypos + $text_y_offset) . ')" class="wsf-wizard-label">' . $field['label'] . '</text>';
 							$svg .= '<rect x="' . $field_xpos . '" y="' . $field_ypos . '" fill="' . $this->color_default_lighter . '" stroke="' . $this->color_default_lighter . '" rx="' . $this->border_radius . '" width="' . $field_width . '" height="' . ($field_height / 2) . '"/>';
-							$svg .= '<rect x="' . $field_xpos . '" y="' . $field_ypos . '" fill="' . $this->color_primary . '" stroke="' . $this->color_primary . '" rx="' . $this->border_radius . '" width="' . ($field_width / 3) . '" height="' . ($field_height / 2) . '"/>';
+							$svg .= '<rect x="' . (is_rtl() ? ($field_xpos + $field_width - $progress_width) : $field_xpos) . '" y="' . $field_ypos . '" fill="' . $this->color_primary . '" stroke="' . $this->color_primary . '" rx="' . $this->border_radius . '" width="' . $progress_width . '" height="' . ($field_height / 2) . '"/>';
 							break;
 
 						case 'range' :
@@ -311,13 +337,17 @@
 
 						case 'file' :
 
-							$button_text_xpos = $field_width;
+							$button_width = $field_width / 4;
+							$button_xpos = (is_rtl() ? $field_xpos : ($field_xpos + $field_width - $button_width));
+
+							$button_text_xpos = $button_xpos + ($button_width / 2);
+
 							$alignment_y = ($input_found) ? $text_height : 0;
 
 							$svg .= '<rect x="' . $field_xpos . '" y="' . ($field_ypos + $alignment_y) . '" class="wsf-wizard-button" fill="' . $this->color_default_inverted . '" stroke="' . $this->color_default_lighter . '" rx="' . $this->border_radius . '" width="' . $field_width . '" height="' . $field_height . '"/>';
 							$svg .= '<text fill="' . $this->color_default . '" transform="matrix(1 0 0 1 ' . ($text_xpos + 1) . ' ' . ($field_ypos + $text_y_offset + 1 + $alignment_y) . ')" class="wsf-wizard-label">' . $field['label'] . '</text>';
-							$svg .= '<rect x="' . ($field_width - $field_xpos - 12) . '" y="' . ($field_ypos + $alignment_y) . '" class="wsf-wizard-button" fill="' . $this->color_default_lighter . '" stroke="' . $this->color_default_lighter . '" rx="' . $this->border_radius . '" width="22" height="' . $field_height . '"/>';
-							$svg .= '<text fill="' . $this->color_default . '" transform="matrix(1 0 0 1 ' . ($field_width - $field_xpos - 11) . ' ' . ($field_ypos + $text_y_offset + 1 + $alignment_y) . ')" class="wsf-wizard-label">Browse</text>';
+							$svg .= '<rect x="' . $button_xpos . '" y="' . ($field_ypos + $alignment_y) . '" class="wsf-wizard-button" fill="' . $this->color_default_lighter . '" stroke="' . $this->color_default_lighter . '" rx="' . $this->border_radius . '" width="' . $button_width . '" height="' . $field_height . '"/>';
+							$svg .= '<text fill="' . $this->color_default . '" transform="matrix(1 0 0 1 ' . $button_text_xpos . ' ' . ($field_ypos + $text_y_offset + 1 + $alignment_y) . ')" class="wsf-wizard-label" text-anchor="middle">Browse</text>';
 							break;
 
 						default :
@@ -464,7 +494,7 @@
 <!-- Blank -->
 <li>
 <div class="wsf-template" data-action="wsf-add-blank" data-id="blank">
-	<svg class="wsf-responsive" viewBox="0 0 140 180"><rect width="100%" height="100%" fill="<?php echo esc_attr($this->color_default_inverted); ?>"/><text fill="<?php echo esc_attr($this->color_default) ?>'" class="wsf-wizard-title"><tspan x="5" y="16"><?php esc_html_e('Blank', 'ws-form'); ?></tspan></text><g fill="none" fill-rule="evenodd" transform="translate(5 7)"><path stroke="<?php echo esc_attr($this->color_default_lighter); ?>" stroke-dasharray="4 2" d="M.5 17.5h129v149H.5z"/><path fill="<?php echo esc_attr($this->color_default); ?>" fill-rule="nonzero" d="M72 88.5h-5v-5h-2v5h-5v2h5v5h2v-5h5z"/></g></svg>
+	<svg class="wsf-responsive" viewBox="0 0 140 180"><rect width="100%" height="100%" fill="<?php echo esc_attr($this->color_default_inverted); ?>"/><text fill="<?php echo esc_attr($this->color_default) ?>'" class="wsf-wizard-title"><tspan x="<?php echo is_rtl() ? esc_attr($this->svg_width - 5) : 5; ?>" y="16"><?php esc_html_e('Blank', 'ws-form'); ?></tspan></text><g fill="none" fill-rule="evenodd" transform="translate(5 7)"><path stroke="<?php echo esc_attr($this->color_default_lighter); ?>" stroke-dasharray="4 2" d="M.5 17.5h129v149H.5z"/><path fill="<?php echo esc_attr($this->color_default); ?>" fill-rule="nonzero" d="M72 88.5h-5v-5h-2v5h-5v2h5v5h2v-5h5z"/></g></svg>
 </div>
 <button class="<?php echo esc_attr($button_class); ?>" data-action="wsf-add-blank" data-id="blank"><?php esc_html_e('Create', 'ws-form'); ?></button>
 </li>

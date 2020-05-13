@@ -72,14 +72,15 @@
 		public $field_types = array();
 
 		// Initialize the class and set its properties.
-		public function __construct($plugin_name, $version) {
+		public function __construct() {
 
-			$this->plugin_name = $plugin_name;
-			$this->version = $version;
+			$this->plugin_name = WS_FORM_NAME;
+			$this->version = WS_FORM_VERSION;
 			$this->customizer = (WS_Form_Common::get_query_var('customize_theme') !== '');
 			$this->css_inline = (WS_Form_Common::option_get('css_inline'));
 
 			add_action('wsf_enqueue_all', array($this, 'enqueue_all'), 10, 0);
+			add_action('wsf_enqueue_visual_builder', array($this, 'enqueue_visual_builder'), 10, 0);
 			add_action('wsf_enqueue_core', array($this, 'enqueue_core'), 10, 0);
 		}
 
@@ -102,7 +103,7 @@
 
 		public function enqueue_visual_builder() {
 
-			if(!$this->enqueued_core) {
+			if(!$this->enqueued_visual_builder) {
 
 				// Set filters to true
 				add_filter('wsf_enqueue_css_layout', function($enqueue) { return true; }, 99999, 1);
@@ -115,11 +116,12 @@
 				add_filter('wsf_enqueue_js_datetime_picker', function($enqueue) { return true; }, 99999, 1);
 				add_filter('wsf_enqueue_js_color_picker', function($enqueue) { return true; }, 99999, 1);
 				add_filter('wsf_enqueue_js_password_strength', function($enqueue) { return true; }, 99999, 1);
+				add_filter('wsf_enqueue_js_form_debug', function($enqueue) { return false; }, 99999, 1);
 
 				// Process enqueues
 				self::enqueue();
 
-				$this->enqueued_core = true;
+				$this->enqueued_visual_builder = true;
 			}
 		}
 
@@ -165,7 +167,7 @@
 		public function shortcode_ws_form($atts) {
 
 			// Read form ID
-			if(isset($atts['id'])) { $form_id = absint($atts['id']); } else { return ''; }
+			if(isset($atts['id'])) { $form_id = intval($atts['id']); } else { return ''; }
 			$element = isset($atts['element']) ? $atts['element'] : 'form';
 
 			// Published?
@@ -254,6 +256,9 @@
 
 		// Footer scripts - Initialize
 		public function form_enqueues($form_array) {
+
+			// If REST request, abandon this
+			if(WS_Form_Common::is_rest_request()) { return; }
 
 			// Enqueue WS Form
 			$this->enqueue_js_form_common = true;
@@ -355,14 +360,26 @@
 
 							// Output public CSS
 							$ws_form_css = new WS_Form_CSS();
-							$css = $ws_form_css->get_skin();
-							echo $ws_form_css->inline($css);	// phpcs:ignore
+
+							$css_skin = $ws_form_css->get_skin();
+							echo $ws_form_css->inline($css_skin);	// phpcs:ignore
+
+							if(is_rtl()) {
+
+								$css_skin_rtl = $ws_form_css->get_skin_rtl();
+								echo $ws_form_css->inline($css_skin_rtl);	// phpcs:ignore
+							}
 
 						}, 100);
 
 					} else {
 
 						wp_enqueue_style($this->plugin_name . '-css-skin', WS_Form_Common::get_api_path('helper/ws_form_css_skin'), array(), $this->version, 'all');
+
+						if(is_rtl()) {
+
+							wp_enqueue_style($this->plugin_name . '-css-skin-rtl', WS_Form_Common::get_api_path('helper/ws_form_css_skin_rtl'), array(), $this->version, 'all');
+						}
 					}
 				}
 
@@ -553,7 +570,7 @@
 				'design'				=> (WS_Form_Common::option_get('css_skin', true)) && (WS_Form_Common::option_get('framework', 'ws-form') == 'ws-form'),
 
 				// Max upload size
-				'max_upload_size'		=> absint(WS_Form_Common::option_get('max_upload_size', 0)),
+				'max_upload_size'		=> intval(WS_Form_Common::option_get('max_upload_size', 0)),
 
 				// Field prefix
 				'field_prefix'			=> WS_FORM_FIELD_PREFIX,
@@ -572,7 +589,10 @@
 				'stat'					=> $ws_form_form_stat->form_stat_check(),
 
 				// Skin - Grid gutter
-				'skin_grid_gutter'		=> WS_Form_Common::option_get('skin_grid_gutter', true)
+				'skin_grid_gutter'		=> WS_Form_Common::option_get('skin_grid_gutter', true),
+
+				// RTL
+				'rtl'					=> is_rtl()
 			);
 			// Pass through post ID
 			if(isset($post) && ($post->ID > 0)) {
@@ -729,4 +749,10 @@
 
 			return array('action_label' => $action->label, 'data' => $data, 'section_repeatable' => $section_repeatable);
 		}
+
+		public function nonce_user_logged_out($uid = 0, $action = false) {
+
+			return ($action === WS_FORM_POST_NONCE_ACTION_NAME) ? 0 : $uid;
+		}
+
 	}
