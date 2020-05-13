@@ -656,7 +656,7 @@ class WP_List_Table_WS_Form {
 	 * @return int
 	 */
 	public function get_pagenum() {
-		$pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
+		$pagenum = isset( $_REQUEST['paged'] ) ? intval( $_REQUEST['paged'] ) : 0;
 
 		if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
 			$pagenum = $this->_pagination_args['total_pages'];

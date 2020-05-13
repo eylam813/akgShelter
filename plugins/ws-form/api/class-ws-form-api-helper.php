@@ -205,7 +205,7 @@
 
 			// Push form
 			$contact_push_form = WS_Form_Common::get_query_var_nonce('contact_push_form');
-			$form_id = absint(WS_Form_Common::get_query_var_nonce('id'));
+			$form_id = intval(WS_Form_Common::get_query_var_nonce('id'));
 			if($contact_push_form && ($form_id > 0)) {
 
 				// Create form file attachment
@@ -382,6 +382,19 @@
 			exit;
 		}
 
+		// API - WS Form Skin CSS - RTL
+		public function api_ws_form_css_skin_rtl() {
+
+			// Output HTTP header
+			self::api_css_header();
+
+			// Output CSS
+			$ws_form_css_rtl = new WS_Form_CSS();
+			echo $ws_form_css_rtl->get_skin_rtl();	// phpcs:ignore
+
+			exit;
+		}
+
 		// API - Email CSS
 		public function api_css_email() {
 
@@ -499,21 +512,6 @@
 			update_user_option(get_current_user_id(), 'managews-form_page_ws-form-submitcolumnshidden-' . $form_id, $form_hidden_columns, true);
 
 			self::api_json_response();
-		}
-
-		// Get variables for help
-		public function api_variables($parameters) {
-
-			// User capability check
-			if(!WS_Form_Common::can_user('edit_form')) { parent::api_access_denied(); }
-
-			// Get form ID
-			$form_id = intval(WS_Form_Common::get_query_var_nonce('id', 0, $parameters));
-			if($form_id == 0) { exit; }
-
-			$variables = WS_Form_Config::get_parse_variable_help($form_id, false);
-
-			return $variables;
 		}
 
 		// API - Review nag dismiss

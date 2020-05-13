@@ -68,6 +68,9 @@
 		this.group_id_old = null;
 		this.section_repeatable_dragged = false;
 
+		// Repeatable sections
+		this.section_repeatable_indexes = {};
+
 		// Checksum
 		this.checksum = false;
 		this.checksum_setTimeout = false;
@@ -150,6 +153,9 @@
 
 		// Search AJAX cache
 		this.select_ajax_cache = [];
+
+		// Preview
+		this.preview_window = undefined;
 	}
 
 	// Render
@@ -158,9 +164,9 @@
 		var ws_this = this;
 
 		// Check attributes
-		if(typeof atts === 'undefined') { this.error(this.language('error_attributes')); }
-		if(typeof atts.obj === 'undefined') { this.error(this.language('error_attributes_obj')); }
-		if(typeof atts.form_id === 'undefined') { this.error(this.language('error_attributes_form_id')); }
+		if(typeof atts === 'undefined') { this.error('error_attributes'); }
+		if(typeof atts.obj === 'undefined') { this.error('error_attributes_obj'); }
+		if(typeof atts.form_id === 'undefined') { this.error('error_attributes_form_id'); }
 
 		// Form canvas (Could be something other than form if element defined)
 		this.form_canvas_obj = atts.obj instanceof $ ? atts.obj : $(atts.obj);
@@ -240,8 +246,6 @@
 
 		// Admin resize
 		$.WS_Form.this.admin_size_loader();
-		$.WS_Form.this.admin_size_sidebar();
-		$.WS_Form.this.admin_size_breakpoint();
 	}
 
 	// Admin sizing - Loader
@@ -255,45 +259,21 @@
 
 		// Loader left
 		var admin_menu_width = $('#adminmenu:visible').length ? $('#adminmenu').width() : 0;
-		$('#wsf-loader').css({'left': admin_menu_width + 'px'});
+
+		if(ws_form_settings.rtl) {
+
+			$('#wsf-loader').css({'right': admin_menu_width + 'px'});
+
+		} else {
+
+			$('#wsf-loader').css({'left': admin_menu_width + 'px'});
+		}
 
 		// Loader width
 		var window_width = $(window).width();
 		var sidebar_width = (window.matchMedia('(min-width: 851px)').matches) ? ($('.wsf-sidebar.wsf-sidebar-open').length ? $('.wsf-sidebar.wsf-sidebar-open').first().width() : 0) : 0;
 		var breakpoint_selector_width = window_width - (admin_menu_width + sidebar_width);
 		$('#wsf-loader').css({'width': breakpoint_selector_width + 'px'});
-	}
-
-	// Admin sizing - Sidebar
-	$.WS_Form.prototype.admin_size_sidebar = function() {
-
-		if(!$('.wsf-sidebar').length) { return; }
-
-		// Sidebar top
-		var admin_bar_height = (window.matchMedia('(min-width: 601px)').matches) ? ($('#wpadminbar:visible').length ? $('#wpadminbar').height() : 0) : 0;
-		$('.wsf-sidebar').css({'top': admin_bar_height + 'px'});
-
-		// Sidebar height
-		var window_height = $(window).height();
-		var sidebar_height = (window.matchMedia('(min-width:601px)').matches) ? (window_height - admin_bar_height) : window_height;
-		$('.wsf-sidebar').css({'height': sidebar_height + 'px'});
-	}
-
-	// Admin sizing - Breakpoint
-	$.WS_Form.prototype.admin_size_breakpoint = function() {
-		
-		if(!$('#wsf-breakpoints').length) { return ; }
-
-		// Breakpoint selector left
-		var admin_menu_width = $('#adminmenu:visible').length ? $('#adminmenu').width() : 0;
-		$('#wsf-breakpoints').css({'left': admin_menu_width + 'px'});
-
-		// Breakpoint selector width
-		var window_width = $(window).width();
-		var sidebar_width = (window.matchMedia('(min-width: 851px)').matches) ? $('.wsf-sidebar').first().width() : 0;
-		var breakpoint_selector_padding = 40;
-		var breakpoint_selector_width = window_width - (admin_menu_width + sidebar_width + breakpoint_selector_padding);
-		$('#wsf-breakpoints').css({'width': breakpoint_selector_width + 'px'});
 	}
 
 	// Get configuration
@@ -316,7 +296,10 @@
 				var ws_this = this;
 				this.api_call('config', 'GET', false, function(response) {
 
+					// Set configuration
 					ws_this.set_configuration(response.data);
+
+					window.wsf_form_json_config = response.data;
 
 					if(typeof(success_callback) === 'function') { success_callback(); }
 
@@ -361,8 +344,15 @@
 	// Get configuration
 	$.WS_Form.prototype.get_form = function(success_callback) {
 
-		// Start rendering
-		if(this.form_id == 0) { this.error(this.language('error_form_id')); }
+		// Show error if form ID is 0 or unspecified
+		if(this.form_id == 0) {
+
+			this.error('error_form_id');
+
+			this.loader_off();
+
+			return;
+		}
 
 		// Set form data-id attribute
 		$('#' + this.form_obj_id).attr('data-id', this.form_id);
@@ -378,6 +368,10 @@
 
 				// Store form data
 				ws_this.form = response.form;
+
+				// Build cache
+				if(typeof(window.wsf_form_json) === 'undefined') { window.wsf_form_json = []; }
+				window.wsf_form_json[ws_this.form_id] = response.form;
 
 				// Build data cache
 				ws_this.data_cache_build();
@@ -1023,7 +1017,7 @@
 		if(mask_wrappers_drop) { var mask_single = '#field'; } else { var mask_single = this.get_field_value_fallback(field.type, false, 'mask_single', false, framework_fields); }
 
 		// Build parse values
-		var mask_values = {'attributes': ((attributes.length > 0) ? ' ' : '') + attributes.join(' '), 'class': class_array.join(' '), 'id': this.form_id_prefix + 'field-wrapper-' + field.id + ((section_repeatable_index !== false) ? '-repeat-' + section_repeatable_index : ''), 'data_id': field.id, 'type': field.type, 'field': field_html};
+		var mask_values = {'attributes': ((attributes.length > 0) ? ' ' : '') + attributes.join(' '), 'class': class_array.join(' '), 'id': this.get_part_id(field.id, section_repeatable_index, 'field-wrapper'), 'data_id': field.id, 'type': field.type, 'field': field_html};
 
 		// Parse wrapper field
 		var field_html_parsed = this.comment_html(this.language('comment_field') + ': ' + field_label) + this.mask_parse(mask_single, mask_values) + this.comment_html(this.language('comment_field') + ': ' + field_label, true);
@@ -1060,7 +1054,7 @@
 
 		if(typeof(input) !== 'string') { return input; }
 
-		var return_html = input.replace_all('&', '&amp;');
+		var return_html = input.replace_all('&', '&#38;');
 		return_html = return_html.replace_all('<', '&lt;');
 		return_html = return_html.replace_all('>', '&gt;');
 		return_html = return_html.replace_all('"', '&quot;');
@@ -1243,8 +1237,7 @@
 				return default_return;
 			}
 		}
-
-		return parse_variables_process ? this.parse_variables_process(object.meta[key]) : object.meta[key];	
+		return (parse_variables_process && (typeof(object.meta[key]) === 'string')) ? this.parse_variables_process(object.meta[key]).output : object.meta[key];	
 	}
 
 	// Get object meta value
@@ -1260,17 +1253,25 @@
 	}
 
 	// Parse WS Form variables
-	$.WS_Form.prototype.parse_variables_process = function(parse_string, section_repeatable_index, depth) {
+	$.WS_Form.prototype.parse_variables_process = function(parse_string, section_repeatable_index, calc, field_to, calc_type, depth) {
+
+		var ws_this = this;
 
 		// Checks parse_string
-		if(typeof(parse_string) !== 'string') { return parse_string; }
-		if(parse_string.indexOf('#') == -1) { return parse_string; }
+		if(typeof(parse_string) !== 'string') { return this.parse_variables_process_error(parse_string); }
+		if(parse_string.indexOf('#') == -1) { return this.parse_variables_process_error(parse_string); }
 
 		// Check section_repeatable_index
-		if(typeof(section_repeatable_index) === 'undefined') { section_repeatable_index = false; }
+		if(typeof(section_repeatable_index) === 'undefined') { var section_repeatable_index = false; }
+
+		// Check if within calc
+		if(typeof(calc) === 'undefined') { var calc = false; }
+
+		// Check field_to
+		if(typeof(field_to) === 'undefined') { var field_to = false; }
 
 		// Check for too many iterations
-		if(typeof(depth) === 'undefined') { depth = 1; }
+		if(typeof(depth) === 'undefined') { var depth = 1; }
 
 		// Initialize variables
 		var variables = {};
@@ -1279,11 +1280,14 @@
 		// Parse type
 		var lookups_contain_singles = false;
 
+		// Fields touched
+		var variable_fields = [];
+
 		// Check for too many iterations
 		if(depth > 100) {
 
 			this.error('error_parse_variable_syntax_error_depth', '', 'parse_variables');
-			return this.language('error_parse_variable_syntax_error_depth');
+			return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_depth'));
 		}
 
 		// Process each parse variable key
@@ -1291,16 +1295,21 @@
 
 			if(!$.WS_Form.parse_variables.hasOwnProperty(parse_variables_key)) { continue; }
 
-			if(parse_string.indexOf('#' + parse_variables_key) == -1) { continue; }
-
 			// Process each parse variable
 			var parse_variables = $.WS_Form.parse_variables[parse_variables_key];
+
+			// Check for prefix (for performance)
+			var ignore_prefix = (typeof(parse_variables.ignore_prefix) ? parse_variables.ignore_prefix : false);
+			if(!ignore_prefix) {
+
+				if(parse_string.indexOf('#' + parse_variables_key) === -1) { continue; }
+			}
 
 			for(var parse_variable in parse_variables['variables']) {
 
 				if(!parse_variables['variables'].hasOwnProperty(parse_variable)) { continue; }
 
-				if(parse_string.indexOf('#' + parse_variable) == -1) { continue; }
+				if(parse_string.indexOf('#' + parse_variable, variable_index_start) === -1) { continue; }
 
 				var parse_variable_config = parse_variables['variables'][parse_variable];
 
@@ -1335,10 +1344,15 @@
 						var parse_string_function = parse_string.substring(variable_index_of + parse_variable.length + 1);
 
 						// Bracket should immediately follow the variable name
-						if(parse_string_function.substring(0, 1) == '(') {
+						if(parse_string_function.substring(0, 1) === '(') {
 
 							variable_index_of_bracket_start = variable_index_of + parse_variable.length + 1;
-							variable_index_of_bracket_finish = parse_string.indexOf(')', variable_index_of_bracket_start);
+							variable_index_of_bracket_finish = this.get_bracket_finish_index(parse_string_function);
+
+							if(variable_index_of_bracket_finish !== -1) {
+
+								variable_index_of_bracket_finish += variable_index_of_bracket_start;
+							}
 						}
 
 						// Check brackets found
@@ -1362,30 +1376,11 @@
 							// Get attribute string
 							var variable_attribute_string = parse_string.substr(variable_index_of_bracket_start + 1, (variable_index_of_bracket_finish - 1) - variable_index_of_bracket_start);
 
-							// Replace non standard double quotes
-							variable_attribute_string.replace('“', '"');
-							variable_attribute_string.replace('”', '"');
-
 							// Get full string to parse
 							var parse_variable_full = parse_string.substr(variable_index_of, (variable_index_of_bracket_finish + 1) - variable_index_of);
 
-							// Get attribute array
-							var variable_attribute_array_raw = variable_attribute_string.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-
-							if(variable_attribute_array_raw !== null) {
-
-								// Trim and strip double quotes
-								var variable_attribute_array = variable_attribute_array_raw.map(function(e) { 
-
-									e = $.trim(e);
-									e = e.replace(/^"(.+(?="$))"$/, '$1'); 
-									return e;
-								});
-
-							} else {
-
-								var variable_attribute_array = [];
-							}
+							// Convert string to attributes
+							var variable_attribute_array = this.string_to_attributes(variable_attribute_string);
 						}
 
 						// Check each attribute
@@ -1406,7 +1401,7 @@
 
 								// Syntax error - Attribute count
 								this.error('error_parse_variable_syntax_error_attribute', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_id + ')', 'parse-variables');
-								return this.language('error_parse_variable_syntax_error_attribute', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_id + ')');
+								return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_attribute', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_id + ')'));
 							}
 
 							// Check default
@@ -1424,7 +1419,7 @@
 
 									// Syntax error - Invalid attribute value
 									this.error('error_parse_variable_syntax_error_attribute_invalid', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_valid.join(', ') + ')', 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_attribute_invalid', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_valid.join(', ') + ')');
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_attribute_invalid', '#' + parse_variable + ' (Expected ' + parse_variable_attribute_valid.join(', ') + ')'));
 								}
 							}
 						}
@@ -1432,92 +1427,191 @@
 						// Process variable
 						var parsed_variable = '';
 						switch(parse_variable) {
-
-							case 'query_var' :
-
-								parsed_variable = this.get_query_var(variable_attribute_array[0]);
-								break;
-
-							case 'section_row_count' :
-
-								if(isNaN(variable_attribute_array[0])) {
-
-									this.error('error_parse_variable_syntax_error_section_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_section_id', variable_attribute_array[0]);
-								}
-
-								var section_id = variable_attribute_array[0];
-
-								// Check section exists
-								if(typeof(this.section_data_cache[section_id]) === 'undefined') {
-
-									this.error('error_parse_variable_syntax_error_section_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_section_id', variable_attribute_array[0]);
-								}
-
-								// Get section count
-								var sections = $('[data-repeatable][data-id="' + section_id + '"]', this.form_canvas_obj);
-								parsed_variable = sections.length ? sections.length : 0;
-
-								break;
-
 							case 'field' :
 							case 'ecommerce_field_price' :
 
 								if(isNaN(variable_attribute_array[0])) {
 
 									this.error('error_parse_variable_syntax_error_field_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]);
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]));
 								}
 
-								var field_id = variable_attribute_array[0];
+								var field_id = parseInt(variable_attribute_array[0]);
+
+								// Check for infinite loops
+								if(field_id === parseInt(field_to.id)) {
+
+									// Syntax error - Infinite loop
+									this.error('error_parse_variable_syntax_error_calc_loop', parse_variable_full, 'parse-variables');
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_calc_loop', parse_variable_full));
+								}
 
 								// Check field exists
 								if(typeof(this.field_data_cache[field_id]) === 'undefined') {
 
 									this.error('error_parse_variable_syntax_error_field_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]);
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]));
 								}
 
-								var field_config = this.field_data_cache[field_id];
-								var field_type_config = $.WS_Form.field_type_cache[field_config.type];
-								var field_name = ws_form_settings.field_prefix + parseInt(field_id) + ((section_repeatable_index) ? '[' + section_repeatable_index + ']' : '');
+								// Add to fields touched array
+								variable_fields.push(field_id);
+
+								// Get field config
+								var field_from = this.field_data_cache[field_id];
+								if(typeof($.WS_Form.field_type_cache[field_from.type]) === 'undefined') { break; }
+								var field_type_config_from = $.WS_Form.field_type_cache[field_from.type];
 
 								// Check if submitted as array
-								var field_type_submit_array = (typeof field_type_config['submit_array'] !== 'undefined') ? field_type_config['submit_array'] : false;
-								field_name += field_type_submit_array ? '[]' : '';
+								var submit_array_from = (typeof(field_type_config_from['submit_array']) !== 'undefined') ? field_type_config_from['submit_array'] : false;
 
-								// Build field selector
-								var field_selector = '[name="' + field_name + '"]';
+								// Get criteria needed to work out how to get field value
+								var section_repeatable_section_id_from = (typeof(field_from.section_repeatable_section_id) !== 'undefined') ? field_from.section_repeatable_section_id : false;
+								var section_repeatable_section_id_to = (typeof(field_to.section_repeatable_section_id) !== 'undefined') ? field_to.section_repeatable_section_id : false;
+								var section_repeatable_index_to = section_repeatable_index;
 
-								// Adjustments by field type
-								switch(field_config.type) {
+								var parsed_variable = false;
 
-									// Radio
-									case 'radio' :
+								// REPEATABLE TO REPEATABLE
+								// In this scenario, we want the single field in the from section
+								if(
+									(section_repeatable_section_id_from !== false) &&
+									(section_repeatable_section_id_to !== false)
+								) {
 
-										field_selector += ':checked';
-										break;
+									// Get source repeatable index
+									var parsed_variable = this.get_field_value(field_from, section_repeatable_index_to, submit_array_from);
 								}
 
-								var field_obj = $(field_selector, this.form_canvas_obj);
+								// REPEATABLE TO NON-REPEATABLE
+								// In this scenario, we want the sum of all fields in the from sections
+								if(
+									(section_repeatable_section_id_from !== false) &&
+									(section_repeatable_section_id_to === false)
+								) {
 
-								if(field_obj.length) {
+									// Get source repeatable index
+									var parsed_variable = this.get_field_value(field_from, true, submit_array_from);
+								}
 
-									// Use live value
-									parsed_variable = field_obj.val();
+								// NON-REPEATABLE TO ANYTHING
+								// In this scenario, simply get the field
+								if(
+									(section_repeatable_section_id_from === false)
+								) {
+
+									// Get source repeatable index
+									var parsed_variable = this.get_field_value(field_from, false, submit_array_from);
+								}
+
+								// Value still not found, fallback to default
+								if(parsed_variable === false) {
+
+									switch(field_from.type) {
+
+										case 'price_select' :
+										case 'price_checkbox' :
+										case 'price_radio' :
+										case 'select' :
+										case 'checkbox' :
+										case 'radio' :
+
+											// Get default from data source
+											var data_source = this.get_data_source(field_from);
+
+											if(data_source.default_value !== false) {
+
+												parsed_variable = data_source.default_value;
+
+											} else {
+
+												parsed_variable = [];
+											}
+
+											break;
+
+										default :
+
+											// Get default value from field
+											var default_value = this.get_object_meta_value(field_from, 'default_value', '');
+											var parse_variables_process_return = this.parse_variables_process(default_value, section_repeatable_index, calc, field_from, calc_type, depth + 1);
+											if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+											parsed_variable = [parse_variables_process_return.output];
+									}
+								}
+
+								// If this parse is for a calculation, handle the values differently for eval
+								if(calc && parsed_variable.length) {
+
+									// Check field configuration calc_in
+									var calc_out = typeof(field_type_config_from['calc_out']) ? field_type_config_from['calc_out'] : false;
+									if(!calc_out) {
+
+										this.error('error_parse_variable_syntax_error_calc_out', 'ID: ' + calc.field.id, 'parse-variables');
+										return;
+									}
+
+							 		var parsed_variable_total = 0;
+
+									switch(field_from.type) {
+
+										case 'price_select' :
+										case 'price_checkbox' :
+										case 'price_radio' :
+										case 'price' :
+										case 'price_subtotal' :
+										case 'cart_price' :
+
+									 		// Get value, ignoring currency
+									 		for(var parsed_variable_index in parsed_variable) {
+
+												if(!parsed_variable.hasOwnProperty(parsed_variable_index)) { continue; }
+
+												parsed_variable_total += ws_this.get_number(parsed_variable[parsed_variable_index], 0);
+									 		}
+
+											parsed_variable = parsed_variable_total;
+
+											break;
+
+										case 'datetime' :
+
+											// Get date represented in seconds
+											if(parsed_variable.length === 1) {
+
+												parsed_variable = (parsed_variable[0] != '') ? this.get_number(new Date(parsed_variable[0]).getTime()) : false;
+												parsed_variable = (parsed_variable !== false) ? (parsed_variable / 1000) : '';
+
+											} else {
+
+												parsed_variable = '';
+											}
+
+											break;
+
+										default :
+
+									 		// Get value, ignoring currency
+									 		for(var parsed_variable_index in parsed_variable) {
+
+												if(!parsed_variable.hasOwnProperty(parsed_variable_index)) { continue; }
+
+												parsed_variable_total += ws_this.get_number(parsed_variable[parsed_variable_index], 0, false);
+									 		}
+
+											parsed_variable = parsed_variable_total;
+									}
 
 								} else {
 
-									parsed_variable = this.get_object_meta_value(this.field_data_cache[field_id], 'default_value', '');
-									parsed_variable = this.parse_variables_process(parsed_variable, section_repeatable_index, depth + 1);
+									// Regular #field
+									parsed_variable = parsed_variable.join(',');
 								}
 
 								if(parse_variable == 'ecommerce_field_price') {
 
 									var parsed_variable = this.get_price(parsed_variable);
 								}
-
+ 
 								break;
 
 							case 'select_option_text' :
@@ -1525,7 +1619,7 @@
 								if(isNaN(variable_attribute_array[0])) {
 
 									this.error('error_parse_variable_syntax_error_field_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]);
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]));
 								}
 
 								// Read attributes
@@ -1548,13 +1642,42 @@
 
 								break;
 
+							case 'query_var' :
+
+								parsed_variable = this.get_query_var(variable_attribute_array[0]);
+								break;
+
+							case 'section_row_count' :
+
+								if(isNaN(variable_attribute_array[0])) {
+
+									this.error('error_parse_variable_syntax_error_section_id', variable_attribute_array[0], 'parse-variables');
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_section_id', variable_attribute_array[0]));
+								}
+
+								var section_id = variable_attribute_array[0];
+
+								// Check section exists
+								if(typeof(this.section_data_cache[section_id]) === 'undefined') {
+
+									this.error('error_parse_variable_syntax_error_section_id', variable_attribute_array[0], 'parse-variables');
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_section_id', variable_attribute_array[0]));
+								}
+
+								// Get section count
+								var sections = $('[data-repeatable][data-id="' + section_id + '"]', this.form_canvas_obj);
+
+								parsed_variable = sections.length ? sections.length : 0;
+
+								break;
+
 							case 'checkbox_label' :
 							case 'radio_label' :
 
 								if(isNaN(variable_attribute_array[0])) {
 
 									this.error('error_parse_variable_syntax_error_field_id', variable_attribute_array[0], 'parse-variables');
-									return this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]);
+									return this.parse_variables_process_error(this.language('error_parse_variable_syntax_error_field_id', variable_attribute_array[0]));
 								}
 
 								// Read attributes
@@ -1596,18 +1719,126 @@
 
 							case 'random_number' :
 
-								var random_number_min = parseInt(variable_attribute_array[0]);
-								var random_number_max = parseInt(variable_attribute_array[1]);
+								var random_number_min = parseInt(this.get_number(variable_attribute_array[0]));
+								var random_number_max = parseInt(this.get_number(variable_attribute_array[1]));
 								parsed_variable = Math.floor(Math.random() * (random_number_max - random_number_min + 1)) + random_number_min;
 								break;
 
 							case 'random_string' :
 
-								var random_string_length = parseInt(variable_attribute_array[0]);
+								var random_string_length = parseInt(this.get_number(variable_attribute_array[0]));
 								var random_string_characters = variable_attribute_array[1];
 								var random_string_character_length = random_string_characters.length;
 								parsed_variable = '';
 								for (var random_string_index = 0; random_string_index < random_string_length; random_string_index++) { parsed_variable += random_string_characters[Math.floor(Math.random() * random_string_character_length)]; } 
+								break;
+
+							case 'abs' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.abs(number_input);
+								break;
+
+							case 'ceil' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.ceil(number_input);
+								break;
+
+							case 'cos' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.cos(number_input);
+								break;
+
+							case 'exp' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.exp(number_input);
+								break;
+
+							case 'floor' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.floor(number_input);
+								break;
+
+							case 'log' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.log(number_input);
+								break;
+
+							case 'round' :
+
+								var decimals = this.get_number(variable_attribute_array[1], 0, false);
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var parsed_variable = this.eval_process(parse_variables_process_return.output, decimals);
+								break;
+
+							case 'sin' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.sin(number_input);
+								break;
+
+							case 'sqrt' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.sqrt(number_input);
+								break;
+
+							case 'tan' :
+
+								var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+								if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+								var number_input = this.eval_process(parse_variables_process_return.output);
+								parsed_variable = Math.tan(number_input);
+								break;							
+	
+							case 'avg' :
+
+								var parsed_variable_total = 0;
+
+								// If we can only find one parameter, try splitting that up by comma
+								if(variable_attribute_array.length === 1) {
+
+									var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[0], section_repeatable_index, calc, field_to, calc_type, depth);
+									if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+									variable_attribute_array = this.string_to_attributes(parse_variables_process_return.output);
+								}
+
+								// Run through each attribute and add it to total
+								for(var variable_attribute_array_index in variable_attribute_array) {
+
+									if(!variable_attribute_array.hasOwnProperty(variable_attribute_array_index)) { continue; }
+
+									var parse_variables_process_return = this.parse_variables_process(variable_attribute_array[variable_attribute_array_index], section_repeatable_index, calc, field_to, calc_type, depth);
+									if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
+									var number_input = this.eval_process(parse_variables_process_return.output);
+									parsed_variable_total += number_input;
+								}
+
+								// Work out average
+								parsed_variable = parsed_variable_total / variable_attribute_array.length;
+
 								break;
 						}
 
@@ -1670,22 +1901,380 @@
 			(parse_string.indexOf('#') !== -1)
 		) {
 
-			parse_string = this.parse_variables_process(parse_string, section_repeatable_index, depth + 1);
+			var parse_variables_process_return = this.parse_variables_process(parse_string, section_repeatable_index, calc, field_to, calc_type, depth + 1);
+			parse_string = parse_variables_process_return.output;
+
+			if(typeof(parse_variables_process_return.fields) === 'object') { variable_fields = variable_fields.concat(parse_variables_process_return.fields); }
 		}
 
-		return parse_string;
+		var return_object = {
+
+			'output' : parse_string,
+			'fields' : variable_fields
+		};
+
+		return return_object;
+	}
+
+	// EVAL Process
+	$.WS_Form.prototype.eval_process = function(eval_input, decimals) {
+
+		// Eval
+		try {
+
+			// Attempt to eval
+			var eval_output = eval(eval_input);
+
+			if(eval_output === Infinity) {
+
+				// Convert infinity to 0
+				eval_output = 0;
+			}
+
+			// Clean up eval output (Ensure only numbers returned)
+			return this.get_number(eval_output, 0, false, decimals);
+
+		} catch (e) {
+
+			// Handle eval error
+			return 0;
+		}
+	}
+
+	// Parse string to attributes
+	$.WS_Form.prototype.string_to_attributes = function(input_string) {
+
+		if(typeof(input_string) !== 'string') { return []; }
+		if(input_string == '') { return []; }
+
+		var bracket_index = 1;
+		var input_string_index = 0;
+		var skip_double_quotes = false;
+		var attribute_single = '';
+		var attribute_array = [];
+
+		// Replace non standard double quotes
+		input_string.replace('“', '"');
+		input_string.replace('”', '"');
+
+		while(
+			(bracket_index > 0) ||
+			(input_string_index < input_string.length)
+		) {
+
+			// Get character
+			var character = input_string[input_string_index];
+
+			// If end of string, break
+			if(character == undefined) { break; }
+
+			if(
+				(character === ',') &&
+				(bracket_index === 1) &&
+				(!skip_double_quotes)
+			) {
+
+				// Create attribute
+				attribute_array.push(attribute_single);
+				attribute_single = '';
+
+				// Jump to next character
+				input_string_index++;
+
+				continue;
+			}
+
+			// If double quotes 
+			if(character === '"') {
+
+				// Toggle skip double quotes
+				skip_double_quotes = !skip_double_quotes;
+
+				// Jump to next character
+				input_string_index++;
+
+				continue;
+			}
+
+			// If not in double quotes, process brackets
+			if(!skip_double_quotes) {
+
+				switch(character) {
+
+					case '(' : bracket_index++; break;
+
+					case ')' : bracket_index--; break;
+				}
+
+				if(bracket_index === 0) { break; }
+			}
+
+			// Add character to attribute_single
+			attribute_single += character;
+
+			input_string_index++;
+		}
+
+		if(attribute_single.length) {
+
+			attribute_array.push(attribute_single);
+		}
+
+		// Trim and strip double quotes
+		if(attribute_array.length) {
+
+			attribute_array = attribute_array.map(function(e) { 
+
+				e = $.trim(e);
+				e = e.replace(/^"(.+(?="$))"$/, '$1'); 
+				return e;
+			});
+		}
+
+		return attribute_array;
+	}
+
+	$.WS_Form.prototype.get_bracket_finish_index = function(input_string) {
+
+		if(input_string === '') { return -1; }
+
+		// Replace non standard double quotes
+		input_string.replace('“', '"');
+		input_string.replace('”', '"');
+
+		// Look for closing bracket
+		var bracket_index = 1;
+		var input_string_index = 1;	// Start at index 1 to avoid the already found opening bracket
+		var skip_double_quotes = false;
+
+		while(
+			(bracket_index > 0) ||
+			(input_string_index < input_string.length)
+		) {
+
+			// Get character
+			var character = input_string[input_string_index];
+
+			// If end of string, break
+			if(character === undefined) { break; }
+
+			// If double quotes 
+			if(character === '"') {
+
+				// Toggle skip double quotes
+				skip_double_quotes = !skip_double_quotes;
+
+				// Jump to next character
+				input_string_index++;
+
+				continue;
+			}
+
+			// If not in double quotes, process brackets
+			if(!skip_double_quotes) {
+
+				switch(character) {
+
+					case '(' : bracket_index++; break;
+
+					case ')' : bracket_index--; break;
+				}
+
+				if(bracket_index === 0) { break; }
+			}
+
+			input_string_index++;
+		}
+
+		if(bracket_index === 0) {
+
+			return input_string_index;
+
+		} else {
+
+			// Syntax error - Closing bracket not found
+			this.error('error_parse_variable_syntax_error_bracket_closing', input_string, 'parse-variables');
+			return -1;
+		}
+	}
+
+	// Parse variable error
+	$.WS_Form.prototype.parse_variables_process_error = function(error_message) {
+
+		return {'output' : error_message, 'functions': [], 'fields': []};
+	}
+
+	// Get value from field
+	$.WS_Form.prototype.get_field_value = function(field, section_repeatable_index, submit_array) {
+
+		if(typeof(section_repeatable_index) === 'undefined') { var section_repeatable_index = false; }
+		if(typeof(submit_array) === 'undefined') { var submit_array = false; }
+
+		if(section_repeatable_index === false) {
+
+			// Not in a repeatable section
+			var field_selector = '[name="' + ws_form_settings.field_prefix + field.id;
+
+			// If this is a select, checkbox or radio
+			if(submit_array) { field_selector += '[]'; }
+
+		} else if(section_repeatable_index === true) {
+
+			// If we are getting from all repeatable sections
+			var field_selector = '[name^="' + ws_form_settings.field_prefix + field.id + '[';
+
+		} else {
+
+			// If we are getting from a specific repeatable section
+			var field_selector = '[name="' + ws_form_settings.field_prefix + field.id + '[' + section_repeatable_index + ']';
+
+			// If this is a select, checkbox or radio
+			if(submit_array) { field_selector += '[]'; }
+		}
+
+		field_selector += '"]';
+
+		// Check field(s) exist
+		if(!$(field_selector).length) { return false; }
+
+		// Return values
+		switch(field.type) {
+
+			case 'checkbox' :
+			case 'radio' :
+			case 'price_checkbox' :
+			case 'price_radio' :
+
+				field_selector += ':checked';
+		}
+
+		var return_array = [];
+		$(field_selector, this.form_canvas_ob).each(function() {
+
+			return_array.push($(this).val());
+		});
+
+		return return_array;
+	}
+
+	// Get data source
+	$.WS_Form.prototype.get_data_source = function(field) {
+
+		var data_source_return = { default_value: [] };
+
+		// Get field config
+		var field = this.field_data_cache[field.id];
+		if(typeof($.WS_Form.field_type_cache[field.type]) === 'undefined') { return false; }
+		var field_type_config = $.WS_Form.field_type_cache[field.type];
+
+		// Get data source
+		if(typeof(field_type_config.data_source) === 'undefined') { return false; }
+		var data_source = field_type_config.data_source;
+
+		// Get data source type
+		if(typeof(data_source.type) === 'undefined') { return false; }
+		data_source_return.type = data_source.type;
+
+		// Get data source by type
+		switch(data_source_return.type) {
+
+			case 'data_grid' :
+
+				// Get data source meta key
+				if(typeof(data_source.id) === 'undefined') { return false; }
+				data_source_return.meta_key_data_grid = data_source.id;
+
+				// Get data source value key
+				data_source_return.meta_key_value_column = (typeof(field_type_config.datagrid_column_value === 'undefined') ? field_type_config.datagrid_column_value : false);
+
+				// Get data grid
+				data_source_return.data_grid = this.get_object_meta_value(field, data_source_return.meta_key_data_grid, false);
+
+				// Get value column
+				data_source_return.value_column_id = this.get_object_meta_value(field, data_source_return.meta_key_value_column, false);
+
+				// Run through the data grid columns until we find the ID
+				var data_columns = (typeof(data_source_return.data_grid.columns)) ? data_source_return.data_grid.columns : [];
+
+				data_source_return.value_column_index = false;
+				for(var data_columns_index in data_columns) {
+
+					if(!data_columns.hasOwnProperty(data_columns_index)) { continue; }
+
+					var data_column = data_columns[data_columns_index];
+
+					if(typeof(data_column.id) === 'undefined') { continue; }
+
+					// Match found, store in cache
+					if(data_column.id == data_source_return.value_column_id) { data_source_return.value_column_index = data_columns_index; break; }
+				}
+
+				// Build default value
+				if(
+					(data_source_return.value_column_id !== false) &&
+					(typeof(data_source_return.data_grid.groups) !== 'undefined')
+				) {
+
+					// Process groups
+					var groups = data_source_return.data_grid.groups;
+					for(var group_index in groups) {
+
+						if(!groups.hasOwnProperty(group_index)) { continue; }
+
+						var group = groups[group_index];
+
+						// Get rows
+						if(typeof(group.rows) === 'undefined') { continue; }
+						var rows = group.rows;
+
+						// Process rows
+						for(var row_index in rows) {
+
+							if(!rows.hasOwnProperty(row_index)) { continue; }
+
+							var row = rows[row_index];
+
+							// Process default row
+							var row_default = (typeof(row.default) !== 'undefined') ? (row.default === 'on') : false;
+							if(row_default) {
+
+								if(typeof(row.data) === 'undefined') { continue; }
+								if(typeof(row.data[data_source_return.value_column_index]) === 'undefined') { continue; }
+
+								// Add data to default value
+								data_source_return.default_value.push(row.data[data_source_return.value_column_index]);
+							}
+						}
+					}
+				}
+
+				break;
+		}
+
+		return data_source_return;
 	}
 
 	// Get query variable
 	$.WS_Form.prototype.get_query_var = function(query_var) {
 
 		var url = window.location.href;
-		query_var = query_var.replace(/[\[\]]/g, "\\$&");
-		var regex = new RegExp("[?&]" + query_var + "(=([^&#]*)|&|#|$)"),
-			results = regex.exec(url);
-		if (!results) return '';
-		if (!results[2]) return '';
-		return decodeURIComponent(results[2].replace(/\+/g, " "));
+		if(!url) { return ''; }
+
+		try {
+
+			query_var = query_var.replace(/[\[\]]/g, "\\$&");
+			var regex = new RegExp("[?&]" + query_var + "(=([^&#]*)|&|#|$)");
+			var results = regex.exec(url);
+
+			if (!results) return '';
+			if (!results[2]) return '';
+
+			return decodeURIComponent(results[2].replace(/\+/g, " "));
+
+		} catch(e) {
+
+			return '';
+		}
 	}
 
 	// Set object meta
@@ -2262,7 +2851,10 @@
 				var field = section.fields[field_index];
 
 				// Repeatable?
-				field.in_section_repeatable = section_repeatable;
+				if(section_repeatable) {
+
+					field.section_repeatable_section_id = section.id;
+				}
 
 				// Skip fields that are unlicensed (Required for published data)
 				if(typeof($.WS_Form.field_type_cache[field.type]) === 'undefined') { continue; }
@@ -2323,9 +2915,14 @@
 		var attributes_values_field = [];
 		var has_value = (typeof(value) !== 'undefined');
 
-		// Determine field name
+		// Build repeatable suffix
 		var repeatable_suffix = ((section_repeatable_index !== false) ? '-repeat-' + section_repeatable_index : '');
-		var field_name = this.field_name_prefix + field.id + ((section_repeatable_index !== false) ? (is_submit ? ('_' + section_repeatable_index) : ('[' + section_repeatable_index + ']')) : '');
+
+		// Build field ID
+		var field_id = this.get_part_id(field.id, section_repeatable_index);
+
+		// Build field name
+		var field_name = this.get_field_name(field.id, section_repeatable_index);
 
 		// Submit only config
 		var submit_attributes_field = ['default', 'class', 'input_type_datetime', 'multiple', 'min', 'max', 'step'];
@@ -2390,10 +2987,12 @@
 		var mask_help_append_separator = this.get_field_value_fallback(field.type, label_position, 'mask_help_append_separator', '');
 		var mask_invalid_feedback = this.get_field_value_fallback(field.type, label_position, 'mask_invalid_feedback', '');
 
-		// Get default value
+		// Get values
 		var default_value = this.get_object_meta_value(field, 'default_value', '', false, true);
 		var text_editor = this.get_object_meta_value(field, 'text_editor', '', false, true);
 		var html_editor = this.get_object_meta_value(field, 'html_editor', '', false, true);
+
+		// Get text editor and html editor values
 
 		// Get default value
 		if(!has_value) {
@@ -2464,14 +3063,14 @@
 		// Field - Mask values
 		var mask_values_field = {
 
-			'id': 					this.form_id_prefix + 'field-' + field.id + repeatable_suffix,
+			'id': 					field_id,
 			'form_id_prefix':  		this.form_id_prefix,
 			'form_id':  			this.form_id,
 			'form_instance_id':  	this.form_instance_id,
 			'field_id': 			field.id,
 
 			'name': 				field_name,
-			'label': 				this.parse_variables_process(field.label),
+			'label': 				this.parse_variables_process(field.label, section_repeatable_index, false, field, 'field_label').output,
 			'value': 				value,
 			'required': 			(this.get_object_meta_value(this.form, 'label_required')) ? '<span class="wsf-required-wrapper"></span>' : '',
 
@@ -2558,12 +3157,13 @@
 
 		// Field label - Mask values
 		var mask_values_field_label = ($.extend(true, {}, mask_values_field));
-		mask_values_field_label['label_id'] = this.form_id_prefix + 'label-' + field.id + repeatable_suffix;
+		mask_values_field_label['label_id'] = this.get_part_id(field.id, section_repeatable_index, 'label');
 
 		// Help
 		var mask_values_help = [];
-		var help_id = this.form_id_prefix + 'help-' + field.id + repeatable_suffix;
-		var help = !is_submit ? this.get_object_meta_value(field, 'help', '', false, true) : '';
+		var help_id = this.get_part_id(field.id, section_repeatable_index, 'help');
+		var help = !is_submit ? this.get_object_meta_value(field, 'help', '', false, false) : '';
+		var help = this.parse_variables_process(help, section_repeatable_index, false, field, 'field_help').output;
 
 		// Help - When editing a submission, change help by field type
 		if(is_submit) {
@@ -2597,7 +3197,7 @@
 
 			var mask_values_invalid_feedback = ($.extend(true, {}, mask_values_field));
 
-			// Help ID
+			// Invalid feedback ID
 			var invalid_feedback_id = this.form_id_prefix + 'invalid-feedback-' + field.id + repeatable_suffix;
 
 			// Invalid feedback classes
@@ -2645,7 +3245,7 @@
 		}
 
 		if(mask_field_attributes.length > 0) {
- 			var get_attributes_return = this.get_attributes(field, mask_field_attributes);
+ 			var get_attributes_return = this.get_attributes(field, mask_field_attributes, false, section_repeatable_index);
 			mask_values_field['attributes'] += ' '  + get_attributes_return.attributes;
 			mask_field_attributes = get_attributes_return.mask_attributes;
 			attributes_values_field = get_attributes_return.attribute_values;
@@ -2691,7 +3291,7 @@
 		}
 
 		if(mask_field_label_attributes.length > 0) {
- 			var get_attributes_return = this.get_attributes(field, mask_field_label_attributes);
+ 			var get_attributes_return = this.get_attributes(field, mask_field_label_attributes, false, section_repeatable_index);
 			mask_values_field_label['attributes'] += get_attributes_return.attributes;
 			mask_field_label_attributes = get_attributes_return.mask_attributes;
 		}
@@ -2813,7 +3413,6 @@
 				var mask_values_group = $.extend(true, {}, mask_values_field);
 				mask_values_group['group_id'] = this.form_id_prefix + 'datagrid-' + field.id + '-group-' + data_group_index + repeatable_suffix;
 
-				// Get group
 				var data_group = data_groups[data_group_index];
 
 				// Get group label
@@ -2912,7 +3511,7 @@
 
 							var data_column_index = mask_row_lookup_array[mask_row_lookup];
 							var mask_row_lookup_value = data_row['data'][data_column_index];
-							var mask_row_lookup_value = this.parse_variables_process(mask_row_lookup_value.toString());
+							var mask_row_lookup_value = this.parse_variables_process(mask_row_lookup_value.toString()).output;
 
 							// HTML version of lookup (This is used for encoding labels in values, e.g. price_select option values)
 							mask_values_row[mask_row_lookup + '_html'] = this.html_encode(mask_row_lookup_value);
@@ -2993,7 +3592,7 @@
 
 						var mask_row_attributes = ($.extend(true, [], this.get_field_value_fallback(field.type, label_position, 'mask_row_attributes', [])));
 						if(mask_row_attributes.length > 0) {
-				 			var get_attributes_return = this.get_attributes(field, mask_row_attributes, extra_values);
+				 			var get_attributes_return = this.get_attributes(field, mask_row_attributes, extra_values, section_repeatable_index);
 							mask_values_row['attributes'] += ' ' + get_attributes_return.attributes;
 						}
 
@@ -3041,7 +3640,7 @@
 						}
 
 						if(mask_row_label_attributes.length > 0) {
-				 			var get_attributes_return = this.get_attributes(field, mask_row_label_attributes, extra_values);
+				 			var get_attributes_return = this.get_attributes(field, mask_row_label_attributes, extra_values, section_repeatable_index);
 							mask_values_row_label['attributes'] += ' ' + get_attributes_return.attributes;
 						}
 
@@ -3082,7 +3681,7 @@
 						}
 
 						if(mask_row_field_attributes.length > 0) {
-				 			var get_attributes_return = this.get_attributes(field, mask_row_field_attributes, extra_values);
+				 			var get_attributes_return = this.get_attributes(field, mask_row_field_attributes, extra_values, section_repeatable_index);
 							mask_values_row_field['attributes'] += ' ' + get_attributes_return.attributes;
 						}
 						if(mask_values_row_field['attributes'] != '') { mask_values_row_field['attributes'] = ' ' + mask_values_row_field['attributes']; }
@@ -3216,7 +3815,7 @@
 			if(class_field != '') { extra_values['class'] += ' '  + $.trim(class_field); }
 
 			// Process attributes
- 			var get_attributes_return = this.get_attributes(field, mask_field_attributes, extra_values);
+ 			var get_attributes_return = this.get_attributes(field, mask_field_attributes, extra_values, section_repeatable_index);
 
  			// Store as mask value
  			if(get_attributes_return.attributes != '') { mask_values_field['attributes'] += ' ' + get_attributes_return.attributes; }
@@ -3232,7 +3831,7 @@
 			if(class_field_label_array !== false) { extra_values['class'] = class_field_label_array.join(' '); }
 
 			// Process attributes
- 			var get_attributes_return = this.get_attributes(field, mask_field_label_attributes, extra_values);
+ 			var get_attributes_return = this.get_attributes(field, mask_field_label_attributes, extra_values, section_repeatable_index);
 
  			// Store as mask value
  			if(get_attributes_return.attributes != '') { mask_values_field_label['attributes'] += ' ' + get_attributes_return.attributes; }
@@ -3471,7 +4070,7 @@
 		}
 	}
 
-	$.WS_Form.prototype.get_attributes = function(object, mask_attributes, extra_values) {
+	$.WS_Form.prototype.get_attributes = function(object, mask_attributes, extra_values, section_repeatable_index) {
 
 		if(typeof(extra_values) !== 'object') { var extra_values = false; }
 
@@ -3488,20 +4087,20 @@
 				var mask_attribute_meta_key = mask_attributes[mask_attributes_key];
 
 				// Skip unknown meta_keys
-				if(typeof $.WS_Form.meta_keys[mask_attribute_meta_key] === 'undefined') { continue; }
+				if(typeof($.WS_Form.meta_keys[mask_attribute_meta_key]) === 'undefined') { continue; }
 
 				var meta_key = $.WS_Form.meta_keys[mask_attribute_meta_key];
 
 				// Read meta key mask data
 				if(this.is_admin) {
 	
-					var meta_key_mask = (typeof meta_key.mask !== 'undefined') ? meta_key.mask : '';
+					var meta_key_mask = (typeof(meta_key.mask) !== 'undefined') ? meta_key.mask : '';
 					var meta_key_mask_disregard_on_empty = (typeof meta_key.mask_disregard_on_empty !== 'undefined') ? meta_key.mask_disregard_on_empty : false;
 					var meta_key_mask_disregard_on_zero = (typeof meta_key.mask_disregard_on_zero !== 'undefined') ? meta_key.mask_disregard_on_zero : false;
 
 				} else {
 
-					var meta_key_mask = (typeof meta_key.m !== 'undefined') ? meta_key.m : '';
+					var meta_key_mask = (typeof(meta_key.m) !== 'undefined') ? meta_key.m : '';
 					var meta_key_mask_disregard_on_empty = (typeof meta_key.e !== 'undefined') ? meta_key.e : false;
 					var meta_key_mask_disregard_on_zero = (typeof meta_key.z !== 'undefined') ? meta_key.z : false;
 
@@ -3510,7 +4109,7 @@
 				if(extra_values !== false) {
 
 					// Use extra values
-					if(typeof extra_values[mask_attribute_meta_key] !== 'undefined') {
+					if(typeof(extra_values[mask_attribute_meta_key]) !== 'undefined') {
 
 						var meta_value = extra_values[mask_attribute_meta_key].trim();
 
@@ -3524,15 +4123,24 @@
 					// If meta_key key parameter is set, use that to get the object meta value
 					if(this.is_admin) {
 
-						var get_object_meta_value_key = (typeof meta_key.key !== 'undefined') ? meta_key.key : mask_attribute_meta_key;
+						var get_object_meta_value_key = (typeof(meta_key.key) !== 'undefined') ? meta_key.key : mask_attribute_meta_key;
 
 					} else {
 
-						var get_object_meta_value_key = (typeof meta_key.k !== 'undefined') ? meta_key.k : mask_attribute_meta_key;
+						var get_object_meta_value_key = (typeof(meta_key.k) !== 'undefined') ? meta_key.k : mask_attribute_meta_key;
 					}
 
 					// Get value
-					var meta_value = this.get_object_meta_value(object, get_object_meta_value_key, '', false, true);
+					var calc_type = (typeof(meta_key.c) !== 'undefined') ? meta_key.c : false;
+					if(calc_type !== false) {
+
+						var meta_value = this.get_object_meta_value(object, get_object_meta_value_key, '', false, false);
+						meta_value = this.parse_variables_process(meta_value, section_repeatable_index, false, object, calc_type).output
+
+					} else {
+
+						var meta_value = this.get_object_meta_value(object, get_object_meta_value_key, '', false, true);
+					}
 
 					// Remember value
 					attribute_values[get_object_meta_value_key] = meta_value;
@@ -3578,49 +4186,73 @@
 		return tel_input.replace(/[^+\d]+/g, "");
 	}
 
-	$.WS_Form.prototype.get_number = function(number_input, default_value) {
+	$.WS_Form.prototype.get_number = function(number_input, default_value, process_currency, decimals) {
 
 		if(typeof(default_value) === 'undefined') { default_value = 0; }
+		if(typeof(process_currency) === 'undefined') { process_currency = true; }
+		if(typeof(decimals) === 'undefined') { decimals = false; }
 
-		// Trim
+		// Convert numbers to text
+		if(typeof(number_input) === 'number') { number_input = number_input.toString(); }
+
+		// Check input is a string
+		if(typeof(number_input) !== 'string') { return 0; }
+
+		// Trim input
 		number_input = $.trim(number_input);
 
-		// Convert to text
-		number_input = $("<div/>").html(number_input).text();
+		// Convert from current currency
+		if(process_currency) {
 
-		// Filter characters required for parseFloat
-		var decimal_separator = $.WS_Form.settings_plugin.price_decimal_separator;
-		var thousand_separator = $.WS_Form.settings_plugin.price_thousand_separator;
+			// Filter characters required for parseFloat
+			var decimal_separator = $.WS_Form.settings_plugin.price_decimal_separator;
+			var thousand_separator = $.WS_Form.settings_plugin.price_thousand_separator;
 
-		// Ensure the decimal separator setting is included in the regex (Add ,. too in case default value includes alternatives)
-		var number_input_regex = new RegExp('[^0-9-' + decimal_separator + ']', 'g');
-		number_input = number_input.replace(number_input_regex, '');
+			// Ensure the decimal separator setting is included in the regex (Add ,. too in case default value includes alternatives)
+			var number_input_regex = new RegExp('[^0-9-' + decimal_separator + ']', 'g');
+			number_input = number_input.replace(number_input_regex, '');
 
-		if(decimal_separator === thousand_separator) {
+			if(decimal_separator === thousand_separator) {
 
-			// Convert decimal separators to periods so parseFloat works
-			if(number_input.substr(-3, 1) === decimal_separator) {
+				// Convert decimal separators to periods so parseFloat works
+				if(number_input.substr(-3, 1) === decimal_separator) {
 
-				var decimal_index = (number_input.length - 3);
-				number_input = number_input.substr(0, decimal_index) + '[dec]' + number_input.substr(decimal_index + 1);
+					var decimal_index = (number_input.length - 3);
+					number_input = number_input.substr(0, decimal_index) + '[dec]' + number_input.substr(decimal_index + 1);
+				}
+
+				// Remove thousand separators
+				number_input = number_input.replace(thousand_separator, '');
+
+				// Replace [dec] back to decimal separator for parseFloat
+				number_input = number_input.replace('[dec]', '.');
+
+			} else {
+
+				// Replace [dec] back to decimal separator for parseFloat
+				number_input = number_input.replace(decimal_separator, '.');
 			}
-
-			// Remove thousand separators
-			number_input = number_input.replace(thousand_separator, '');
-
-			// Replace [dec] back to decimal separator for parseFloat
-			number_input = number_input.replace('[dec]', '.');
-
-		} else {
-
-			// Replace [dec] back to decimal separator for parseFloat
-			number_input = number_input.replace(decimal_separator, '.');
 		}
 
 		// parseFloat converts decimal separator to period to ensure that function works
-		var number_output = ($.trim(number_input) == '') ? default_value : (isNaN(number_input)) ? default_value : parseFloat(number_input);
+		var number_output = ($.trim(number_input) === '') ? default_value : (isNaN(number_input) ? default_value : parseFloat(number_input));
+
+		// Round
+		if(decimals !== false) { number_output = this.get_number_rounded(parseFloat(number_output), decimals) ; }
 
 		return number_output;
+	}
+
+	$.WS_Form.prototype.get_number_rounded = function(value, decimals) {
+
+		return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+	}
+
+	$.WS_Form.prototype.get_number_to_step = function(value, step) {
+
+		step || (step = 1.0);
+		var inv = 1.0 / step;
+		return Math.round(value * inv) / inv;
 	}
 
 	$.WS_Form.prototype.get_currency = function() {
@@ -3685,7 +4317,174 @@
 
 			case 'text_editor' :
 
+				// Insert text
 				tinymce.activeEditor.execCommand('mceInsertContent', false, text);
+
+   				break;
+
+			case 'html_editor' :
+
+				// Insert text
+				var code_editor = $('.CodeMirror')[0].CodeMirror;
+				var code_editor_doc = code_editor.getDoc();
+				var code_editor_cursor = code_editor_doc.getCursor();
+				code_editor_doc.replaceRange(text, code_editor_cursor);
+
+				// Save
+				var code_editor_value = code_editor.getValue();
+				var code_editor_textarea = code_editor.getTextArea();
+				$(code_editor_textarea).val(code_editor_value).trigger('keyup');
+
+   				break;
+		
+			default :
+
+				// Inject text
+				var caret_position_start = input[0].selectionStart;
+				var caret_position_end = input[0].selectionEnd;
+				var input_val = input.val();
+				input.val(input_val.substring(0, caret_position_start) + text + input_val.substring(caret_position_end));
+				input.focus();
+
+				// Set new caret position
+				var new_caret_position = caret_position_start + text.length;
+				if(input.prop('selectionStart') !== null) { input.prop('selectionStart', new_caret_position); }
+				if(input.prop('selectionEnd') !== null) { input.prop('selectionEnd', new_caret_position); }
+		}
+	}
+
+	// Insert function into an input
+	$.WS_Form.prototype.input_insert_function = function(input, function_name, check_existing, highlight_parameters) {
+
+		if(typeof(check_existing) === 'undefined') { var check_existing = false; }
+
+		// Get existing value
+		var input_value = input.val();
+		var input_value_blank = (input_value == '');
+
+		// Get meta_key
+		var meta_key = input.attr('data-meta-key-type');
+
+		// If input already contains this function, move to end of function and return
+		if(check_existing && !input_value_blank) {
+
+			var input_value_index = input_value.indexOf(function_name.slice(0, -1));
+			if(input_value_index !== -1) {
+
+				var bracket_start_index = input_value_index + function_name.length - 2;
+				var input_string = input_value.substring(bracket_start_index);
+				var bracket_finish_index = this.get_bracket_finish_index(input_string);
+
+				if(bracket_finish_index !== -1) {
+
+					var new_caret_position = bracket_start_index + bracket_finish_index;
+
+					switch(meta_key) {
+
+						case 'text_editor' :
+						case 'html_editor' :
+
+							// Skip
+							break;
+
+						default :
+
+							// Set new caret position
+							input.focus();
+							if(input.prop('selectionStart') !== null) { input.prop('selectionStart', new_caret_position); }
+							if(input.prop('selectionEnd') !== null) { input.prop('selectionEnd', new_caret_position); }
+					}
+				}
+			}
+
+			return;
+		}
+
+		// Calculate parameter length
+		var bracket_start_index = function_name.indexOf('(');
+		if(bracket_start_index === -1) {
+
+			parameter_length = 0;
+			highlight_parameters = false;
+
+		} else {
+
+			var input_string = function_name.substring(bracket_start_index);
+			var bracket_finish_index = bracket_start_index + this.get_bracket_finish_index(input_string);
+			var parameter_length = bracket_finish_index - bracket_start_index - 1;
+		}
+
+		switch(meta_key) {
+
+			case 'text_editor' :
+
+				// Insert
+				tinymce.activeEditor.execCommand('mceInsertContent', false, function_name);
+
+				// Set new caret position
+				if(input_value_blank) {
+					var node = tinymce.activeEditor.selection.getNode();
+					tinymce.activeEditor.selection.setCursorLocation(node.firstChild, function_name.length - 1);
+				}
+
+   				break;
+
+			case 'html_editor' :
+
+				// Insert
+				var code_editor = $('.CodeMirror')[0].CodeMirror;
+				var code_editor_doc = code_editor.getDoc();
+				var code_editor_cursor = code_editor_doc.getCursor();
+				code_editor_doc.replaceRange(function_name, code_editor_cursor);
+
+				// Save
+				var code_editor_value = code_editor.getValue();
+				var code_editor_textarea = code_editor.getTextArea();
+				$(code_editor_textarea).val(code_editor_value).trigger('keyup');
+
+				// Set new caret position
+				var code_editor_cursor = code_editor_doc.getCursor();
+				code_editor_cursor.ch--;
+				code_editor.focus();
+				code_editor_doc.setCursor(code_editor_cursor);
+
+   				break;
+
+   			default :
+
+   				// Insert
+				var caret_position_start = input[0].selectionStart;
+				var caret_position_end = input[0].selectionEnd;
+				var input_val = input.val();
+				input.val(input_val.substring(0, caret_position_start) + function_name + input_val.substring(caret_position_end));
+				input.focus();
+
+				// Set new caret position
+				var new_caret_position = caret_position_start + function_name.length - (highlight_parameters ? 1 : 0);
+				if(input.prop('selectionStart') !== null) { input.prop('selectionStart', new_caret_position - (highlight_parameters ? parameter_length : 0)); }
+				if(input.prop('selectionEnd') !== null) { input.prop('selectionEnd', new_caret_position); }
+		}
+	}
+
+	// Delete character in an input
+	$.WS_Form.prototype.input_delete = function(input) {
+
+		// Get meta_key
+		var meta_key = input.attr('data-meta-key-type');
+
+		switch(meta_key) {
+
+			case 'text_editor' :
+
+				var editor_range = tinymce.activeEditor.selection.getRng();
+				if(editor_range.endOffset == 0) { break; }
+				var node = editor_range.commonAncestorContainer;
+				var range = document.createRange();
+				range.selectNodeContents(node);
+				range.setStart(node, editor_range.endOffset - 1);
+				range.setEnd(node, editor_range.endOffset);
+				range.deleteContents();
+				tinymce.activeEditor.focus();
 
    				break;
 
@@ -3693,24 +4492,60 @@
 
 				var code_editor = $('.CodeMirror')[0].CodeMirror;
 				var code_editor_doc = code_editor.getDoc();
-				var code_editor_cursor = code_editor_doc.getCursor();
-				code_editor_doc.replaceRange(text, code_editor_cursor);
+				var code_editor_cursor_start = $.extend(true, {}, code_editor_doc.getCursor());
+				var code_editor_cursor_end = $.extend(true, {}, code_editor_doc.getCursor());
+				code_editor_cursor_start.ch = code_editor_cursor_start.ch -1;
+				code_editor_cursor_end.ch = code_editor_cursor_end.ch;
+				code_editor_doc.replaceRange('', code_editor_cursor_start, code_editor_cursor_end);
+				code_editor.focus();
+				code_editor_doc.setCursor(code_editor_cursor_start);
 
    				break;
+
+   			default :
+
+				var caret_position = input[0].selectionStart;
+				var input_val = input.val();
+				input.val(input_val.substring(0, caret_position - 1) + input_val.substring(caret_position - 0));
+				input.focus();
+				var new_caret_position = caret_position - 1;
+				if(input.prop('selectionStart') !== null) { input.prop('selectionStart', new_caret_position); }
+				if(input.prop('selectionEnd') !== null) { input.prop('selectionEnd', new_caret_position); }
 		}
+	}
 
-		// Inject text (Do this regardless in case CodeMirror or TinyMCE did not initiate)
-		var caret_position = input[0].selectionStart;
-		var input_val = input.val();
-		input.val(input_val.substring(0, caret_position) + text + input_val.substring(caret_position) );
+	// Clear an input
+	$.WS_Form.prototype.input_clear = function(input) {
 
-		// Focus back on input
-		input.focus();
+		// Get meta_key
+		var meta_key = input.attr('data-meta-key-type');
 
-		// Set new caret position
-		var new_caret_position = caret_position + text.length;
-		if(input.prop('selectionStart') !== null) { input.prop('selectionStart', new_caret_position); }
-		if(input.prop('selectionEnd') !== null) { input.prop('selectionEnd', new_caret_position); }
+		switch(meta_key) {
+
+			case 'text_editor' :
+
+				tinymce.activeEditor.setContent('');
+				tinymce.activeEditor.focus();
+
+   				break;
+
+			case 'html_editor' :
+
+				var code_editor = $('.CodeMirror')[0].CodeMirror;
+				code_editor.setValue("");
+				code_editor.focus();
+
+				var code_editor_value = code_editor.getValue();
+				var code_editor_textarea = code_editor.getTextArea();
+				$(code_editor_textarea).val('').trigger('keyup');
+
+   				break;
+
+   			default :
+
+				input.val('');
+				input.focus();
+		}
 	}
 
 	// Highlight menu
@@ -3759,6 +4594,27 @@
 		var output_string = input_string.replace_all('#', '~%23~');
 
 		return output_string;
+	}
+
+
+	// Get part ID
+	$.WS_Form.prototype.get_part_id = function(field_id, section_repeatable_index, identifier) {
+
+		if(typeof(section_repeatable_index) === 'undefined') { section_repeatable_index = false; }
+		if(typeof(identifier) === 'undefined') { identifier = 'field'; }
+
+		var repeatable_suffix = ((section_repeatable_index !== false) ? '-repeat-' + section_repeatable_index : '');
+		return this.form_id_prefix + identifier + '-' + field_id + repeatable_suffix;
+	}
+
+	// Get field name
+	$.WS_Form.prototype.get_field_name = function(field_id, section_repeatable_index, is_submit) {
+
+		if(typeof(section_repeatable_index) === 'undefined') { section_repeatable_index = false; }
+		if(typeof(is_submit) === 'undefined') { is_submit = false; }
+
+		var repeatable_suffix = ((section_repeatable_index !== false) ? '-repeat-' + section_repeatable_index : '');
+		return this.field_name_prefix + field_id + ((section_repeatable_index !== false) ? (is_submit ? ('_' + section_repeatable_index) : ('[' + section_repeatable_index + ']')) : '');
 	}
 
 })(jQuery);

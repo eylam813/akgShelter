@@ -534,17 +534,17 @@
 			$data_same = (
 
 				($form) &&
-				(absint($count_array['count_view']) == $form['count_stat_view']) &&
-				(absint($count_array['count_save']) == $form['count_stat_save']) &&
-				(absint($count_array['count_submit']) == $form['count_stat_submit']) &&
-				(absint($count_submit) == $form['count_submit']) &&
-				(absint($count_submit_unread) == $form['count_submit_unread'])
+				(intval($count_array['count_view']) == $form['count_stat_view']) &&
+				(intval($count_array['count_save']) == $form['count_stat_save']) &&
+				(intval($count_array['count_submit']) == $form['count_stat_submit']) &&
+				(intval($count_submit) == $form['count_submit']) &&
+				(intval($count_submit_unread) == $form['count_submit_unread'])
 			);
 
 			if(!$data_same) {
 
 				// Update form record
-				$sql = sprintf("UPDATE %s SET count_stat_view = %u, count_stat_save = %u, count_stat_submit = %u, count_submit = %u, count_submit_unread = %u WHERE id = %u LIMIT 1;", $this->table_name, absint($count_array['count_view']), absint($count_array['count_save']), absint($count_array['count_submit']), absint($count_submit), absint($count_submit_unread), $this->id);
+				$sql = sprintf("UPDATE %s SET count_stat_view = %u, count_stat_save = %u, count_stat_submit = %u, count_submit = %u, count_submit_unread = %u WHERE id = %u LIMIT 1;", $this->table_name, intval($count_array['count_view']), intval($count_array['count_save']), intval($count_array['count_submit']), intval($count_submit), intval($count_submit_unread), $this->id);
 				if($wpdb->query($sql) === false) { parent::db_throw_error(__('Error updating counts', 'ws-form')); }
 			}
 		}
@@ -562,7 +562,7 @@
 			$count_submit_unread = $ws_form_submit->db_get_count_submit_unread($bypass_user_capability_check);
 
 			// Update form record
-			$sql = sprintf("UPDATE %s SET count_submit_unread = %u WHERE id = %u LIMIT 1;", $this->table_name, absint($count_submit_unread), $this->id);
+			$sql = sprintf("UPDATE %s SET count_submit_unread = %u WHERE id = %u LIMIT 1;", $this->table_name, intval($count_submit_unread), $this->id);
 			if($wpdb->query($sql) === false) { parent::db_throw_error(__('Error updating submit unread count', 'ws-form')); }
 		}
 
@@ -573,7 +573,7 @@
 
 			$sql = sprintf("SELECT SUM(count_submit_unread) AS count_submit_unread FROM %s WHERE status IN ('publish', 'draft');", $this->table_name);
 			$count_submit_unread = $wpdb->get_var($sql);
-			return empty($count_submit_unread) ? 0 : absint($count_submit_unread);
+			return empty($count_submit_unread) ? 0 : intval($count_submit_unread);
 		}
 
 		// Get checksum of current form and store it to database
@@ -645,7 +645,7 @@
 			$form_id_old = isset($form['id']) ? $form['id'] : false;
 
 			// Check for form ID in $form
-			if(isset($form['id']) && !$new) { $this->id = absint($form['id']); }
+			if(isset($form['id']) && !$new) { $this->id = intval($form['id']); }
 
 			if(!$new) { self::db_check_id(); }
 

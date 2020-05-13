@@ -12,7 +12,7 @@
 
 <div class="wsf-welcome-copy">
 <div class="wsf-welcome-title"><?php echo esc_html(sprintf(__('This is %s', 'ws-form'), WS_FORM_NAME_PRESENTABLE)); ?></div>
-<div class="wsf-welcome-intro"><?php esc_html_e('Build Better WordPress Forms.', 'ws-form'); ?></div>
+<div class="wsf-welcome-intro"><?php esc_html_e('Build Better WordPress Forms', 'ws-form'); ?></div>
 </div>
 
 <button class="wsf-welcome-button" data-slide-next-id="2"><?php esc_html_e('Click to Start', 'ws-form'); ?></button>

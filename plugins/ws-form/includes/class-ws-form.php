@@ -42,7 +42,7 @@ final class WS_Form {
 
 		$this->load_dependencies();
 
-		$this->plugin_public = new WS_Form_Public($this->get_plugin_name(), $this->get_version());
+		$this->plugin_public = new WS_Form_Public();
 
 		$this->set_locale();
 		$this->define_admin_hooks();
@@ -149,20 +149,34 @@ final class WS_Form {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new WS_Form_Admin($this->get_plugin_name(), $this->get_version());
+		$plugin_admin = new WS_Form_Admin();
 
-		// Actions
+		// General
 		$this->loader->add_action('init', $plugin_admin, 'init');
-		$this->loader->add_action('enqueue_block_editor_assets', $plugin_admin, 'enqueue_block_editor_assets');
 		$this->loader->add_action('admin_menu', $plugin_admin, 'admin_menu');
+
+		// Enqueuing
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles', 9999);	// Make sure we're overriding other styles
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-		$this->loader->add_action('admin_notices', 'WS_Form_Common', 'admin_messages_render');
-		$this->loader->add_action('customize_register', $plugin_admin, 'customize_register');
-		$this->loader->add_action('switch_theme', $plugin_admin, 'switch_theme');
-		$this->loader->add_filter('plugin_action_links_' . WS_FORM_PLUGIN_BASENAME, $plugin_admin, 'plugin_action_links');
-		$this->loader->add_filter('dashboard_glance_items', $plugin_admin, 'dashboard_glance_items');
 
+		// Admin notifications
+		$this->loader->add_action('admin_notices', 'WS_Form_Common', 'admin_messages_render');
+
+		// Customize
+		$this->loader->add_action('customize_register', $plugin_admin, 'customize_register');
+
+		// Theme switching
+		$this->loader->add_action('switch_theme', $plugin_admin, 'switch_theme');
+
+		// Plugins
+		$this->loader->add_filter('plugin_action_links_' . WS_FORM_PLUGIN_BASENAME, $plugin_admin, 'plugin_action_links');
+
+		// Gutenberg
+		$this->loader->add_action('enqueue_block_editor_assets', $plugin_admin, 'enqueue_block_editor_assets');
+		$this->loader->add_filter('block_categories', $plugin_admin, 'block_categories', 10, 2);
+
+		// Dashboard
+		$this->loader->add_filter('dashboard_glance_items', $plugin_admin, 'dashboard_glance_items');
 	}
 
 	/**
@@ -171,10 +185,18 @@ final class WS_Form {
 	 */
 	private function define_public_hooks() {
 
+		// General
 		$this->loader->add_action('init', $this->plugin_public, 'init');
 		$this->loader->add_action('wp', $this->plugin_public, 'wp');
+
+		// Enqueuing
 		$this->loader->add_action('wp_enqueue_scripts', $this->plugin_public, 'enqueue');
-		$this->loader->add_action('wp_footer', $this->plugin_public, 'wp_footer', 1000);
+
+		// Footer
+		$this->loader->add_action('wp_footer', $this->plugin_public, 'wp_footer', 9999);
+
+		// NONCE management
+		$this->loader->add_filter('nonce_user_logged_out', $this->plugin_public, 'nonce_user_logged_out', 9999, 2);
 	}
 
 	/**
@@ -205,24 +227,9 @@ final class WS_Form {
 	}
 
 	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
 	}
 }

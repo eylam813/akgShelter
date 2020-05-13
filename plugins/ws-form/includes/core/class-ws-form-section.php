@@ -369,11 +369,11 @@
 			if(!WS_Form_Common::can_user('edit_form')) { return false; }
 
 			// Check for section ID in $section
-			if(isset($section['id']) && !$new) { $this->id = absint($section['id']); }
+			if(isset($section['id']) && !$new) { $this->id = intval($section['id']); }
 			if($new) {
 
 				$this->id = 0;
-				$section_id_old = (isset($section['id'])) ? absint($section['id']) : 0;
+				$section_id_old = (isset($section['id'])) ? intval($section['id']) : 0;
 				if(isset($section['id'])) { unset($section['id']); }
 			}
 

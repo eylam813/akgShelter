@@ -20,8 +20,15 @@
 			// Check if this is coming from the admin
 			$is_admin = (WS_Form_Common::get_query_var_nonce('form_is_admin', 'false', $parameters) == 'true');
 
-			// Get label
-			$label = $ws_form_form->db_get_label();
+			try {
+
+				// Get label
+				$label = $ws_form_form->db_get_label();
+
+			} catch (Exception $e) {
+
+				parent::api_throw_error($e->getMessage());
+			}
 
 			if($is_admin == 'true') {
 
@@ -371,6 +378,6 @@
 		// Get form ID
 		public function api_get_id($parameters) {
 
-			return absint(WS_Form_Common::get_query_var_nonce('form_id', 0, $parameters));
+			return intval(WS_Form_Common::get_query_var_nonce('form_id', 0, $parameters));
 		}
 	}

@@ -151,6 +151,8 @@
   #wsf-debug tr.wsf-audit-parse-variables td {
     background-color: var(--background-color-danger);
     color: var(--color-danger); }
+  #wsf-debug tr.wsf-audit-calc td {
+    background-color: var(--background-color-success); }
   #wsf-debug th, #wsf-debug td {
     padding: 3px; }
   #wsf-debug th {

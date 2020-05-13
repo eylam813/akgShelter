@@ -93,7 +93,7 @@
 		function column_title($item) {
 
 			// URLs
-			$id = absint($item['id']);
+			$id = intval($item['id']);
 			$url_edit = WS_Form_Common::get_admin_url('ws-form-edit', $id);
 
 			// Title
@@ -199,7 +199,7 @@
 		function column_count_submit($item) {
 
 			// URLs
-			$id = absint($item['id']);
+			$id = intval($item['id']);
 			$url_submissions = WS_Form_Common::get_admin_url('ws-form-submit&id=' . $id);
 
 			// Get counts
@@ -246,7 +246,7 @@
 		// Column - Shortcode
 		function column_shortcode($item) {
 
-			$id = absint($item['id']);
+			$id = intval($item['id']);
 
 			// Title
 			$title = sprintf('<div class="wsf-shortcode"><code data-action-copy title="%1$s">%2$s</code></div>', __('Click to copy shortcode', 'ws-form'), htmlentities(WS_Form_Common::shortcode($id)));
