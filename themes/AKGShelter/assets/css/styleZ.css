@@ -112,12 +112,24 @@ li>ul a{
 }
 #secondary{
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-around;
+    padding: 3rem;
 }
 #mec_mec_widget-3{
     max-width: 60vw;
 }
 #simple_facebook_page_feed_widget-3{
     max-width: 40vw;
+}
+/* small only */
+@media screen and (max-width: 39.9375em) {
+    #simple_facebook_page_feed_widget-3{
+        max-width: 94vw;
+    }
+    #mec_mec_widget-3{
+        min-width: 300px;
+        max-width: 94vw;
+    }
 }
