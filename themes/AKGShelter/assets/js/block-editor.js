@@ -3,10 +3,7 @@ console.log('AKGShelter js Ready!');
 wp.domReady( function() {
     // only needs to be here to unregister blocks
     
-    // wp.blocks.unregisterBlockStyle( 'core/quote', 'large' );
+    wp.blocks.unregisterBlockStyle( 'core/button', 'outline' );
 
-    wp.blocks.registerBlockStyle( 'core/heading', {
-        name: 'underline',
-        label: 'Underline',
-    } );
 } );
+

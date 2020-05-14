@@ -189,6 +189,10 @@ function AKGShelter_scripts() {
 	wp_enqueue_style('AKGShelter-foundationStyles',get_template_directory_uri() . '/assets/css/app.css',  array());
 	// underscores navigation script
 	wp_enqueue_script( 'AKGShelter-navigation', get_template_directory_uri() . '/assets/js/vendor/navigation.js', array(), _S_VERSION, true );
+	// AKGShelter block-editor script
+	// wp_enqueue_script( 'AKGShelter-block-editor', get_template_directory_uri() . '/assets/js/block-editor.js', array(), _S_VERSION, true );
+	// AKGShelter script
+	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGScript.js', array(), _S_VERSION, true );
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styles',get_template_directory_uri() . '/assets/css/AKGShelter-styles.css',  array());
 	// AKGShelter custom stylesheet
