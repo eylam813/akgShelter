@@ -1,4 +1,5 @@
 <?php
+// button - blue outline
 register_block_style(
     'core/button',
     array(
@@ -7,14 +8,7 @@ register_block_style(
     )
 );
 
-register_block_style(
-    'core/button',
-    array(
-        'name'         => 'blue-outline-margin-top',
-        'label'        => __( 'Blue Outline - Margin Top' ),
-    )
-);
-
+// columns - Blue card
 register_block_style(
     'core/columns',
     array(
@@ -23,6 +17,7 @@ register_block_style(
     )
 );
 
+// media-text - tablet stack
 register_block_style(
     'core/media-text',
     array(
