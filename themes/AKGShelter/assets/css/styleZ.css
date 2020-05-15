@@ -83,6 +83,9 @@ nav a:hover{
     align-self: center;
     max-width: 50%;
 }
+blockquote, blockquote p{
+    color: black;
+}
 .headerMargin{
     margin-top: 2rem;
 }
@@ -132,4 +135,18 @@ li>ul a{
         min-width: 300px;
         max-width: 94vw;
     }
+}
+/* block styling for tables */
+.is-style-blue-table tbody{
+    border: 1px solid var(--light-blue);
+}
+
+.is-style-blue-table tbody tr:nth-child(even){
+    background-color: var(--light-blue);
+}
+/* block styling for quotes */
+.is-style-akg-quote{
+    color: black;
+    font-size: 30px;
+    border: none;
 }

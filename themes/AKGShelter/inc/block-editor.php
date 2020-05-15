@@ -25,3 +25,19 @@ register_block_style(
         'label'        => __( 'Tablet Stack' ),
     )
 );
+// table - blue alternate
+register_block_style(
+    'core/table',
+    array(
+        'name'         => 'blue-table',
+        'label'        => __( 'Blue Table' ),
+    )
+);
+// media-text - tablet stack
+register_block_style(
+    'core/quote',
+    array(
+        'name'         => 'akg-quote',
+        'label'        => __( 'AKG Quote' ),
+    )
+);
