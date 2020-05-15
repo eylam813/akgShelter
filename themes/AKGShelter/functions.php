@@ -122,7 +122,10 @@ if ( ! function_exists( 'AKGShelter_setup' ) ) :
 
 		// Add theme support for selective refresh for widgets.
 		add_theme_support( 'customize-selective-refresh-widgets' );
-
+		/** 
+		* Add support for align-wide
+		*/
+		add_theme_support( 'align-wide' );
 		/**
 		 * Add support for core custom logo.
 		 *
