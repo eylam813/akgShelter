@@ -22,6 +22,7 @@
 			?>
 			<div class="entry-meta">
 				<?php
+				the_title( '<h3><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' );
 				AKGShelter_posted_on();
 				AKGShelter_posted_by();
 				?>
