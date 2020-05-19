@@ -63,3 +63,12 @@ register_block_style(
         'label'        => __( 'AKG Outline Group' ),
     )
 );
+// HR dots and solids
+
+register_block_style(
+    'core/separator',
+    array(
+        'name'         => 'akg-line-separator',
+        'label'        => __( 'AKG Line Separator' ),
+    )
+);

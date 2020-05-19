@@ -184,3 +184,7 @@ li>ul a{
 .alignfull{
     padding: 1rem;
 }
+.is-style-akg-line-separator{
+    border-bottom: 2px solid var(--pink);
+    width: 20%;
+}
