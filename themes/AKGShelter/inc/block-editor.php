@@ -16,6 +16,13 @@ register_block_style(
         'label'        => __( 'Blue Card' ),
     )
 );
+register_block_style(
+    'core/columns',
+    array(
+        'name'         => 'blue-card-left-align',
+        'label'        => __( 'Blue Card Left Align' ),
+    )
+);
 
 // media-text - tablet stack
 register_block_style(
