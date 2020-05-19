@@ -33,7 +33,7 @@ register_block_style(
         'label'        => __( 'Blue Table' ),
     )
 );
-// media-text - tablet stack
+//quote large and smaller
 register_block_style(
     'core/quote',
     array(
@@ -41,7 +41,14 @@ register_block_style(
         'label'        => __( 'AKG Quote' ),
     )
 );
-// media-text - tablet stack
+register_block_style(
+    'core/quote',
+    array(
+        'name'         => 'akg-small-quote',
+        'label'        => __( 'AKG Small Quote' ),
+    )
+);
+// group solid and outline
 register_block_style(
     'core/group',
     array(

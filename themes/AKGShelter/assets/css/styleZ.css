@@ -150,6 +150,12 @@ li>ul a{
     font-size: 30px;
     border: none;
 }
+.is-style-akg-small-quote{
+    color: black;
+    font-size: 20px;
+    border: none;
+    text-align: center;
+}
 .margin-top{
     margin-top: 1rem;
 }
@@ -174,4 +180,7 @@ li>ul a{
     border-radius: 10px;
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
+}
+.alignfull{
+    padding: 1rem;
 }
