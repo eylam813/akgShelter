@@ -119,6 +119,9 @@ li>ul a{
     flex-direction: row;
     justify-content: space-around;
     padding: 3rem;
+    background: url(../img/sidebar_4.png) fixed center no-repeat;
+    background-color: var(--light-pink);
+    min-height: 670px;
 }
 #mec_mec_widget-3{
     max-width: 60vw;
@@ -197,4 +200,14 @@ li>ul a{
     border-radius: 10px;
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
+}
+footer{
+    background-color: var(--light-pink);
+    color: var(--pink)
+}
+footer a{
+    color: var(--pink)
+}
+footer a:hover{
+    color: var(--blue);
 }
