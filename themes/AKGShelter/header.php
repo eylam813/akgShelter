@@ -54,7 +54,7 @@
 				</div>
 			</div><!-- .site-branding -->
 
-			<nav id="site-navigation" class="main-navigation small-12 medium-12 large-9">
+			<nav id="site-navigation" class="main-navigation large-9">
 				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'AKGShelter' ); ?></button>
 				<?php
 				wp_nav_menu(
