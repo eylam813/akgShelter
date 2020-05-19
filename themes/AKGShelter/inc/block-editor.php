@@ -49,3 +49,10 @@ register_block_style(
         'label'        => __( 'AKG Group' ),
     )
 );
+register_block_style(
+    'core/group',
+    array(
+        'name'         => 'akg-outline-group',
+        'label'        => __( 'AKG Outline Group' ),
+    )
+);
