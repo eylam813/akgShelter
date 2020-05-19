@@ -153,3 +153,15 @@ li>ul a{
 .margin-top{
     margin-top: 1rem;
 }
+.is-style-akg-group{
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-blue);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}

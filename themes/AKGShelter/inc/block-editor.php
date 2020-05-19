@@ -41,3 +41,11 @@ register_block_style(
         'label'        => __( 'AKG Quote' ),
     )
 );
+// media-text - tablet stack
+register_block_style(
+    'core/group',
+    array(
+        'name'         => 'akg-group',
+        'label'        => __( 'AKG Group' ),
+    )
+);
