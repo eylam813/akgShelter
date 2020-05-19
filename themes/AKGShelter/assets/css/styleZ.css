@@ -119,7 +119,7 @@ li>ul a{
     flex-direction: row;
     justify-content: space-around;
     padding: 3rem;
-    background: url(../img/sidebar_4.png) fixed center no-repeat;
+    background: url(../img/sidebar_4.png) fixed bottom no-repeat;
     background-color: var(--light-pink);
     min-height: 670px;
 }
