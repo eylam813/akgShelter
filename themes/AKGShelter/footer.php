@@ -13,17 +13,10 @@
 
 	<footer id="colophon" class="site-footer">
 		<div class="site-info">
-			<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'AKGShelter' ) ); ?>">
-				<?php
-				/* translators: %s: CMS name, i.e. WordPress. */
-				printf( esc_html__( 'Proudly powered by %s', 'AKGShelter' ), 'WordPress' );
-				?>
-			</a>
-			<span class="sep"> | </span>
-				<?php
-				/* translators: 1: Theme name, 2: Theme author. */
-				printf( esc_html__( 'Theme: %1$s by %2$s.', 'AKGShelter' ), 'AKGShelter', '<a href="http://emily">emily</a>' );
-				?>
+		Copyright &copy; <script>
+                document.write(new Date().getFullYear());
+            </script> Anishnaabe Kwewag Gamig - Designed by <a href="http://zferguson.ca/" target="_blank">Zoe</a> and <a href="http://emilylam.ca/" target="_blank">Emily</a>
+			
 		</div><!-- .site-info -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->
