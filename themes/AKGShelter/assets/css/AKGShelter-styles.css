@@ -139,11 +139,19 @@ body {
 .decoBtn:hover{
     color: pink;
 }
+header {
+    margin-bottom: 2rem;
+}
+/* header nav */
+.site-branding {
+    text-align: center;
+}
 .title-bar-title{
     padding: 1rem;
+    margin: 0 auto;
 }
 img.custom-logo{
-    max-width: 350px;
+    /* max-width: 350px; */
     min-width: 250px;
     width: 30vw;
 }

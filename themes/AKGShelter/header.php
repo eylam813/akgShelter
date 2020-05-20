@@ -36,8 +36,8 @@
 				<a href="http://testing.zferguson.ca/holycupcake/recipes/%3C?php%20echo%20$_SERVER[%22REQUEST_URI%22];%20?%3E"><button class="exitSite-header decoBtn">Exit Site</button></a>
 			</div>
 		</div>
-		<section id="nav">
-			<div class="site-branding">
+		<section id="nav" class="grid-x">
+			<div class="site-branding small-12 medium-12 large-3">
 				<!-- container for the logo - mobile/tablet only -->
 				<div class="title-bar-title">
 					<?php
@@ -54,7 +54,7 @@
 				</div>
 			</div><!-- .site-branding -->
 
-			<nav id="site-navigation" class="main-navigation">
+			<nav id="site-navigation" class="main-navigation large-9">
 				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'AKGShelter' ); ?></button>
 				<?php
 				wp_nav_menu(
