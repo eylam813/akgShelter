@@ -119,6 +119,9 @@ li>ul a{
     flex-direction: row;
     justify-content: space-around;
     padding: 3rem;
+    background: url(../img/sidebar_4.png) fixed bottom no-repeat;
+    background-color: var(--light-pink);
+    min-height: 670px;
 }
 #mec_mec_widget-3{
     max-width: 60vw;
@@ -150,6 +153,61 @@ li>ul a{
     font-size: 30px;
     border: none;
 }
+.is-style-akg-small-quote{
+    color: black;
+    font-size: 20px;
+    border: none;
+    text-align: center;
+}
 .margin-top{
     margin-top: 1rem;
+}
+.is-style-akg-group{
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--light-blue);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+.is-style-akg-outline-group{
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--blue);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+.alignfull{
+    padding: 1rem;
+}
+.is-style-akg-line-separator{
+    border-bottom: 2px solid var(--pink);
+    width: 20%;
+}
+.is-style-blue-card-left-align.wp-block-columns .wp-block-column{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-blue);
+    box-shadow:  10px 10px 20px #e6e6e6,
+                -20px -20px 60px #ffffff;
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+footer{
+    background-color: var(--light-pink);
+    color: var(--pink)
+}
+footer a{
+    color: var(--pink)
+}
+footer a:hover{
+    color: var(--blue);
 }
