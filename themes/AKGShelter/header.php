@@ -28,7 +28,8 @@
 	<header id="masthead" class="site-header">
 		<div id="preheader">
 			<div class="donateBtn-header">
-				<a href="https://www.paypal.com/donate/?token=FQlpb637-ROyNNM1ekCbGx40JvVLWS-9Hj5nsx-u8JZj9nejlXQiLrHv6EsGNeciDO5hE0&country.x=CA&locale.x=CA"><button class="decoBtn">Donate</button></a>
+				<!-- <a href="https://www.paypal.com/donate/?token=FQlpb637-ROyNNM1ekCbGx40JvVLWS-9Hj5nsx-u8JZj9nejlXQiLrHv6EsGNeciDO5hE0&country.x=CA&locale.x=CA"><button class="decoBtn">Donate</button></a> -->
+				<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D2HBXKU7JMD8E&source=url"><button class="decoBtn">Donate</button></a>
 			</div>
 			<h6 class="helpText-header">Get help 24/7: 905-3522-3708 or Toll Free at 1-800-388-5171</h6>
 			<div class="escapeBtns">
