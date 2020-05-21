@@ -51,6 +51,10 @@ body {
     border-radius: 10px;
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
+    background-image: url(../img/leaf-line-blue.svg);
+    background-size: 80px 80px;
+    background-repeat: no-repeat;
+    background-position: bottom 5px right 15px;
 }
 .is-style-blue-card.wp-block-columns .wp-block-column div:last-of-type{
     margin-top:auto;
