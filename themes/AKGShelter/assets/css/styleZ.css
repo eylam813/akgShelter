@@ -206,10 +206,14 @@ li>ul a{
 }
 footer{
     background-color: var(--light-pink);
-    color: var(--pink)
+    color: var(--pink);
+    padding: 1rem;
+    opacity: 0.7;
+    text-align: center;
 }
 footer a{
-    color: var(--pink)
+    color: var(--pink);
+    font-weight: 600;
 }
 footer a:hover{
     color: var(--blue);
