@@ -119,7 +119,7 @@ li>ul a{
     flex-direction: row;
     justify-content: space-around;
     padding: 3rem;
-    background: url(../img/sidebar_4.png) fixed bottom no-repeat;
+    background: url(../img/sidebar_4.png) center no-repeat;
     background-color: var(--light-pink);
     min-height: 670px;
 }
@@ -185,7 +185,7 @@ li>ul a{
     margin-bottom: 2rem;
 }
 .alignfull{
-    padding: 1rem;
+    width: 100%;
 }
 .is-style-akg-line-separator{
     border-bottom: 2px solid var(--pink);
@@ -201,12 +201,19 @@ li>ul a{
     padding: 2rem 1.5rem;
     margin-bottom: 2rem;
 }
+.contactForm p{
+    text-align: center;
+}
 footer{
     background-color: var(--light-pink);
-    color: var(--pink)
+    color: var(--pink);
+    padding: 1rem;
+    opacity: 0.7;
+    text-align: center;
 }
 footer a{
-    color: var(--pink)
+    color: var(--pink);
+    font-weight: 600;
 }
 footer a:hover{
     color: var(--blue);
