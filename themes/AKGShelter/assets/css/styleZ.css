@@ -275,9 +275,22 @@ footer a:hover {
     background-position: -100% 0;
 }
 
+.menu a{
+    padding: 0;
+}
+
 @media print,
 screen and (max-width:64em) {
     .homeQuote{
         max-width: 100%;
+    }
+    .menu-main-menu-container{
+        display: none;
+    }
+    #primary-menu{
+        flex-direction: column;
+    }
+    .menu a{
+        padding: 0.5rem 1rem;
     }
 }
