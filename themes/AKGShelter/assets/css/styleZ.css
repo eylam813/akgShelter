@@ -274,3 +274,10 @@ footer a:hover {
 .wp-block-button__link:hover {
     background-position: -100% 0;
 }
+
+@media print,
+screen and (max-width:64em) {
+    .homeQuote{
+        max-width: 100%;
+    }
+}
