@@ -38,16 +38,14 @@ get_header();
 							if (has_post_thumbnail()) {
 							?>
 								<!-- loading post thumbnail -->
-								<div class="thumbnail-img">
+								<div class="thumbnail-img" style="background-image:none;">
 									<img src="<?php echo get_the_post_thumbnail_url(); ?>" alt="<?php the_post_thumbnail_caption(); ?>" />
 								</div>
 							<?php
 							}
 							else {
 								?>
-								<div class="thumbnail-img" aria-label="<?php the_title() ?> Newletter">
-									<!-- <img src="<?php echo get_template_directory_uri(); ?>/assets/img/newsletterIcon2.png" alt="<?php the_title() ?> Newletter" /> -->
-								</div>
+								<div class="thumbnail-img" aria-label="<?php the_title() ?> Newletter"></div>
 							<?php
 							} 
 							?>
