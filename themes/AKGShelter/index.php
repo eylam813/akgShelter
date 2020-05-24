@@ -32,28 +32,42 @@ get_header();
 			while ( have_posts() ) :
 				the_post(); ?>
 				<!-- container for archive posts -->
-					<div class="cell card large-5 medium-5 small-10">
-									<?php
-									if (has_post_thumbnail()) {
-									?>
-										<!-- loading post thumbnail -->
-										<div class="thumbnail-img">
-											<img src="<?php echo get_the_post_thumbnail_url(); ?>" alt="<?php the_post_thumbnail_caption(); ?>" />
-										</div>
-									<?php
-									} ?>
-									<!-- loading post post title and excerpt -->
-									<div class="card-section">
-										<?php the_title( '<h3><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' ); ?>
-										<p>
-											<?php
-											the_excerpt();
-											?>
-										</p>
-										<!-- post link -->
-										<a class="blogBtn" href="<?php echo get_post_permalink(); ?>">continue reading</a>
-									</div>
+					<div class="grid-x card">
+						<div class="card-image large-3 medium-3 small-12">
+							<?php
+							if (has_post_thumbnail()) {
+							?>
+								<!-- loading post thumbnail -->
+								<div class="thumbnail-img">
+									<img src="<?php echo get_the_post_thumbnail_url(); ?>" alt="<?php the_post_thumbnail_caption(); ?>" />
 								</div>
+							<?php
+							}
+							else {
+								?>
+								<div class="thumbnail-img" aria-label="<?php the_title() ?> Newletter">
+									<!-- <img src="<?php echo get_template_directory_uri(); ?>/assets/img/newsletterIcon2.png" alt="<?php the_title() ?> Newletter" /> -->
+								</div>
+							<?php
+							} 
+							?>
+						</div>
+							<!-- loading post post title and excerpt -->
+						<div class="card-section-wrapper large-9 medium-9 small-12">
+							<div class="card-section">
+								<?php the_title( '<h3><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' ); ?>
+								<p>
+									<?php
+									the_excerpt();
+									?>
+								</p>
+								<!-- post link -->
+								<div class="blogBtnHolder">
+									<a class="blogBtn" href="<?php echo get_post_permalink(); ?>">continue reading... </a>
+								</div>
+							</div>
+						</div>
+					</div>
 					<?php
 
 

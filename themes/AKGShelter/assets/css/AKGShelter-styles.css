@@ -301,3 +301,45 @@ img.custom-logo{
 .has-black-background-color {
     background-color: #000000;
 }
+
+/* *Blog  */
+.blogHolder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.blogHolder .card {
+    min-width: 300px;
+    width: 50vw;
+    max-width: 700px;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--light-blue);
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+}
+
+.blogHolder .card .thumbnail-img {
+    align-items: stretch;
+    background-image: url(../img/newsletterIcon2.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width:100%;
+    height: 100%;
+    border-radius: 10px;
+}
+.blogHolder .card .thumbnail-img img {
+    border-radius: 10px;
+}
+
+.blogHolder .card .card-section {
+    width: 100%;
+    height: 100%;
+}
+
+.blogHolder .card-section .blogBtnHolder {
+    text-align: end;
+    margin-top: auto;
+}
