@@ -279,6 +279,10 @@ footer a:hover {
     padding: 10px;
 }
 
+.is-home-card.is-style-blue-card.wp-block-columns .wp-block-column{
+    background-image: none;
+}
+
 @media print,
 screen and (max-width:64em) {
     .homeQuote{
