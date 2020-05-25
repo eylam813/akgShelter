@@ -302,7 +302,7 @@ img.custom-logo{
     background-color: #000000;
 }
 
-/* *Blog  */
+/* *Blog index page */
 .blogHolder {
     display: flex;
     flex-direction: column;
@@ -354,4 +354,17 @@ img.custom-logo{
 .blogHolder .card-section .blogBtnHolder {
     text-align: end;
     margin-top: auto;
+}
+
+/* Blog single */
+
+.nav-links a {
+    background-color: var(--light-pink);
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.post-edit-link {
+    text-align: right;
 }
