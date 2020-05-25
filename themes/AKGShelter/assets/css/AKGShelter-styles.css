@@ -368,3 +368,9 @@ img.custom-logo{
 .post-edit-link {
     text-align: right;
 }
+
+@media screen and (max-width: 39.9375em) {
+    .nav-title {
+        display: none;
+    }
+}

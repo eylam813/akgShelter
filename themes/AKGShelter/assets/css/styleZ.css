@@ -251,7 +251,8 @@ footer {
     color: var(--pink);
     padding: 1rem;
     opacity: 0.7;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
 }
 
 footer a {
