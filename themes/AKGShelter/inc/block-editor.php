@@ -32,6 +32,22 @@ register_block_style(
         'label'        => __( 'Tablet Stack' ),
     )
 );
+// media-text - blue background
+register_block_style(
+    'core/media-text',
+    array(
+        'name'         => 'blue-group',
+        'label'        => __( 'Blue Background' ),
+    )
+);
+// media-text - blue outline
+register_block_style(
+    'core/media-text',
+    array(
+        'name'         => 'outline-group',
+        'label'        => __( 'Blue Outline' ),
+    )
+);
 // table - blue alternate
 register_block_style(
     'core/table',
@@ -70,8 +86,22 @@ register_block_style(
         'label'        => __( 'AKG Outline Group' ),
     )
 );
+// group solid and outline - no specified width
+register_block_style(
+    'core/group',
+    array(
+        'name'         => 'blue-bg-group',
+        'label'        => __( 'Blue Background' ),
+    )
+);
+register_block_style(
+    'core/group',
+    array(
+        'name'         => 'blue-outline-group',
+        'label'        => __( 'Blue Outline' ),
+    )
+);
 // HR dots and solids
-
 register_block_style(
     'core/separator',
     array(
