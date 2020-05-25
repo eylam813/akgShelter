@@ -53,9 +53,8 @@
 					?>
 				</div>
 			</div><!-- .site-branding -->
-
+			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false" ><?php esc_html_e( 'Primary Menu', 'AKGShelter' ); ?></button>
 			<nav id="site-navigation" class="main-navigation large-9">
-				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'AKGShelter' ); ?></button>
 				<?php
 				wp_nav_menu(
 					array(
