@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<section id="nav" class="grid-x">
-			<div class="site-branding small-12 medium-12 large-3">
+			<div class="site-branding small-9 medium-12 large-3">
 				<!-- container for the logo - mobile/tablet only -->
 				<div class="title-bar-title">
 					<?php
@@ -53,7 +53,9 @@
 					?>
 				</div>
 			</div><!-- .site-branding -->
-			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false" ><?php esc_html_e( 'Primary Menu', 'AKGShelter' ); ?></button>
+			<button class="menu-toggle small-3" aria-controls="primary-menu" aria-expanded="false" >
+				<img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="" id="hamburger">
+			</button>
 			<nav id="site-navigation" class="main-navigation large-9">
 				<?php
 				wp_nav_menu(
