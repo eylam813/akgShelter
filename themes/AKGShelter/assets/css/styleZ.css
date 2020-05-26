@@ -282,6 +282,12 @@ footer a:hover {
 .is-home-card.is-style-blue-card.wp-block-columns .wp-block-column{
     background-image: none;
 }
+#hamburger{
+    width: 40px;
+    position: fixed;
+    right: 15px;
+    top: 85px;
+}
 
 @media print,
 screen and (max-width:64em) {
@@ -296,5 +302,8 @@ screen and (max-width:64em) {
     }
     .menu a{
         padding: 0.5rem 1rem;
+    }
+    .wp-block-column{
+        overflow-wrap: normal;
     }
 }
