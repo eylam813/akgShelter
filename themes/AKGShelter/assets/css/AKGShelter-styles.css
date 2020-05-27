@@ -374,3 +374,7 @@ img.custom-logo{
         display: none;
     }
 }
+
+.title-bar {
+    background: #00000000;
+}

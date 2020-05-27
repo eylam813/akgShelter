@@ -53,17 +53,32 @@
 					?>
 				</div>
 			</div><!-- .site-branding -->
-			<button class="menu-toggle small-3" aria-controls="primary-menu" aria-expanded="false" >
-				<img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="" id="hamburger">
+
+			<button class="menu-toggle small-3 title-bar" data-responsive-toggle="primary-menu" data-hide-for="medium">
+				<img src="<?php echo get_template_directory_uri(); ?>/assets/img/hamburger.png" alt="" id="hamburger">
+				<!-- <img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="" id="hamburger"> -->
 			</button>
+
 			<nav id="site-navigation" class="main-navigation large-9">
 				<?php
-				wp_nav_menu(
-					array(
+				// wp_nav_menu(
+				// 	array(
+				// 		'theme_location' => 'menu-1',
+				// 		'menu_id'        => 'primary-menu',
+				// 	)
+				// );
+
+				if ( has_nav_menu( 'menu-1' ) ) {
+					$args = array(
+						'menu' => 'Primary Menu', 
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
-					)
-				);
+						// 'menu_class'     => 'vertical menu'
+						'container_id' => 'cssmenu', 
+						// 'walker' => new AP_Walker_Nav_Menu()
+					);
+					wp_nav_menu($args);
+				}
 				?>
 			</nav><!-- #site-navigation -->
 		</section>
