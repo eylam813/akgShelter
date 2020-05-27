@@ -64,7 +64,7 @@
 	<div class="title-bar" data-responsive-toggle="site-navigation" data-hide-for="large">
 				
 				<!-- container for the logo - mobile/tablet only -->
-				<div class="title-bar-title">
+				<div class="title-bar-title small-10">
 					<?php
 					// if there's no custom logo load the title text
 					if (!has_custom_logo()) :
@@ -81,9 +81,9 @@
 			</div>
 			
 			<!-- responsive header nav -->
-			<div class="title-bar" data-responsive-toggle="site-navigation" data-hide-for="medium">
+			<div class="title-bar small-2" data-responsive-toggle="site-navigation" data-hide-for="medium">
 				<!-- menu button -->
-				<button class="menu-mobile" type="button" data-toggle="site-navigation">Menu</button>
+				<button class="menu-mobile" type="button" data-toggle="site-navigation"><img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="Hamburger Icon"></button>
 				
 			</div>
 			
