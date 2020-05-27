@@ -88,7 +88,7 @@
 			</div>
 			
 
-	<section>
+	<section >
 			<nav id="site-navigation" class="main-navigation" data-animate="fade-in fade-out" >
 				<?php
 				if ( has_nav_menu( 'menu-1' ) ) {

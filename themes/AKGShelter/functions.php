@@ -252,36 +252,31 @@ function AKGShelter_scripts() {
 	// enqueue foundation styles
 	wp_enqueue_style('AKGShelter-foundation',get_template_directory_uri() . '/assets/css/vendors/foundation.min.css', null, '6.5.1');
 	wp_enqueue_style('AKGShelter-foundationStyles',get_template_directory_uri() . '/assets/css/app.css',  array());
-	// underscores navigation script
-	// wp_enqueue_script( 'AKGShelter-navigation', get_template_directory_uri() . '/assets/js/vendor/navigation.js', array(), _S_VERSION, true );
-	// AKGShelter block-editor script
-	// wp_enqueue_script( 'AKGShelter-block-editor', get_template_directory_uri() . '/assets/js/block-editor.js', array(), _S_VERSION, true );
-	// AKGShelter script
-	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGScript.js', array(), _S_VERSION, true );
-	// jquery
-	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/assets/js/vendor/jquery.js', array(), true );
-	// what-input
-	wp_enqueue_script( 'AKGShelter-what-input', get_template_directory_uri() . '/assets/js/vendor/what-input.js', array('jquery'), '6.5.1', true );
+	
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styles',get_template_directory_uri() . '/assets/css/AKGShelter-styles.css',  array());
+	
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styleZ',get_template_directory_uri() . '/assets/css/styleZ.css',  array());
 
+
+	// what-input
+	wp_enqueue_script( 'AKGShelter-what-input', get_template_directory_uri() . '/assets/js/vendor/what-input.js', array('jquery'), '6.5.1', true );
+
+	// adding AKG foundation js
+	wp_enqueue_script( 'AKGShelter-foundation', get_template_directory_uri() . '/assets/js/vendors/foundation.min.js', array('jquery', 'AKGShelter-what-input'), '6.5.1', true );
 	wp_enqueue_script( 'AKG-foundation-script', get_template_directory_uri() . '/assets/js/app.js', array('jquery', 'AKGShelter-foundation'), '6.5.1', true );
 
-	// adding AKGShelter foundation js
-	wp_enqueue_script( 'AKGShelter-foundation', get_template_directory_uri() . '/assets/js/vendors/foundation.js', array('jquery', 'AKGShelter-what-input'), '6.5.1', true );
+	// AKGShelter script
+	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGScript.js', array(), _S_VERSION, true );
+	
+
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );
 		}
 
 }
 add_action( 'wp_enqueue_scripts', 'AKGShelter_scripts' );
-
-/**
- * Implement the Custom Header feature.
- */
-// require get_template_directory() . '/inc/custom-header.php';
 
 /**
  * Custom template tags for this theme.
