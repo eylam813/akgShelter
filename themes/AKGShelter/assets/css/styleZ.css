@@ -307,4 +307,12 @@ screen and (max-width:64em) {
     .wp-block-column{
         overflow-wrap: normal;
     }
+    #largeLogo{
+        display: none;
+    }
+}
+.menu .active > a{
+    font-weight: 600;
+    color: var(--pink);
+    background: none;
 }

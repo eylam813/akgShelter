@@ -39,9 +39,9 @@
 
 
 		<section id="nav" class="grid-x">
-			<div class="site-branding small-9 medium-12 large-3">
+			<div class="site-branding small-9 medium-12 large-3" id="largeLogo">
 				<!-- container for the logo - mobile/tablet only -->
-				<div class="title-bar-title">
+				<div class="title-bar-title" data-hide-for="small">
 					<?php
 					// if there's no custom logo load the title text
 					if (!has_custom_logo()) :
