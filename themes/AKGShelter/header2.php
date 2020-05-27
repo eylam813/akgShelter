@@ -36,8 +36,6 @@
 				<a href="http://testing.zferguson.ca/holycupcake/recipes/%3C?php%20echo%20$_SERVER[%22REQUEST_URI%22];%20?%3E"><button class="exitSite-header decoBtn">Exit Site</button></a>
 			</div>
 		</div>
-
-
 		<section id="nav" class="grid-x">
 			<div class="site-branding small-9 medium-12 large-3">
 				<!-- container for the logo - mobile/tablet only -->
@@ -55,63 +53,19 @@
 					?>
 				</div>
 			</div><!-- .site-branding -->
-
-
-
-
-
-	<!-- responsive header nav -->
-	<div class="title-bar" data-responsive-toggle="site-navigation" data-hide-for="large">
-				
-				<!-- container for the logo - mobile/tablet only -->
-				<div class="title-bar-title">
-					<?php
-					// if there's no custom logo load the title text
-					if (!has_custom_logo()) :
-					?>
-						<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home"><?php bloginfo('name'); ?></a></h1>
-					<?php
-					else :
-						// else if there is a custom logo load the logo
-						the_custom_logo();
-					endif;
-					?>
-				</div>
-				
-			</div>
-			
-			<!-- responsive header nav -->
-			<div class="title-bar" data-responsive-toggle="site-navigation" data-hide-for="medium">
-				<!-- menu button -->
-				<button class="menu-mobile" type="button" data-toggle="site-navigation">Menu</button>
-				
-			</div>
-			
-
-	<section >
-			<nav id="site-navigation" class="main-navigation" data-animate="fade-in fade-out" >
+			<button class="menu-toggle small-3" aria-controls="primary-menu" aria-expanded="false" >
+				<img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="" id="hamburger">
+			</button>
+			<nav id="site-navigation" class="main-navigation large-9">
 				<?php
-				if ( has_nav_menu( 'menu-1' ) ) {
-					$args = array(
-						'menu' => 'Primary Menu', 
+				wp_nav_menu(
+					array(
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
-						// 'menu_class'     => 'vertical menu'
-						'container_id' => 'cssmenu', 
-						'walker' => new AP_Walker_Nav_Menu()
-					);
-					wp_nav_menu($args);
-				}
+					)
+				);
 				?>
 			</nav><!-- #site-navigation -->
-
-		</section>
-	<!-- </section> -->
-
-
-
-
-
 		</section>
 	</header><!-- #masthead -->
 	<div id="content" class="site-content">
