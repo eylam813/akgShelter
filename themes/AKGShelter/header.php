@@ -36,6 +36,8 @@
 				<a href="http://testing.zferguson.ca/holycupcake/recipes/%3C?php%20echo%20$_SERVER[%22REQUEST_URI%22];%20?%3E"><button class="exitSite-header decoBtn">Exit Site</button></a>
 			</div>
 		</div>
+
+
 		<section id="nav" class="grid-x">
 			<div class="site-branding small-9 medium-12 large-3">
 				<!-- container for the logo - mobile/tablet only -->
@@ -54,28 +56,21 @@
 				</div>
 			</div><!-- .site-branding -->
 
-			<button class="menu-toggle small-3 title-bar" data-responsive-toggle="primary-menu" data-hide-for="medium">
-				<img src="<?php echo get_template_directory_uri(); ?>/assets/img/hamburger.png" alt="" id="hamburger">
-				<!-- <img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="" id="hamburger"> -->
-			</button>
+			<div class="title-bar" data-responsive-toggle="site-navigation" data-hide-for="medium">
+				<button class="menu-icon" type="button" data-toggle="site-navigation"></button>
+				<div class="title-bar-title">Menu</div>
+			</div>
 
 			<nav id="site-navigation" class="main-navigation large-9">
 				<?php
-				// wp_nav_menu(
-				// 	array(
-				// 		'theme_location' => 'menu-1',
-				// 		'menu_id'        => 'primary-menu',
-				// 	)
-				// );
-
 				if ( has_nav_menu( 'menu-1' ) ) {
 					$args = array(
 						'menu' => 'Primary Menu', 
 						'theme_location' => 'menu-1',
 						'menu_id'        => 'primary-menu',
-						// 'menu_class'     => 'vertical menu'
+						'menu_class'     => 'vertical menu top-bar',
 						'container_id' => 'cssmenu', 
-						// 'walker' => new AP_Walker_Nav_Menu()
+						'walker' => new AP_Walker_Nav_Menu()
 					);
 					wp_nav_menu($args);
 				}
