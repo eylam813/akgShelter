@@ -267,6 +267,9 @@ function AKGShelter_scripts() {
 	wp_enqueue_script( 'AKGShelter-foundation', get_template_directory_uri() . '/assets/js/vendors/foundation.min.js', array('jquery', 'AKGShelter-what-input'), '6.5.1', true );
 	wp_enqueue_script( 'AKG-foundation-script', get_template_directory_uri() . '/assets/js/app.js', array('jquery', 'AKGShelter-foundation'), '6.5.1', true );
 
+	// GSAP script
+	wp_enqueue_script( 'AKGShelter-gsap-script', get_template_directory_uri() . '/assets/js/vendor/gsap.min.js', array() );
+	
 	// AKGShelter script
 	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGScript.js', array(), _S_VERSION, true );
 	
