@@ -310,6 +310,9 @@ screen and (max-width:64em) {
     #largeLogo{
         display: none;
     }
+    img.custom-logo{
+        margin-top: 40px;
+    }
 }
 .menu .active > a{
     font-weight: 600;
