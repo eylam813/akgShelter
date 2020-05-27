@@ -295,9 +295,9 @@ screen and (max-width:64em) {
     .homeQuote{
         max-width: 100%;
     }
-    .menu-main-menu-container{
+    /* .menu-main-menu-container{
         display: none;
-    }
+    } */
     #primary-menu{
         flex-direction: column;
     }
