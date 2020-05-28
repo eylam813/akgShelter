@@ -17,6 +17,6 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 	<?php dynamic_sidebar( 'sidebar-1' ); ?>
 	</div>
 	<div class="large-3">
-	<?php echo do_shortcode('[thermometer raised=10 target=100]') ?>
+	<?php echo do_shortcode('[thermometer raised=0 target=100000]') ?>
 	</div>
 </aside><!-- #secondary -->
