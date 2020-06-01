@@ -33,7 +33,7 @@ get_header();
 				the_post(); ?>
 				<!-- container for archive posts -->
 					<div class="grid-x card">
-						<div class="card-image large-3 medium-3 small-12">
+						<div class="card-image large-12 medium-12 small-12">
 							<?php
 							if (has_post_thumbnail()) {
 							?>
