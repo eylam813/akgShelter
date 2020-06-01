@@ -13,5 +13,10 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 ?>
 
 <aside id="secondary" class="widget-area">
+	<div class="large-9">
 	<?php dynamic_sidebar( 'sidebar-1' ); ?>
+	</div>
+	<div class="large-3">
+	<?php echo do_shortcode('[thermometer raised=0 target=100000]') ?>
+	</div>
 </aside><!-- #secondary -->
