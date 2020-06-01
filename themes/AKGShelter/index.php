@@ -27,7 +27,10 @@ get_header();
 				</header>
 				<?php
 			endif;
-			?> <div class="blogHolder"> <?php
+			?> <div class="blogHolder">
+			<h1>Monthly Newsletter</h1>
+			<?php
+			
 			/* Start the Loop */
 			while ( have_posts() ) :
 				the_post(); ?>

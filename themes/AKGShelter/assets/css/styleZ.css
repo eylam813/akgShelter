@@ -290,9 +290,9 @@ footer a:hover {
     /* top: 85px; */
 }
 
-.thumbnail-img{
+/* .thumbnail-img{
     max-height: 100px;
-}
+} */
 
 @media print,
 screen and (max-width:64em) {
