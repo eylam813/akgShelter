@@ -51,9 +51,9 @@ get_header();
 							?>
 						</div>
 							<!-- loading post post title and excerpt -->
-						<div class="card-section-wrapper large-9 medium-9 small-12">
+						<div class="card-section-wrapper large-12 medium-12 small-12">
 							<div class="card-section">
-								<?php the_title( '<h3><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' ); ?>
+
 								<p>
 									<?php
 									the_excerpt();
