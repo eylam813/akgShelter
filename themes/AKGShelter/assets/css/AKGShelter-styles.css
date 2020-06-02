@@ -333,9 +333,9 @@ img.custom-logo{
     justify-content: center;
 }
 
-.blogHolder .card:nth-child(n+2) .card-image {
+/* .blogHolder .card:nth-child(n+2) .card-image {
     display: none;
-}
+} */
 
 .blogHolder .card:nth-child(n+2) .card-section-wrapper {
     width: 100%;

@@ -9,7 +9,9 @@
 a {
     color: black;
 }
-
+p, li{
+    font-size: 1.2rem;
+}
 button:hover {
     cursor: pointer;
 }
@@ -289,6 +291,10 @@ footer a:hover {
     right: 15px;
     /* top: 85px; */
 }
+
+/* .thumbnail-img{
+    max-height: 100px;
+} */
 
 @media print,
 screen and (max-width:64em) {
