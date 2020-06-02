@@ -325,3 +325,6 @@ screen and (max-width:64em) {
     color: var(--pink);
     background: none;
 }
+.fullWidth{
+    width: 90%;
+}
