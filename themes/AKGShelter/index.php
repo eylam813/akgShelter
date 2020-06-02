@@ -27,13 +27,16 @@ get_header();
 				</header>
 				<?php
 			endif;
-			?> <div class="blogHolder"> <?php
+			?> <div class="blogHolder">
+			<h1>Monthly Newsletter</h1>
+			<?php
+			
 			/* Start the Loop */
 			while ( have_posts() ) :
 				the_post(); ?>
 				<!-- container for archive posts -->
 					<div class="grid-x card">
-						<div class="card-image large-3 medium-3 small-12">
+						<div class="card-image large-12 medium-12 small-12">
 							<?php
 							if (has_post_thumbnail()) {
 							?>
@@ -51,9 +54,9 @@ get_header();
 							?>
 						</div>
 							<!-- loading post post title and excerpt -->
-						<div class="card-section-wrapper large-9 medium-9 small-12">
+						<div class="card-section-wrapper large-12 medium-12 small-12">
 							<div class="card-section">
-								<?php the_title( '<h3><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' ); ?>
+
 								<p>
 									<?php
 									the_excerpt();
