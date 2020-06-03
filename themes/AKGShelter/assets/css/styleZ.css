@@ -10,7 +10,7 @@ a {
     color: black;
 }
 p, li{
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 button:hover {
     cursor: pointer;
@@ -324,4 +324,7 @@ screen and (max-width:64em) {
     font-weight: 600;
     color: var(--pink);
     background: none;
+}
+.fullWidth{
+    width: 90%;
 }

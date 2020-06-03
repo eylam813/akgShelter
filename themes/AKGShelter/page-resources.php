@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying contact us page
+ * The template for displaying resources page
  *
  * This is the template that displays all pages by default.
  * Please note that this is the WordPress construct of pages
@@ -20,11 +20,7 @@ get_header();
 	<div class="grid-container">
 		<div class="grid-x">
 		<div class="large-5 small-12 contactForm">
-		<p>For information on our programs, upcoming events, or anything at all, fill out the form below and we will be in touch as soon as possible.</p>
-		<?php 
-		echo do_shortcode('[ws_form id="1"]');
-			
-		?>
+		
 		</div>
 			<div class="large-7 small-12">
 		<?php
