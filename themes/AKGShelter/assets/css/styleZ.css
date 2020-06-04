@@ -285,10 +285,11 @@ footer a:hover {
 .is-home-card.is-style-blue-card.wp-block-columns .wp-block-column{
     background-image: none;
 }
-#hamburger{
+#mobileNav{
     width: 40px;
     position: fixed;
     right: 15px;
+    display: none;
     /* top: 85px; */
 }
 
@@ -318,6 +319,9 @@ screen and (max-width:64em) {
     }
     img.custom-logo{
         margin-top: 40px;
+    }
+    #mobileNav{
+        display: block;
     }
 }
 .menu .active > a{
