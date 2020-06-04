@@ -18,10 +18,11 @@
             </script> Anishnaabe Kwewag Gamig - Designed by <a href="http://zferguson.ca/" target="_blank">Zoe</a> and <a href="http://emilylam.ca/" target="_blank">Emily</a>
 			
 		</div><!-- .site-info -->
+		<div id="contactInfo">
+		</div><!-- #contactInfo -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->
 
 <?php wp_footer(); ?>
-
 </body>
 </html>
