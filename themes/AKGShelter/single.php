@@ -11,7 +11,7 @@ get_header();
 ?>
 
 	<main id="primary" class="site-main">
-
+		<div class="grid-container">
 		<?php
 		while ( have_posts() ) :
 			the_post();
@@ -20,8 +20,8 @@ get_header();
 
 			the_post_navigation(
 				array(
-					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'AKGShelter' ) . '</span> <span class="nav-title">%title</span>',
-					'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next:', 'AKGShelter' ) . '</span> <span class="nav-title">%title</span>',
+					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous', 'AKGShelter' ) . '</span><span class="nav-title">: %title</span>',
+					'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next', 'AKGShelter' ) . '</span><span class="nav-title">: %title</span>',
 				)
 			);
 
@@ -32,6 +32,7 @@ get_header();
 
 		endwhile; // End of the loop.
 		?>
+		</div>
 
 	</main><!-- #main -->
 
