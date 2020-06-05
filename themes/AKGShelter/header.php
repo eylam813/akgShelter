@@ -83,7 +83,7 @@
 			<!-- responsive header nav -->
 			<div class="title-bar small-2" data-responsive-toggle="site-navigation" data-hide-for="medium">
 				<!-- menu button -->
-				<button class="menu-mobile" type="button" data-toggle="site-navigation"><img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="Hamburger Icon"></button>
+				<button id="hamburger" class="menu-mobile" type="button" data-toggle="site-navigation"><img src="http://eztesting.zferguson.ca/akg/wp-content/uploads/2020/05/burger.png" alt="Hamburger Icon"></button>
 				
 			</div>
 			
