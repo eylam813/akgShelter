@@ -378,3 +378,10 @@ img.custom-logo{
 .title-bar {
     background: #00000000;
 }
+
+
+@media screen and (max-width: 39.9375em) {
+    .mec-calendar.mec-event-container-simple dl dt.mec-calendar-day {
+        font-size: 14px;
+    }
+}
