@@ -385,3 +385,14 @@ img.custom-logo{
         font-size: 14px;
     }
 }
+
+#topButton {
+    width: 80px;
+    height: 40px;
+    background-color: var(--light-pink);
+    position: fixed;
+    bottom: 5vh;
+    right: 0px;
+    scroll-behavior: smooth;
+    z-index: 111111;
+}

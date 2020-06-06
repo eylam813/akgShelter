@@ -113,5 +113,6 @@
 
 
 		</section>
+		<a href="#masthead"><button id="topButton">Top</button></a>
 	</header><!-- #masthead -->
 	<div id="content" class="site-content">

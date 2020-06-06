@@ -34,7 +34,7 @@ h3 {
     flex-direction: column;
     align-items: center;
     max-width: 100vw;
-    overflow: auto;
+    /* overflow: auto; */
     padding: 0 2rem;
 }
 
