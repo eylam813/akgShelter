@@ -13,13 +13,9 @@
 
 	<footer id="colophon" class="site-footer">
 		<div class="site-info">
-		Copyright &copy; <script>
-                document.write(new Date().getFullYear());
-            </script> Anishnaabe Kwewag Gamig - Designed by <a href="http://zferguson.ca/" target="_blank">Zoe</a> and <a href="http://emilylam.ca/" target="_blank">Emily</a>
-			
+		<p class="center-mobile">Copyright &copy; <script> document.write(new Date().getFullYear());</script> 
+		<span class="no-mobile">-</span> Anishnaabe Kwewag Gamig </p> <p>Designed by <a href="http://zferguson.ca/" target="_blank">Zoe</a> and <a href="http://emilylam.ca/" target="_blank">Emily</a></p>
 		</div><!-- .site-info -->
-		<div id="contactInfo">
-		</div><!-- #contactInfo -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->
 

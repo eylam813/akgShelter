@@ -243,6 +243,9 @@ img.custom-logo{
         grid-template-areas: "donate clearExit clearExit"
         "helpText helpText helpText";
     }
+    img.custom-logo{
+        min-width: 150px;
+    }
 }
 
 
@@ -383,6 +386,12 @@ img.custom-logo{
 @media screen and (max-width: 39.9375em) {
     .mec-calendar.mec-event-container-simple dl dt.mec-calendar-day {
         font-size: 14px;
+    }
+    .no-mobile {
+        display: none;
+    }
+    .center-mobile {
+        text-align: center;
     }
 }
 

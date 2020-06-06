@@ -5,6 +5,9 @@
     --light-blue: #F3F9FF;
     --blue: #B0C4DE;
 }
+html {
+    scroll-behavior: smooth;
+}
 
 a {
     color: black;
@@ -41,9 +44,15 @@ h3 {
 #nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: black;
     padding-top: 3rem;
 }
+/* @media screen and (max-width: 39.9375em) {
+    #nav {
+        padding-top: 2rem;
+    }
+} */
 
 nav {
     align-self: center;
@@ -266,6 +275,23 @@ footer a:hover {
     color: var(--blue);
 }
 
+footer .site-info {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+footer .site-info p {
+    padding: 0.5rem;
+    margin-bottom: 0;
+}
+@media screen and (max-width: 63.9375em) {
+    footer .site-info p {
+        margin: 0 auto;
+    }
+}
+
 
 .wp-block-button__link {
     background: linear-gradient( to right, var(--light-blue) 50%, var(--blue) 50%, var(--blue));
@@ -328,6 +354,7 @@ screen and (max-width:64em) {
     }
     #hamburger{
         display: block;
+        margin: 2rem 1rem 0 auto;
     }
 }
 .menu .active > a{
