@@ -16,6 +16,10 @@ body {
     font-family: everythingFont;
 }
 
+.page {
+    margin: 0 0 0;
+}
+
 /**
 *
 * Block Editor Styles
