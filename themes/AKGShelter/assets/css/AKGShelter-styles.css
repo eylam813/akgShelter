@@ -408,4 +408,9 @@ img.custom-logo{
     right: 0px;
     scroll-behavior: smooth;
     z-index: 111111;
+    transition: background-color 0.3s ease;
+}
+
+#topButton:hover {
+    background-color: var(--pink);
 }

@@ -294,10 +294,11 @@ footer .site-info p {
 
 
 .wp-block-button__link {
+    /* background: linear-gradient( to right, var(--light-blue) 10%, var(--blue) 80%, var(--blue)); */
     background: linear-gradient( to right, var(--light-blue) 50%, var(--blue) 50%, var(--blue));
     background-size: 200% 100%;
-    -webkit-transition: background-position .3s;
-    transition: background-position .3s;
+    -webkit-transition: background-position .5s;
+    transition: background-position .5s ease;
 }
 
 .wp-block-button__link:hover {
