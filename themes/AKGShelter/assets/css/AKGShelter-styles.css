@@ -16,6 +16,10 @@ body {
     font-family: everythingFont;
 }
 
+.page {
+    margin: 0 0 0;
+}
+
 /**
 *
 * Block Editor Styles
@@ -243,6 +247,9 @@ img.custom-logo{
         grid-template-areas: "donate clearExit clearExit"
         "helpText helpText helpText";
     }
+    img.custom-logo{
+        min-width: 150px;
+    }
 }
 
 
@@ -377,4 +384,33 @@ img.custom-logo{
 
 .title-bar {
     background: #00000000;
+}
+
+
+@media screen and (max-width: 39.9375em) {
+    .mec-calendar.mec-event-container-simple dl dt.mec-calendar-day {
+        font-size: 14px;
+    }
+    .no-mobile {
+        display: none;
+    }
+    .center-mobile {
+        text-align: center;
+    }
+}
+
+#topButton {
+    width: 80px;
+    height: 40px;
+    background-color: var(--light-pink);
+    position: fixed;
+    bottom: 5vh;
+    right: 0px;
+    scroll-behavior: smooth;
+    z-index: 111111;
+    transition: background-color 0.3s ease;
+}
+
+#topButton:hover {
+    background-color: var(--pink);
 }
