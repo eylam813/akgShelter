@@ -5,6 +5,7 @@
     --cream: #FFFAE9;
     --light-blue: #F3F9FF;
     --blue: #B0C4DE;
+    --burgundy: #5B2E35;
 }
 
 @font-face {
@@ -288,9 +289,15 @@ img.custom-logo{
 .has-blue-color {
     color: var(--blue);
 }
+.has-burgundy-color {
+    color: var(--burgundy);
+}
 
 .has-blue-background-color {
     background-color: var(--blue);
+}
+.has-burgundy-background-color {
+    background-color: var(--burgundy);
 }
 
 .has-white-color {
