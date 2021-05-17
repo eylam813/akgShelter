@@ -18,7 +18,7 @@ get_header();
 	<main id="primary" class="site-main">
 	<!-- grid container for page contents -->
 	<?php
-echo do_shortcode('[smartslider3 slider=2]');
+echo do_shortcode('[smartslider3 slider="2"]');
 ?>
 	<div class="grid-container">
 		<div class="grid-x">
