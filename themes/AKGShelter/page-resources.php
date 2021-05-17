@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying the front pages
+ * The template for displaying resources page
  *
  * This is the template that displays all pages by default.
  * Please note that this is the WordPress construct of pages
@@ -17,12 +17,12 @@ get_header();
 
 	<main id="primary" class="site-main">
 	<!-- grid container for page contents -->
-	<?php
-echo do_shortcode('[smartslider3 slider="2"]');
-?>
 	<div class="grid-container">
 		<div class="grid-x">
-			<div class="large-12 small-12">
+		<div class="large-5 small-12 contactForm">
+		
+		</div>
+			<div class="large-7 small-12">
 		<?php
 		while ( have_posts() ) :
 			the_post();
@@ -42,5 +42,5 @@ echo do_shortcode('[smartslider3 slider="2"]');
 	</main><!-- #main -->
 
 <?php
-
+get_sidebar();
 get_footer();
