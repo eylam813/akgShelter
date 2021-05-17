@@ -264,7 +264,6 @@ function AKGShelter_scripts() {
 	// AKGShelter custom stylesheet
 	wp_enqueue_style('AKGShelter-styleZ',get_template_directory_uri() . '/assets/css/styleZ.css',  array());
 
-
 	// what-input
 	wp_enqueue_script( 'AKGShelter-what-input', get_template_directory_uri() . '/assets/js/vendor/what-input.js', array('jquery'), '6.5.1', true );
 
@@ -277,7 +276,6 @@ function AKGShelter_scripts() {
 	
 	// AKGShelter script
 	wp_enqueue_script( 'AKGShelter-script', get_template_directory_uri() . '/assets/js/AKGScript.js', array(), _S_VERSION, true );
-	
 
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );
